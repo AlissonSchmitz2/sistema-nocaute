@@ -14,7 +14,7 @@ public static void main(String[] args) {
 			conn.setAutoCommit(false);
 			System.out.println("Conectado com sucesso!!!");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.getErrorCode();
 		}
 	}
 }
