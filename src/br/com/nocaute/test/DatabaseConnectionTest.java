@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import br.com.nocaute.database.ConnectionFactory;
 
 public class DatabaseConnectionTest {
-public static void main(String[] args) {
-		
+
+	public DatabaseConnectionTest(){
 		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
 		
 		try {
