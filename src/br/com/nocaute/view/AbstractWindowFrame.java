@@ -7,22 +7,23 @@ import java.awt.Toolkit;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.beans.PropertyVetoException;
+
+import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
 	
-	public AbstractWindowFrame(String nomeTela) {
+	public AbstractWindowFrame(String nomeTela, int width, int height, JDesktopPane desktop) {
 	    super(nomeTela, false, true, false, false);
 	    
 	    setLayout(null);
 	    setVisible(true);
-	    setBorder(null);
 	    setBackground(new Color(239, 239, 239));    
+	    setSize(width,height);
 	    
-	    //Seta tamanho
-	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    setBounds(new Rectangle(0, 0, screenSize.width, screenSize.height));
+	    this.setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
+
 	    
 	    //Listener janela ancestral for alterada
 	    addHierarchyBoundsListener(new HierarchyBoundsListener() {

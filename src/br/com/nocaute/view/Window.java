@@ -27,7 +27,7 @@ public class Window extends JFrame {
 
 	// Guardar aqui o usuário logado
 	// private Usuario usuarioLogado;
-	
+
 	private CadastrarUsuarioWindow frameCadastrarUsuario;
 
 	private JMenu menuSistema;
@@ -39,20 +39,18 @@ public class Window extends JFrame {
 	private JMenu menuRelatoriosFaturas;
 	private JMenu menuUtilitarios;
 	private JMenu menuAjuda;
-	
-	private ImageIcon iconPadrao = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/16x16/aplicacao.png"));
-	private ImageIcon iconRelatorio = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/16x16/relatorio.png"));
-	
+
+	private ImageIcon iconPadrao = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/aplicacao.png"));
+	private ImageIcon iconRelatorio = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/relatorio.png"));
+
 	private JSeparator separador;
 
 	private JDesktopPane desktop;
 
-//	private ListarAlunosWindow frameListarAlunos;
-
-	public Window(/* Usuario usuarioLogado */) {
+	public Window() {
 		super();
-
-		// this.usuarioLogado = usuarioLogado;
 
 		desktop = new JDesktopPane();
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -117,7 +115,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameCadastrarUsuario = new CadastrarUsuarioWindow();
+				frameCadastrarUsuario = new CadastrarUsuarioWindow(desktop);
 				abrirFrame(frameCadastrarUsuario);
 			}
 		});
@@ -214,7 +212,7 @@ public class Window extends JFrame {
 		menuProcessos.add(menuProcessosFaturamento);
 
 		menuProcessosMatricular.add(getMenuItemAluno());
-		
+
 		menuProcessosFaturamento.add(getMenuItemGerarFaturas());
 		menuProcessosFaturamento.add(getMenuItemConsultarFaturas());
 		menuProcessosFaturamento.add(getMenuItemRealizarPagamento());
@@ -236,7 +234,7 @@ public class Window extends JFrame {
 
 		return menuItem;
 	}
-	
+
 	private JMenuItem getMenuItemGerarFaturas() {
 		JMenuItem menuItem = new JMenuItem("Gerar Faturas");
 		menuItem.setIcon(iconPadrao);
@@ -251,7 +249,7 @@ public class Window extends JFrame {
 
 		return menuItem;
 	}
-	
+
 	private JMenuItem getMenuItemConsultarFaturas() {
 		JMenuItem menuItem = new JMenuItem("Consultar Faturas");
 		menuItem.setIcon(iconPadrao);
@@ -266,7 +264,7 @@ public class Window extends JFrame {
 
 		return menuItem;
 	}
-	
+
 	private JMenuItem getMenuItemRealizarPagamento() {
 		JMenuItem menuItem = new JMenuItem("Realizar Pagamento");
 		menuItem.setIcon(iconPadrao);
@@ -281,13 +279,12 @@ public class Window extends JFrame {
 
 		return menuItem;
 	}
-				
 
 	// Menu Relatorios
 	private JMenu getMenuRelatorios() {
 		menuRelatorios = new JMenu("Relatórios");
 		menuRelatorios.setFont(getDefaultFont());
-		
+
 		menuRelatoriosFaturas = new JMenu("Faturas");
 		menuRelatoriosFaturas.setIcon(iconRelatorio);
 		menuRelatorios.setFont(getDefaultFont());
@@ -297,7 +294,7 @@ public class Window extends JFrame {
 
 		menuRelatoriosFaturas.add(getMenuItemEmAberto());
 		menuRelatoriosFaturas.add(getMenuItemPagas());
-		
+
 		return menuRelatorios;
 	}
 
@@ -315,7 +312,7 @@ public class Window extends JFrame {
 
 		return menuItem;
 	}
-	
+
 	private JMenuItem getMenuItemEmAberto() {
 		JMenuItem menuItem = new JMenuItem("Em Aberto");
 		menuItem.setIcon(iconRelatorio);
@@ -330,7 +327,7 @@ public class Window extends JFrame {
 
 		return menuItem;
 	}
-	
+
 	private JMenuItem getMenuItemPagas() {
 		JMenuItem menuItem = new JMenuItem("Pagas");
 		menuItem.setIcon(iconRelatorio);
@@ -382,10 +379,7 @@ public class Window extends JFrame {
 		return menuItem;
 	}
 
-	/*
-	 * HELPERS
-	 */
-
+	// HELPERS
 	private void abrirFrame(AbstractWindowFrame frame) {
 		boolean frameJaExiste = false;
 
@@ -410,7 +404,7 @@ public class Window extends JFrame {
 			}
 
 			frame.setSelected(true);
-			frame.setMaximum(true);
+			//frame.setMaximum(true);
 			frame.setVisible(true);
 		} catch (PropertyVetoException e) {
 			JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,
