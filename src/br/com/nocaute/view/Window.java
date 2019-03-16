@@ -389,6 +389,7 @@ public class Window extends JFrame {
 			if (addedFrame.getTitle().equals(frame.getTitle())) {
 				// Se for uma tela com grid, remove a existente para forçar a atualização da
 				// lista
+				desktop.remove(addedFrame);
 			} else {
 				frame = (AbstractWindowFrame) addedFrame;
 				frameJaExiste = true;
