@@ -59,7 +59,8 @@ public class DatabaseConnectionTest {
 			for (int i = 0; i < list.size(); i++) {				
 				StudentModel student = (StudentModel) list.get(i);
 				System.out.println(student.getCode() + " - " + student.getName());
-			}
+			} 
+						 
 
 		} catch (SQLException e) {
 			e.getErrorCode();
