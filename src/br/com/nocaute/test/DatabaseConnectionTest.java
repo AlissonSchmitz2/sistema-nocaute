@@ -2,7 +2,6 @@ package br.com.nocaute.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import br.com.nocaute.database.ConnectionFactory;
@@ -24,7 +23,7 @@ public class DatabaseConnectionTest {
 			
 			StudentModel model = new StudentModel();
 			
-			model.setName("Aluno Teste x");
+			model.setName("Aluno Novo");
 			model.setGenre('M');
 			
 			StudentModel newStudent = dao.insert(model);
@@ -37,6 +36,14 @@ public class DatabaseConnectionTest {
 				
 				if (foundStudent != null) {
 					System.out.println("*** Busca por aluno \"" + newStudent.getCode() + "\" efetuada com sucesso");
+					
+					// UPDATE TEST
+					foundStudent.setName("Nome Atualizado");
+					boolean result = dao.update(foundStudent);
+					//System.out.println("..." + result);
+					if (result) {
+						System.out.println("*** Nome do aluno \"" + newStudent.getName() + "\" foi atualizado para \""  + foundStudent.getName() + "\" com sucesso");
+					}
 					
 					// DELETE TEST
 					if (dao.delete(foundStudent)) {
@@ -57,5 +64,9 @@ public class DatabaseConnectionTest {
 		} catch (SQLException e) {
 			e.getErrorCode();
 		}
+	}
+	
+	public static void main(String[] args) {
+		new DatabaseConnectionTest();
 	}
 }

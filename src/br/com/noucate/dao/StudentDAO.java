@@ -40,6 +40,24 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		"DEFAULT"
 	};
 	
+	private String[] columnsToUpdate = new String[] {
+		"aluno",
+		"data_nascimento",
+		"sexo",
+		"telefone",
+		"celular",
+		"email",
+		"observacao",
+		"endereco",
+		"numero",
+		"complemento",
+		"bairro",
+		"cidade",
+		"estado",
+		"pais",
+		"cep"
+	};
+	
 	Connection connection;
 	
 	public StudentDAO(Connection connection) throws SQLException {
@@ -69,7 +87,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 	public StudentModel findById(Integer id) throws SQLException {
 		StudentModel model = null;
 		
-		String query = getFindByIdQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
+		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
 		PreparedStatement pst = connection.prepareStatement(query);
 		
 		setParam(pst, 1, id);
@@ -125,8 +143,38 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 	}
 
 	@Override
-	public void update(StudentModel model) throws SQLException {
-		// TODO: To create
+	public boolean update(StudentModel model) throws SQLException {
+		String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
+		
+		PreparedStatement pst = connection.prepareStatement(query);
+		
+		setParam(pst, 1, model.getName());
+		setParam(pst, 2, model.getBirthDate());
+		setParam(pst, 3, model.getGenre());
+		setParam(pst, 4, model.getTelephone());
+		setParam(pst, 5, model.getMobilePhone());
+		setParam(pst, 6, model.getEmail());
+		setParam(pst, 7, model.getObservation());
+		setParam(pst, 8, model.getAddress());
+		setParam(pst, 9, model.getNumber());
+		setParam(pst, 10, model.getAddressComplement());
+		setParam(pst, 11, model.getNeighborhood());
+		setParam(pst, 12, model.getCity());
+		setParam(pst, 13, model.getState());
+		setParam(pst, 14, model.getCountry());
+		setParam(pst, 15, model.getPostalCode());
+		
+		// Identificador WHERE
+		setParam(pst, 16, model.getCode());
+		
+		int result = pst.executeUpdate();
+        if (result > 0) {
+			connection.commit();
+			
+			return true;
+        }
+        
+        return false;
 	}
 
 	@Override
@@ -136,7 +184,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 
 	@Override
 	public boolean deleteById(Integer id) throws SQLException {
-		String query = getDeleteByIdQuery(TABLE_NAME, columnId);
+		String query = getDeleteQuery(TABLE_NAME, columnId);
 		PreparedStatement pst = connection.prepareStatement(query);
 		
 		setParam(pst, 1, id);

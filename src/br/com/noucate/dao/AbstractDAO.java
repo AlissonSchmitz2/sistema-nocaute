@@ -16,7 +16,7 @@ public abstract class AbstractDAO<T extends Model> {
 	
 	public abstract T insert(T model) throws SQLException;
 	
-	public abstract void update(T model) throws SQLException;
+	public abstract boolean update(T model) throws SQLException;
 	
 	public abstract boolean delete(T model) throws SQLException;
 	
@@ -45,12 +45,12 @@ public abstract class AbstractDAO<T extends Model> {
 		return "SELECT " + columns + " FROM " + tableName + " ORDER BY " + defaultOrderBy;
 	}
 	
-	protected final String getFindByIdQuery(String tableName, String columnId, String columns, String defaultOrderBy) {
-		return "SELECT " + columns + " FROM " + tableName + " WHERE " + columnId + "=? ORDER BY " + defaultOrderBy;
+	protected final String getFindByQuery(String tableName, String identifierColumn, String columns, String defaultOrderBy) {
+		return "SELECT " + columns + " FROM " + tableName + " WHERE " + identifierColumn + "=? ORDER BY " + defaultOrderBy;
 	}
 	
 	protected final String getInsertQuery(String tableName, String[] columns, String[] values) {
-		String query = "INSERT INTO " + tableName + "(";
+		String query = "INSERT INTO " + tableName + " (";
 		
 		// Concatena colunas
 		query += String.join(",", columns);
@@ -76,7 +76,17 @@ public abstract class AbstractDAO<T extends Model> {
 		return query;
 	}
 	
-	protected final String getDeleteByIdQuery(String tableName, String columnId) {
-		return "DELETE FROM " + tableName + " WHERE " + columnId + "=?";
+	protected final String getUpdateQuery(String tableName, String identifierColumn, String[] columns) {
+		String query = "UPDATE " + tableName + " SET ";
+		
+		// Concatena colunas
+		query += String.join("=?, ", columns);
+		query += "=? WHERE " + identifierColumn + "=?";
+		
+		return query;
+	}
+	
+	protected final String getDeleteQuery(String tableName, String identifierColumn) {
+		return "DELETE FROM " + tableName + " WHERE " + identifierColumn + "=?";
 	}
 }
