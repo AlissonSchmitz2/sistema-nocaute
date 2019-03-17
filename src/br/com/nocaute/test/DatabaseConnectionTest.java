@@ -10,8 +10,8 @@ import br.com.nocaute.model.StudentModel;
 import br.com.noucate.dao.StudentDAO;
 
 public class DatabaseConnectionTest {
-public static void main(String[] args) {
-		
+
+	public DatabaseConnectionTest(){
 		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
 		
 		try {
@@ -55,7 +55,7 @@ public static void main(String[] args) {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.getErrorCode();
 		}
 	}
 }
