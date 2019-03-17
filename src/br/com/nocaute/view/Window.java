@@ -25,10 +25,9 @@ import javax.swing.WindowConstants;
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
-	// Guardar aqui o usuário logado
-	// private Usuario usuarioLogado;
-
+	//Janelas do Menu
 	private CadastrarUsuarioWindow frameCadastrarUsuario;
+	private CadastrarAlunoWindow frameCadastrarAluno;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -157,8 +156,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela Alunos
-				// abrirFrame();
+				frameCadastrarAluno = new CadastrarAlunoWindow(desktop);
+				abrirFrame(frameCadastrarAluno);
 			}
 		});
 

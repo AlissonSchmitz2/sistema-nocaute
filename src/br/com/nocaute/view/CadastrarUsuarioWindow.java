@@ -20,6 +20,7 @@ public class CadastrarUsuarioWindow extends AbstractWindowFrame{
 	private ImageIcon iconSalvar = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
 	
+	//Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
 	private JLabel label;
 	private JTextField txfUsuario, txfSenha, txfConfirmarSenha;

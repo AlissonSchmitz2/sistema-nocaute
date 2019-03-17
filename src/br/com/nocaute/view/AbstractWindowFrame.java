@@ -2,7 +2,6 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ComponentEvent;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseMotionListener;
@@ -15,12 +14,8 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
 
-	private JDesktopPane desktop;
-
 	public AbstractWindowFrame(String nomeTela, int width, int height, JDesktopPane desktop) {
 		super(nomeTela, false, true, false, false);
-
-		this.desktop = desktop;
 
 		setLayout(null);
 		setVisible(true);
@@ -47,7 +42,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		// Extender caso queira fazer alguma ação
 
 		// bloquear icone
-		this.getDesktopIcon().removeMouseMotionListener(this.getDesktopIcon().getMouseMotionListeners()[0]);
+		//this.getDesktopIcon().removeMouseMotionListener(this.getDesktopIcon().getMouseMotionListeners()[0]);
 
 		// bloquear o frame
 		for (Component c : this.getComponents()) {
