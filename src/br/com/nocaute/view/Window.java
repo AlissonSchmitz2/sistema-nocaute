@@ -26,8 +26,8 @@ public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
 	//Janelas do Menu
-	private CadastrarUsuarioWindow frameCadastrarUsuario;
-	private CadastrarAlunoWindow frameCadastrarAluno;
+	private UserFormWindow frameCadastrarUsuario;
+	private StudentFormWindow frameCadastrarAluno;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -114,7 +114,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameCadastrarUsuario = new CadastrarUsuarioWindow(desktop);
+				frameCadastrarUsuario = new UserFormWindow(desktop);
 				abrirFrame(frameCadastrarUsuario);
 			}
 		});
@@ -156,7 +156,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameCadastrarAluno = new CadastrarAlunoWindow(desktop);
+				frameCadastrarAluno = new StudentFormWindow(desktop);
 				abrirFrame(frameCadastrarAluno);
 			}
 		});

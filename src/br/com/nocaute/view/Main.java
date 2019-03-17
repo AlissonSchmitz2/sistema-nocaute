@@ -2,7 +2,7 @@ package br.com.nocaute.view;
 
 import br.com.nocaute.test.DatabaseConnectionTest;
 
-public class Principal {
+public class Main {
 
 	public static void main(String[] args) {
 		
