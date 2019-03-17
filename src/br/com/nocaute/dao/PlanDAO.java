@@ -1,4 +1,4 @@
-package br.com.noucate.dao;
+package br.com.nocaute.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
