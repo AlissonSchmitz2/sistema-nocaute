@@ -45,7 +45,10 @@ public class Window extends JFrame {
 			this.getClass().getResource("/br/com/nocaute/image/16x16/aplicacao.png"));
 	private ImageIcon iconRelatorio = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/relatorio.png"));
+	private ImageIcon iconInfo = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/32x32/informacao.png"));
 
+	
 	private JSeparator separador;
 
 	private JDesktopPane desktop;
@@ -373,7 +376,8 @@ public class Window extends JFrame {
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(null, "Sistema desenvolvido por:\n\nAlisson Schmitz\n"
-						+ "Edvaldo da Rosa\nGiovane Santiago\nTúlio Borges\n" + "Wilian Hendler");
+						+ "Edvaldo da Rosa\nGiovane Santiago\nTúlio Borges\n" + "Wilian Hendler"
+						, "Informação", 0, iconInfo);
 			}
 		});
 
