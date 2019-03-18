@@ -8,60 +8,58 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.nocaute.model.PlanModel;
+import br.com.nocaute.model.GraduationModel;
 
-//TODO: Reestruturar a tabela 'planos' no banco de dados para que essa classe funcione corretamente.
-public class PlanDAO extends AbstractDAO<PlanModel> {
-	private static final String TABLE_NAME = "planos";
+//TODO: Reestruturar a tabela 'graduacoes' no banco de dados para que essa classe funcione corretamente.
+public class GraduationDAO extends AbstractDAO<GraduationModel> {
+	private static final String TABLE_NAME = "graduacoes";
 	
-	private String columnId = "id_plano";
+	private String columnId = "id_graduacao";
 	
-	private String defaultOrderBy = "nome_plano ASC";
+	private String defaultOrderBy = "nome_graduacao ASC";
 	
 	private String[] defaultValuesToInsert = new String[] {
 			"DEFAULT"
 	};
 	
 	private String[] columnsToInsert = new String[] {
-			"id_plano",
+			"id_graduacao",
 			"id_modalidade",
-			"nome_plano",
-			"valor_mensal"
+			"nome_graduacao"
 	};
 	
 	private String[] columnsToUpdate = new String[] {
-			"nome_plano",
-			"valor_mensal"
+			"nome_graduacao"
 	};
 	
 	Connection connection;
 	
-	public PlanDAO(Connection connection) throws SQLException {
+	public GraduationDAO(Connection connection) throws SQLException{
 		this.connection = connection;
 	}
-
+	
 	@Override
-	public List<PlanModel> selectAll() throws SQLException {
+	public List<GraduationModel> selectAll() throws SQLException {
 		String query = getSelectAllQuery(TABLE_NAME, "*", defaultOrderBy);
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		List<PlanModel> plansList = new ArrayList<PlanModel>();
+		List<GraduationModel> graduationsList = new ArrayList<GraduationModel>();
 
 		ResultSet rst = pst.executeQuery();
 
 		while (rst.next()) {
-			PlanModel model = createModelFromResultSet(rst);
+			GraduationModel model = createModelFromResultSet(rst);
 
-			plansList.add(model);
+			graduationsList.add(model);
 		}
 
-		return plansList;
+		return graduationsList;
 	}
-
+	
 	@Override
-	public PlanModel findById(Integer id) throws SQLException {
-		PlanModel model = null;
+	public GraduationModel findById(Integer id) throws SQLException {
+		GraduationModel model = null;
 
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
 		PreparedStatement pst = connection.prepareStatement(query);
@@ -75,9 +73,9 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		return model;
 	}
-
+	
 	@Override
-	public PlanModel insert(PlanModel model) throws SQLException {
+	public GraduationModel insert(GraduationModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
 
 		PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -85,8 +83,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 		pst.clearParameters();
 
 		setParam(pst, 1, model.getModalityId());
-		setParam(pst, 2, model.getPlanName());
-		setParam(pst, 3, model.getMonthlyValue());
+		setParam(pst, 2, model.getGraduationName());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -96,8 +93,8 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 			if (rs.next()) {
 				int lastInsertedCode = rs.getInt(columnId);
 
-				// Antes de retornar, seta o id ao objeto plano.
-				model.setModalityId(lastInsertedCode);
+				// Antes de retornar, seta o id ao objeto graduação
+				model.setGraduationId(lastInsertedCode);
 
 				return model;
 			}
@@ -105,18 +102,17 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		return null;
 	}
-
+	
 	@Override
-	public boolean update(PlanModel model) throws SQLException {
+	public boolean update(GraduationModel model) throws SQLException {
 		String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		setParam(pst, 1, model.getPlanName());
-		setParam(pst, 2, model.getMonthlyValue());
+		setParam(pst, 1, model.getGraduationName());
 
 		// Identificador WHERE
-		setParam(pst, 3, model.getPlanId());
+		setParam(pst, 2, model.getGraduationId());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -127,10 +123,10 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		return false;
 	}
-
+	
 	@Override
-	public boolean delete(PlanModel model) throws SQLException {
-		return deleteById(model.getPlanId());
+	public boolean delete(GraduationModel model) throws SQLException {
+		return deleteById(model.getGraduationId());
 	}
 
 	@Override
@@ -149,21 +145,20 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		return false;
 	}
-
+	
 	/**
 	 * Cria um objeto Model a partir do resultado obtido no banco de dados
 	 * 
 	 * @param rst
-	 * @return PlanModel
+	 * @return GraduationModel
 	 * @throws SQLException
 	 */
-	private PlanModel createModelFromResultSet(ResultSet rst) throws SQLException {
-		PlanModel model = new PlanModel();
+	private GraduationModel createModelFromResultSet(ResultSet rst) throws SQLException {
+		GraduationModel model = new GraduationModel();
 
-		model.setPlanId(rst.getInt("id_plano"));
+		model.setGraduationId(rst.getInt("id_graduacao"));
 		model.setModalityId(rst.getInt("id_modalidade"));
-		model.setPlanName(rst.getString("nome_plano"));
-		model.setMonthlyValue(rst.getFloat("valor_mensal"));
+		model.setGraduationName(rst.getString("nome_graduacao"));
 
 		return model;
 	}

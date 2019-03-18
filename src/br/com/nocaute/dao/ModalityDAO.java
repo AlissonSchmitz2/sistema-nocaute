@@ -12,25 +12,25 @@ import br.com.nocaute.model.ModalityModel;
 
 //TODO: Reestruturar a tabela 'modalidades' no banco de dados para que essa classe funcione corretamente.
 
-public class ModalityDAO extends AbstractDAO<ModalityModel>{	
+public class ModalityDAO extends AbstractDAO<ModalityModel> {	
 	private static final String TABLE_NAME = "modalidades";
 	
 	private String columnId = "id_modalidade";
 	
-	private String defaultOrderBy = "modalidade ASC";
+	private String defaultOrderBy = "nome_modalidade ASC";
 	
 	private String[] defaultValuesToInsert = new String[] {
 			"DEFAULT"
-		};
+	};
 	
 	private String[] columnsToInsert = new String[] {
 			"id_modalidade",
 			"nome_modalidade"
-		};
+	};
 	
 	private String[] columnsToUpdate = new String[] {
 			"nome_modalidade"
-		};
+	};
 	
 	Connection connection;
 	
@@ -155,7 +155,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel>{
 		ModalityModel model = new ModalityModel();
 		
 		model.setModalityId(rst.getInt("id_modalidade"));
-		model.setModalityName(rst.getString("modalidade"));
+		model.setModalityName(rst.getString("nome_modalidade"));
 		
 		return model;
 	}
