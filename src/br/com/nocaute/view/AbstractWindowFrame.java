@@ -14,8 +14,8 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
 
-	public AbstractWindowFrame(String nomeTela, int width, int height, JDesktopPane desktop) {
-		super(nomeTela, false, true, false, false);
+	public AbstractWindowFrame(String nameWindow, int width, int height, JDesktopPane desktop) {
+		super(nameWindow, false, true, false, false);
 
 		setLayout(null);
 		setVisible(true);
@@ -24,21 +24,22 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 
 		// Abrir janela centralizada
 		setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
-		windowFoiMovida();
+		//Bloquear mevimento da janela
+		windowNotMove();
 		
 		// Listener janela ancestral for alterada
 		addHierarchyBoundsListener(new HierarchyBoundsListener() {
 			public void ancestorMoved(HierarchyEvent e) {
-				windowFoiMovida();
+				windowNotMove();
 			}
 
 			public void ancestorResized(HierarchyEvent e) {
-				windowFoiRedimensionada();
+				windowResized();
 			}
 		});
 	}
 
-	protected void windowFoiMovida() {
+	protected void windowNotMove() {
 		// Extender caso queira fazer alguma ação
 
 		// bloquear icone
@@ -55,7 +56,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		}
 	}
 
-	protected void windowFoiRedimensionada() {
+	protected void windowResized() {
 		// Extender caso queira fazer alguma ação
 	}
 

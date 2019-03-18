@@ -9,7 +9,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
-import br.com.nocaute.table.model.UniversityGraduateTableModel;
+import br.com.nocaute.table.model.DegreeTableModel;
 
 public class ModalitiesFormWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = 7836235315411293572L;
@@ -19,7 +19,7 @@ public class ModalitiesFormWindow extends AbstractGridWindow{
 	private JLabel label;
 	private JTextField txfModalidade, txfGraduacao;
 	
-	private UniversityGraduateTableModel model;
+	private DegreeTableModel model;
 	private JTable jTableGraduacoes;
 
 	// Icones
@@ -99,7 +99,7 @@ public class ModalitiesFormWindow extends AbstractGridWindow{
 	}
 	
 	private void carregarGrid() {
-		model = new UniversityGraduateTableModel();
+		model = new DegreeTableModel();
 		jTableGraduacoes = new JTable(model);
 
 		// Habilita a seleção por linha

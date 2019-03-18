@@ -2,12 +2,12 @@ package br.com.nocaute.table.model;
 
 import javax.swing.table.AbstractTableModel;
 
-public class UniversityGraduateTableModel extends AbstractTableModel {
+public class DegreeTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 2381816919838563117L;
 
 	private String[] colunas = new String[] { "Graduação" };
 
-	public UniversityGraduateTableModel() {
+	public DegreeTableModel() {
 		//TODO: Aguardar model de gradução para finalizar
 	}
 
