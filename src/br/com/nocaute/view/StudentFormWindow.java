@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.text.MaskFormatter;
 
-public class CadastrarAlunoWindow extends AbstractWindowFrame{
+public class StudentFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = 1631880171317467520L;
 	
 	//Componentes
@@ -43,7 +43,7 @@ public class CadastrarAlunoWindow extends AbstractWindowFrame{
 	private ImageIcon iconSalvar = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
 
-	public CadastrarAlunoWindow(JDesktopPane desktop) {
+	public StudentFormWindow(JDesktopPane desktop) {
 		super("Cadastro de Alunos", 450, 460, desktop);
 		
 		criarComponentes();

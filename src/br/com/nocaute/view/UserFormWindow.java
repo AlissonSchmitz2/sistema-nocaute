@@ -7,7 +7,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class CadastrarUsuarioWindow extends AbstractWindowFrame{
+public class UserFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = -2537423200954897351L;
 	
 	//Icones
@@ -26,7 +26,7 @@ public class CadastrarUsuarioWindow extends AbstractWindowFrame{
 	private JTextField txfUsuario, txfSenha, txfConfirmarSenha;
 	private JComboBox<String> cbxPerfil;
 	
-	public CadastrarUsuarioWindow(JDesktopPane desktop) {
+	public UserFormWindow(JDesktopPane desktop) {
 		super("Usuários", 455, 200, desktop);
 		
 		criarComponentes();

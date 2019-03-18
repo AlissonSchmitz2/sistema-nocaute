@@ -26,8 +26,10 @@ public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
 	//Janelas do Menu
-	private CadastrarUsuarioWindow frameCadastrarUsuario;
-	private CadastrarAlunoWindow frameCadastrarAluno;
+	private UserFormWindow frameUserForm;
+	private StudentFormWindow frameStudentForm;
+	private ModalitiesFormWindow frameModalitiesForm;
+	private PlansFormWindow framePlansForm;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -114,8 +116,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameCadastrarUsuario = new CadastrarUsuarioWindow(desktop);
-				abrirFrame(frameCadastrarUsuario);
+				frameUserForm = new UserFormWindow(desktop);
+				abrirFrame(frameUserForm);
 			}
 		});
 
@@ -156,8 +158,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameCadastrarAluno = new CadastrarAlunoWindow(desktop);
-				abrirFrame(frameCadastrarAluno);
+				frameStudentForm = new StudentFormWindow(desktop);
+				abrirFrame(frameStudentForm);
 			}
 		});
 
@@ -171,8 +173,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela Modalidades
-				// abrirFrame();
+				frameModalitiesForm = new ModalitiesFormWindow(desktop);
+				abrirFrame(frameModalitiesForm);
 			}
 		});
 
@@ -186,8 +188,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela Modalidades
-				// abrirFrame();
+				framePlansForm = new PlansFormWindow(desktop);
+				abrirFrame(framePlansForm);
 			}
 		});
 

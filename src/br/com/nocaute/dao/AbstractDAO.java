@@ -1,4 +1,4 @@
-package br.com.noucate.dao;
+package br.com.nocaute.dao;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;

@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.database.ConnectionFactory;
 import br.com.nocaute.model.StudentModel;
-import br.com.noucate.dao.StudentDAO;
 
 public class DatabaseConnectionTest {
 
@@ -59,7 +59,8 @@ public class DatabaseConnectionTest {
 			for (int i = 0; i < list.size(); i++) {				
 				StudentModel student = (StudentModel) list.get(i);
 				System.out.println(student.getCode() + " - " + student.getName());
-			}
+			} 
+						 
 
 		} catch (SQLException e) {
 			e.getErrorCode();
