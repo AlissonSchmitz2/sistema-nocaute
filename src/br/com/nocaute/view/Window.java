@@ -29,6 +29,7 @@ public class Window extends JFrame {
 	private UserFormWindow frameUserForm;
 	private StudentFormWindow frameStudentForm;
 	private ModalitiesFormWindow frameModalitiesForm;
+	private PlansFormWindow framePlansForm;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -187,8 +188,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela Modalidades
-				// abrirFrame();
+				framePlansForm = new PlansFormWindow(desktop);
+				abrirFrame(framePlansForm);
 			}
 		});
 
