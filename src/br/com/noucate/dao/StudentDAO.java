@@ -130,7 +130,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 			
 			ResultSet rs = pst.getGeneratedKeys();
 	        if(rs.next()) {
-	            int lastInsertedCode = rs.getInt(1);
+	            int lastInsertedCode = rs.getInt(columnId);
 	            
 	            // Antes de retornar, seta o código ao objeto aluno
 	            model.setCode(lastInsertedCode);
