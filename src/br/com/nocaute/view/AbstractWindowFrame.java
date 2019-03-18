@@ -24,24 +24,23 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 
 		// Abrir janela centralizada
 		setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
-		//Bloquear mevimento da janela
-		windowNotMove();
+		//Bloquear movimento da janela
+		windowWasMove();
 		
 		// Listener janela ancestral for alterada
 		addHierarchyBoundsListener(new HierarchyBoundsListener() {
 			public void ancestorMoved(HierarchyEvent e) {
-				windowNotMove();
+				windowWasMove();
 			}
 
 			public void ancestorResized(HierarchyEvent e) {
-				windowResized();
+				windowWasResized();
 			}
 		});
 	}
 
-	protected void windowNotMove() {
-		// Extender caso queira fazer alguma ação
-
+	protected void windowWasMove() {
+		
 		// bloquear icone
 		//this.getDesktopIcon().removeMouseMotionListener(this.getDesktopIcon().getMouseMotionListeners()[0]);
 
@@ -56,7 +55,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		}
 	}
 
-	protected void windowResized() {
+	protected void windowWasResized() {
 		// Extender caso queira fazer alguma ação
 	}
 
