@@ -42,9 +42,12 @@ public class StudentFormWindow extends AbstractWindowFrame{
 			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
 	private ImageIcon iconSalvar = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
+	private ImageIcon iconJanela = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
 	public StudentFormWindow(JDesktopPane desktop) {
 		super("Cadastro de Alunos", 450, 460, desktop);
+		setFrameIcon(iconJanela);
 		
 		criarComponentes();
 	}

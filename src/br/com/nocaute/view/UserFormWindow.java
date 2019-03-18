@@ -19,6 +19,9 @@ public class UserFormWindow extends AbstractWindowFrame{
 			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
 	private ImageIcon iconSalvar = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
+	private ImageIcon iconJanela = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/user.png"));
+	
 	
 	//Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
@@ -28,6 +31,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 	
 	public UserFormWindow(JDesktopPane desktop) {
 		super("Usuários", 455, 200, desktop);
+		setFrameIcon(iconJanela);
 		
 		criarComponentes();
 	}

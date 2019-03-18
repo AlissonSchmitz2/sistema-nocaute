@@ -26,11 +26,15 @@ public class PlansFormWindow extends AbstractWindowFrame {
 			this.getClass().getResource("/br/com/nocaute/image/22x22/adicionar.png"));
 	private ImageIcon iconRemover = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
-	private ImageIcon iconSalvar = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
+	private ImageIcon iconSalvar = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
+	private ImageIcon iconJanela = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/financeiro.png"));
 
 	public PlansFormWindow(JDesktopPane desktop) {
 		super("Planos", 450, 165, desktop);
-
+		setFrameIcon(iconJanela);
+		
 		criarComponentes();
 	}
 
@@ -73,21 +77,21 @@ public class PlansFormWindow extends AbstractWindowFrame {
 		label = new JLabel("Plano: ");
 		label.setBounds(5, 80, 150, 25);
 		getContentPane().add(label);
-		
+
 		txfPlano = new JTextField();
 		txfPlano.setBounds(70, 80, 355, 20);
 		txfPlano.setToolTipText("Digite o plano");
 		getContentPane().add(txfPlano);
-		
+
 		label = new JLabel("Valor: ");
 		label.setBounds(5, 105, 150, 25);
 		getContentPane().add(label);
-		
+
 		txfValor = new JNumberFormatField();
 		txfValor.setBounds(70, 105, 70, 20);
 		txfValor.setLimit(6);
 		txfValor.setToolTipText("Informe o valor");
 		getContentPane().add(txfValor);
-		
+
 	}
 }

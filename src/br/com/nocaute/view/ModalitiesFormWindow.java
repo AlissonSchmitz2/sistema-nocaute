@@ -33,10 +33,13 @@ public class ModalitiesFormWindow extends AbstractGridWindow{
 			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
 	private ImageIcon iconOK = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/13x13/ok.png"));
+	private ImageIcon iconJanela = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
 	
 	public ModalitiesFormWindow(JDesktopPane desktop) {
 			super("Modalidades e Graduações", 450, 335, desktop);
+			setFrameIcon(iconJanela);
 			
 			criarComponentes();
 		}
