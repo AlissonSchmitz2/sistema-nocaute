@@ -14,11 +14,31 @@ public class StudentModel extends AbstractModel {
 	private String endereco;
 	private String numero;
 	private String complemento;
+	private Integer id_cidade;
 	private String bairro;
-	private String cidade;
-	private String estado;
-	private String pais;
 	private String cep;
+	
+	
+	/**
+	 * Relacionamento
+	 */
+	private CityModel city;
+	
+	/**
+	 * cidade
+	 */
+	public CityModel getCity() {
+		return city;
+	}
+	/**
+	 * cidade
+	 * @param city
+	 */
+	public void setCity(CityModel city) {
+		this.city = city;
+	}
+	
+	/* Outros atributos */
 	
 	/**
 	 * codigo_aluno
@@ -189,45 +209,17 @@ public class StudentModel extends AbstractModel {
 	}
 	
 	/**
-	 * cidade
+	 * id_cidade
 	 */
-	public String getCity() {
-		return cidade;
+	public Integer getCityId() {
+		return id_cidade;
 	}
 	/**
-	 * cidade
-	 * @param city
+	 * id_cidade
+	 * @param cityId
 	 */
-	public void setCity(String city) {
-		this.cidade = city;
-	}
-	
-	/**
-	 * estado
-	 */
-	public String getState() {
-		return estado;
-	}
-	/**
-	 * estado
-	 * @param state
-	 */
-	public void setState(String state) {
-		this.estado = state;
-	}
-	
-	/**
-	 * pais
-	 */
-	public String getCountry() {
-		return pais;
-	}
-	/**
-	 * pais
-	 * @param country
-	 */
-	public void setCountry(String country) {
-		this.pais = country;
+	public void setCityId(Integer cityId) {
+		this.id_cidade = cityId;
 	}
 	
 	/**

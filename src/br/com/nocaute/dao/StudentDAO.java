@@ -30,9 +30,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		"numero",
 		"complemento",
 		"bairro",
-		"cidade",
-		"estado",
-		"pais",
+		"id_cidade",
 		"cep"
 	};
 	
@@ -52,9 +50,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		"numero",
 		"complemento",
 		"bairro",
-		"cidade",
-		"estado",
-		"pais",
+		"id_cidade",
 		"cep"
 	};
 	
@@ -119,10 +115,8 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		setParam(pst, 9, model.getNumber());
 		setParam(pst, 10, model.getAddressComplement());
 		setParam(pst, 11, model.getNeighborhood());
-		setParam(pst, 12, model.getCity());
-		setParam(pst, 13, model.getState());
-		setParam(pst, 14, model.getCountry());
-		setParam(pst, 15, model.getPostalCode());
+		setParam(pst, 12, model.getCityId());
+		setParam(pst, 13, model.getPostalCode());
 		
 		int result = pst.executeUpdate();
         if (result > 0) {
@@ -159,13 +153,11 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		setParam(pst, 9, model.getNumber());
 		setParam(pst, 10, model.getAddressComplement());
 		setParam(pst, 11, model.getNeighborhood());
-		setParam(pst, 12, model.getCity());
-		setParam(pst, 13, model.getState());
-		setParam(pst, 14, model.getCountry());
-		setParam(pst, 15, model.getPostalCode());
+		setParam(pst, 12, model.getCityId());
+		setParam(pst, 13, model.getPostalCode());
 		
 		// Identificador WHERE
-		setParam(pst, 16, model.getCode());
+		setParam(pst, 14, model.getCode());
 		
 		int result = pst.executeUpdate();
         if (result > 0) {
@@ -220,8 +212,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		model.setNumber(rst.getString("numero"));
 		model.setAddressComplement(rst.getString("complemento"));
 		model.setNeighborhood(rst.getString("bairro"));
-		model.setCity(rst.getString("cidade"));
-		model.setCountry(rst.getString("pais"));
+		model.setCityId(rst.getInt("id_cidade"));
 		model.setPostalCode(rst.getString("cep"));
 		
 		return model;
