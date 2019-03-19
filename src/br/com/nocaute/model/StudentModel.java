@@ -25,14 +25,13 @@ public class StudentModel extends AbstractModel {
 	private CityModel city;
 	
 	/**
-	 * cidade
+	 * @return CityModel
 	 */
 	public CityModel getCity() {
 		return city;
 	}
 	/**
-	 * cidade
-	 * @param city
+	 * @param CityModel city
 	 */
 	public void setCity(CityModel city) {
 		this.city = city;
