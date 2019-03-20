@@ -2,6 +2,8 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,9 @@ import javax.swing.text.MaskFormatter;
 
 public class StudentFormWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 1631880171317467520L;
+	
+	// Guarda os fields em uma lista para facilitar manipulação em massa
+	List<Component> formFields = new ArrayList<Component>();
 	
 	//Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
@@ -83,8 +88,13 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		getContentPane().add(btnSalvar);
 		btnSalvar.setEnabled(false);
 		
-		// Guarda os fields em uma lista para facilitar manipulação em massa
-		List<Component> formFields = new ArrayList<Component>();
+		// Ações de botões
+		btnAdicionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Ativa campos
+				enableComponents(formFields);
+			}
+		});
 		
 		label = new JLabel("Aluno: ");
 		label.setBounds(5, 55, 50, 25);
