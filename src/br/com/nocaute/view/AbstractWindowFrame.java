@@ -6,11 +6,14 @@ import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+
+import br.com.nocaute.database.ConnectionFactory;
 
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
@@ -18,6 +21,8 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final String CREATE_MODE = "create";
 	private static final String UPDATE_MODE = "update";
 	private String formMode = CREATE_MODE;
+	
+	public static final Connection CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
 
 	public AbstractWindowFrame(String nameWindow, int width, int height, JDesktopPane desktop) {
 		super(nameWindow, false, true, false, false);

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,16 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.text.MaskFormatter;
 
+import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.model.StudentModel;
+
 public class StudentFormWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 1631880171317467520L;
 	
+	private StudentDAO dao;
+	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
-	List<Component> formFields = new ArrayList<Component>();
+	private List<Component> formFields = new ArrayList<Component>();
 	
 	//Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
@@ -57,6 +63,12 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		super("Cadastro de Alunos", 450, 460, desktop);
 		setFrameIcon(iconJanela);
 		
+		try {
+			dao = new StudentDAO(CONNECTION);
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
+		
 		criarComponentes();
 		
 		// Por padrão campos são desabilitados ao iniciar
@@ -67,11 +79,27 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	}
 	
 	private void setButtonsActions() {
-		// Ações de botões
+		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Ativa campos
 				enableComponents(formFields);
+				
+				//Ativa botão salvar
+				btnSalvar.setEnabled(true);
+			}
+		});
+		
+		// Ação Salvar
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StudentModel model = new StudentModel();
+				
+				try {
+					dao.insert(model);
+				} catch (SQLException error) {
+					error.printStackTrace();
+				}
 			}
 		});
 	}
