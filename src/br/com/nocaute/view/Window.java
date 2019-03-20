@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +22,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
+
+import br.com.nocaute.database.ConnectionFactory;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
@@ -56,7 +59,7 @@ public class Window extends JFrame {
 
 	public Window() {
 		super();
-
+		
 		desktop = new JDesktopPane();
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		desktop.setVisible(true);
