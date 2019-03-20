@@ -30,6 +30,7 @@ public class Window extends JFrame {
 	private StudentFormWindow frameStudentForm;
 	private ModalitiesFormWindow frameModalitiesForm;
 	private PlansFormWindow framePlansForm;
+	private StudentRegistrationWindow frameStudentRegistration;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -231,8 +232,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela processos/matricular/aluno
-				// abrirFrame();
+				frameStudentRegistration = new StudentRegistrationWindow(desktop);
+				abrirFrame(frameStudentRegistration);
 			}
 		});
 
