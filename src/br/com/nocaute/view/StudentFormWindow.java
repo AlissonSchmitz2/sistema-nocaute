@@ -58,6 +58,22 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		setFrameIcon(iconJanela);
 		
 		criarComponentes();
+		
+		// Por padrão campos são desabilitados ao iniciar
+		disableComponents(formFields);
+		
+		// Seta as ações esperadas para cada botão
+		setButtonsActions();
+	}
+	
+	private void setButtonsActions() {
+		// Ações de botões
+		btnAdicionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Ativa campos
+				enableComponents(formFields);
+			}
+		});
 	}
 	
 	private void criarComponentes() {
@@ -65,13 +81,13 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setBounds(15, 5, 95, 40);
 		btnBuscar.setIcon(iconBuscar);
-		btnBuscar.setToolTipText("Clique aqui para buscar os usuários");
+		btnBuscar.setToolTipText("Clique aqui para buscar");
 		getContentPane().add(btnBuscar);
 		
 		btnAdicionar = new JButton("Adicionar");
 		btnAdicionar.setBounds(110, 5, 110, 40);
 		btnAdicionar.setIcon(iconAdicionar);
-		btnAdicionar.setToolTipText("Clique aqui para adicionar um usuário");
+		btnAdicionar.setToolTipText("Clique aqui para adicionar");
 		getContentPane().add(btnAdicionar);
 		
 		btnRemover = new JButton("Remover");
@@ -87,14 +103,6 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		btnSalvar.setToolTipText("Clique aqui para salvar");
 		getContentPane().add(btnSalvar);
 		btnSalvar.setEnabled(false);
-		
-		// Ações de botões
-		btnAdicionar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Ativa campos
-				enableComponents(formFields);
-			}
-		});
 		
 		label = new JLabel("Aluno: ");
 		label.setBounds(5, 55, 50, 25);
@@ -276,9 +284,6 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		txfCEP.setToolTipText("Informe o CEP");
 		painelAba.add(txfCEP);
 		formFields.add(txfCEP);
-		
-		// Por padrão campos são desabilitados ao iniciar
-		disableComponents(formFields);
 	}
 
 }
