@@ -10,13 +10,12 @@ import java.util.List;
 
 import br.com.nocaute.model.PlanModel;
 
-//TODO: Reestruturar a tabela 'planos' no banco de dados para que essa classe funcione corretamente.
 public class PlanDAO extends AbstractDAO<PlanModel> {
 	private static final String TABLE_NAME = "planos";
 	
 	private String columnId = "id_plano";
 	
-	private String defaultOrderBy = "nome_plano ASC";
+	private String defaultOrderBy = "plano ASC";
 	
 	private String[] defaultValuesToInsert = new String[] {
 			"DEFAULT"
@@ -25,12 +24,12 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 	private String[] columnsToInsert = new String[] {
 			"id_plano",
 			"id_modalidade",
-			"nome_plano",
+			"plano",
 			"valor_mensal"
 	};
 	
 	private String[] columnsToUpdate = new String[] {
-			"nome_plano",
+			"plano",
 			"valor_mensal"
 	};
 	
@@ -162,7 +161,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		model.setPlanId(rst.getInt("id_plano"));
 		model.setModalityId(rst.getInt("id_modalidade"));
-		model.setPlanName(rst.getString("nome_plano"));
+		model.setPlanName(rst.getString("plano"));
 		model.setMonthlyValue(rst.getFloat("valor_mensal"));
 
 		return model;

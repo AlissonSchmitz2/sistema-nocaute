@@ -1,6 +1,5 @@
 package br.com.nocaute.model;
 
-//TODO: Reestruturar a tabela 'planos' no banco de dados para que essa classe funcione corretamente.
 public class PlanModel extends AbstractModel {
 
 	private Integer id_plano;

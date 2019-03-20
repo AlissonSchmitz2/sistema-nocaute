@@ -10,13 +10,12 @@ import java.util.List;
 
 import br.com.nocaute.model.GraduationModel;
 
-//TODO: Reestruturar a tabela 'graduacoes' no banco de dados para que essa classe funcione corretamente.
 public class GraduationDAO extends AbstractDAO<GraduationModel> {
 	private static final String TABLE_NAME = "graduacoes";
 	
 	private String columnId = "id_graduacao";
 	
-	private String defaultOrderBy = "nome_graduacao ASC";
+	private String defaultOrderBy = "graduacao ASC";
 	
 	private String[] defaultValuesToInsert = new String[] {
 			"DEFAULT"
@@ -25,11 +24,11 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 	private String[] columnsToInsert = new String[] {
 			"id_graduacao",
 			"id_modalidade",
-			"nome_graduacao"
+			"graduacao"
 	};
 	
 	private String[] columnsToUpdate = new String[] {
-			"nome_graduacao"
+			"graduacao"
 	};
 	
 	Connection connection;
@@ -158,7 +157,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		model.setGraduationId(rst.getInt("id_graduacao"));
 		model.setModalityId(rst.getInt("id_modalidade"));
-		model.setGraduationName(rst.getString("nome_graduacao"));
+		model.setGraduationName(rst.getString("graduacao"));
 
 		return model;
 	}

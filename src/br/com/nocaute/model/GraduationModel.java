@@ -1,6 +1,5 @@
 package br.com.nocaute.model;
 
-//TODO: Reestruturar a tabela 'graduacoes' no banco de dados para que essa classe funcione corretamente.
 public class GraduationModel extends AbstractModel {
 
 	private Integer id_graduacao;
