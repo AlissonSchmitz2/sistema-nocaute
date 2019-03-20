@@ -6,6 +6,7 @@ import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
+import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -13,6 +14,10 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
+	
+	private static final String CREATE_MODE = "create";
+	private static final String UPDATE_MODE = "update";
+	private String formMode = CREATE_MODE;
 
 	public AbstractWindowFrame(String nameWindow, int width, int height, JDesktopPane desktop) {
 		super(nameWindow, false, true, false, false);
@@ -66,5 +71,25 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 			setSelected(true);
 		} catch (PropertyVetoException e) {
 		}
+	}
+	
+	protected boolean isCreating() {
+		return formMode.equals(CREATE_MODE);
+	}
+	
+	protected boolean isEditing() {
+		return formMode.equals(UPDATE_MODE);
+	}
+	
+	protected void setFormMode(String mode) throws Exception {
+		formMode = mode;
+	}
+	
+	protected void disableComponents(List<Component> components) {
+		components.forEach(component -> component.setEnabled(false));
+	}
+	
+	protected void enableComponents(List<Component> components) {
+		components.forEach(component -> component.setEnabled(true));
 	}
 }
