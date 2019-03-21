@@ -1,33 +1,12 @@
 package br.com.nocaute.view;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Formatter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.text.DateFormatter;
-
-import com.toedter.calendar.JCalendar;
-import com.toedter.calendar.JDateChooser;
-
-import javafx.scene.input.DataFormat;
-import jdk.management.resource.internal.inst.DatagramChannelImplRMHooks;
-import sun.security.jca.JCAUtil;
-import sun.util.resources.CalendarData;
 
 public class StudentRegistrationWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = -4201960150625152379L;
@@ -114,7 +93,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow{
 		label = new JLabel("Data Matrícula: ");
 		label.setBounds(5, 105, 150, 25);
 		getContentPane().add(label);
-		
+		/*
 		JDateChooser jDateChooser = new JDateChooser(new Date());
 		jDateChooser.setBounds(90, 105, 90, 20);
 		jDateChooser.setDateFormatString("dd/MM/yyyy");
@@ -130,6 +109,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow{
 			}
 		});
 		
+		*/
 		label = new JLabel("Dia do vencimento da fatura: ");
 		label.setBounds(200, 105, 150, 25);
 		getContentPane().add(label);

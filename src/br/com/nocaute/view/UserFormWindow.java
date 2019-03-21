@@ -1,5 +1,12 @@
 package br.com.nocaute.view;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -7,8 +14,16 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import br.com.nocaute.dao.UserDao;
+import br.com.nocaute.model.UserModel;
+
 public class UserFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = -2537423200954897351L;
+	
+	private UserDao userDao;
+	
+	// Guarda os fields em uma lista para facilitar manipulação em massa
+	List<Component> formFields = new ArrayList<Component>();
 	
 	//Icones
 	private ImageIcon iconBuscar = new ImageIcon(
@@ -33,7 +48,46 @@ public class UserFormWindow extends AbstractWindowFrame{
 		super("Usuários", 455, 200, desktop);
 		setFrameIcon(iconJanela);
 		
+		try {
+			userDao = new UserDao(CONNECTION);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		criarComponentes();
+		
+		// Por padrão campos são desabilitados ao iniciar
+		disableComponents(formFields);
+		
+		setButtonsActions();
+	}
+	
+	private void setButtonsActions() {
+		// Ações de botões
+		btnAdicionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Ativa campos
+				enableComponents(formFields);
+			}
+		});
+		
+		btnSalvar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Cadastra usuario
+				UserModel model = new UserModel();
+				
+				model.setUser(txfUsuario.getText());
+				model.setPassword(txfSenha.getText());
+				model.setProfile(cbxPerfil.getSelectedItem().toString());
+				
+				try {
+					userDao.insert(model);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	private void criarComponentes() {
@@ -55,12 +109,14 @@ public class UserFormWindow extends AbstractWindowFrame{
 		btnRemover.setIcon(iconRemover);
 		btnRemover.setToolTipText("Clique aqui para remover");
 		getContentPane().add(btnRemover);
+		formFields.add(btnRemover);
 		
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.setBounds(330, 5, 95, 40);
 		btnSalvar.setIcon(iconSalvar);
 		btnSalvar.setToolTipText("Clique aqui para salvar");
 		getContentPane().add(btnSalvar);
+		formFields.add(btnSalvar);
 		
 		label = new JLabel("Usuário: ");
 		label.setBounds(5, 55, 50, 25);
@@ -70,6 +126,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		txfUsuario.setBounds(100, 55, 325, 20);
 		txfUsuario.setToolTipText("Digite o nome do usuário");
 		getContentPane().add(txfUsuario);
+		formFields.add(txfUsuario);
 		
 		label = new JLabel("Senha: ");
 		label.setBounds(5, 80, 70, 25);
@@ -79,6 +136,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		txfSenha.setBounds(100, 80, 325, 20);
 		txfSenha.setToolTipText("Digite a senha do usuário");
 		getContentPane().add(txfSenha);
+		formFields.add(txfSenha);
 		
 		label = new JLabel("Confirmar Senha: ");
 		label.setBounds(5, 105, 90, 25);
@@ -88,6 +146,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		txfConfirmarSenha.setBounds(100, 105, 325, 20);
 		txfConfirmarSenha.setToolTipText("Confirme a senha do usuário");
 		getContentPane().add(txfConfirmarSenha);
+		formFields.add(txfConfirmarSenha);
 		
 		label = new JLabel("Perfil: ");
 		label.setBounds(5, 130, 110, 25);
@@ -102,6 +161,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		cbxPerfil.setBounds(100, 130, 325, 20);
 		cbxPerfil.setToolTipText("Informe o perfil");
 		getContentPane().add(cbxPerfil);
+		formFields.add(cbxPerfil);
 		
 	}
 
