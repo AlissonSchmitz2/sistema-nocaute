@@ -1,7 +1,13 @@
 package br.com.nocaute.view;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,8 +22,16 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.text.MaskFormatter;
 
-public class StudentFormWindow extends AbstractWindowFrame{
+import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.model.StudentModel;
+
+public class StudentFormWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 1631880171317467520L;
+	
+	private StudentDAO dao;
+	
+	// Guarda os fields em uma lista para facilitar manipulação em massa
+	private List<Component> formFields = new ArrayList<Component>();
 	
 	//Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
@@ -49,7 +63,45 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		super("Cadastro de Alunos", 450, 460, desktop);
 		setFrameIcon(iconJanela);
 		
+		try {
+			dao = new StudentDAO(CONNECTION);
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
+		
 		criarComponentes();
+		
+		// Por padrão campos são desabilitados ao iniciar
+		disableComponents(formFields);
+		
+		// Seta as ações esperadas para cada botão
+		setButtonsActions();
+	}
+	
+	private void setButtonsActions() {
+		// Ação Adicionar
+		btnAdicionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Ativa campos
+				enableComponents(formFields);
+				
+				//Ativa botão salvar
+				btnSalvar.setEnabled(true);
+			}
+		});
+		
+		// Ação Salvar
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StudentModel model = new StudentModel();
+				
+				try {
+					dao.insert(model);
+				} catch (SQLException error) {
+					error.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	private void criarComponentes() {
@@ -57,13 +109,13 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setBounds(15, 5, 95, 40);
 		btnBuscar.setIcon(iconBuscar);
-		btnBuscar.setToolTipText("Clique aqui para buscar os usuários");
+		btnBuscar.setToolTipText("Clique aqui para buscar");
 		getContentPane().add(btnBuscar);
 		
 		btnAdicionar = new JButton("Adicionar");
 		btnAdicionar.setBounds(110, 5, 110, 40);
 		btnAdicionar.setIcon(iconAdicionar);
-		btnAdicionar.setToolTipText("Clique aqui para adicionar um usuário");
+		btnAdicionar.setToolTipText("Clique aqui para adicionar");
 		getContentPane().add(btnAdicionar);
 		
 		btnRemover = new JButton("Remover");
@@ -71,12 +123,14 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		btnRemover.setIcon(iconRemover);
 		btnRemover.setToolTipText("Clique aqui para remover");
 		getContentPane().add(btnRemover);
+		btnRemover.setEnabled(false);
 		
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.setBounds(330, 5, 95, 40);
 		btnSalvar.setIcon(iconSalvar);
 		btnSalvar.setToolTipText("Clique aqui para salvar");
 		getContentPane().add(btnSalvar);
+		btnSalvar.setEnabled(false);
 		
 		label = new JLabel("Aluno: ");
 		label.setBounds(5, 55, 50, 25);
@@ -86,6 +140,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfAluno.setBounds(110, 55, 315, 20);
 		txfAluno.setToolTipText("Digite o nome do aluno");
 		getContentPane().add(txfAluno);
+		formFields.add(txfAluno);
 		
 		label = new JLabel("Data de Nascimento: ");
 		label.setBounds(5, 80, 150, 25);
@@ -97,24 +152,27 @@ public class StudentFormWindow extends AbstractWindowFrame{
 			txfDtNascimento.setBounds(110, 80, 125, 20);
 			txfDtNascimento.setToolTipText("Data de nascimento do aluno");
 			getContentPane().add(txfDtNascimento);
+			formFields.add(txfDtNascimento);
 			
 			txfTelefone = new JFormattedTextField(new MaskFormatter(" # ####-#### "));
 			txfTelefone.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfTelefone.setBounds(110, 105, 125, 20);
 			txfTelefone.setToolTipText("Digite o telefone do aluno");
 			getContentPane().add(txfTelefone);
+			formFields.add(txfTelefone);
 			
 			txfCelular = new JFormattedTextField(new MaskFormatter(" # ####-#### "));
 			txfCelular.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfCelular.setBounds(285, 105, 140, 20);
 			txfCelular.setToolTipText("Digite o celular do aluno");
 			getContentPane().add(txfCelular);
+			formFields.add(txfCelular);
 			
 			txfNumero = new JFormattedTextField(new MaskFormatter("#######"));
 			txfCelular.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfNumero.setBounds(297, 5, 110, 20);
 			txfNumero.setToolTipText("Digite o número");
-			
+			formFields.add(txfNumero);
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -131,6 +189,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		cbxSexo.setBounds(285, 80, 140, 20);
 		cbxSexo.setToolTipText("Informe o sexo");
 		getContentPane().add(cbxSexo);
+		formFields.add(cbxSexo);
 		
 		label = new JLabel("Telefone: ");
 		label.setBounds(5, 105, 150, 25);
@@ -148,6 +207,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfEmail.setBounds(110, 130, 315, 20);
 		txfEmail.setToolTipText("Digite o e-mail do aluno");
 		getContentPane().add(txfEmail);
+		formFields.add(txfEmail);
 		
 		label = new JLabel("Observações: ");
 		label.setBounds(5, 155, 150, 25);
@@ -159,6 +219,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfObservacao.setBorder(new LineBorder(Color.gray));
 		txfObservacao.setBounds(5, 190, 420, 60);
 		getContentPane().add(txfObservacao);
+		formFields.add(txfObservacao);
 		
 		/*
 		 Endereço
@@ -182,6 +243,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfEndereco.setBounds(80, 5, 155, 20);
 		txfEndereco.setToolTipText("Digite o endereço");
 		painelAba.add(txfEndereco);
+		formFields.add(txfEndereco);
 
 		label = new JLabel("Número: ");
 		label.setBounds(250, 5, 150, 25);
@@ -195,6 +257,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfComplemento.setBounds(80, 30, 327, 20);
 		txfComplemento.setToolTipText("Digite o complemento");
 		painelAba.add(txfComplemento);
+		formFields.add(txfComplemento);
 
 		label = new JLabel("Bairro: ");
 		label.setBounds(5, 55, 150, 25);
@@ -204,6 +267,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfBairro.setBounds(80, 55, 155, 20);
 		txfBairro.setToolTipText("Digite o bairro");
 		painelAba.add(txfBairro);
+		formFields.add(txfBairro);
 		
 		label = new JLabel("Cidade: ");
 		label.setBounds(250, 55, 150, 25);
@@ -216,6 +280,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfCidade.setEditable(false);
 		txfCidade.setText("Teclar F9");
 		painelAba.add(txfCidade);
+		formFields.add(txfCidade);
 
 		label = new JLabel("Estado: ");
 		label.setBounds(5, 80, 150, 25);
@@ -236,6 +301,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfPais.setToolTipText("Informe o país");
 		txfPais.setEditable(false);
 		painelAba.add(txfPais);
+		formFields.add(txfPais);
 
 		label = new JLabel("CEP: ");
 		label.setBounds(5, 105, 150, 25);
@@ -245,7 +311,7 @@ public class StudentFormWindow extends AbstractWindowFrame{
 		txfCEP.setBounds(80, 105, 110, 20);
 		txfCEP.setToolTipText("Informe o CEP");
 		painelAba.add(txfCEP);
-		
+		formFields.add(txfCEP);
 	}
 
 }
