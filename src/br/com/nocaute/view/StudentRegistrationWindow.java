@@ -1,17 +1,12 @@
 package br.com.nocaute.view;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-
-import com.toedter.calendar.JDateChooser;
 
 public class StudentRegistrationWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = -4201960150625152379L;
