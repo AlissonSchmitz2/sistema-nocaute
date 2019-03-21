@@ -58,6 +58,8 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 	
 	public StudentDAO(Connection connection) throws SQLException {
 		this.connection = connection;
+		
+		this.connection.setAutoCommit(false);
 	}
 		
 	@Override
@@ -104,6 +106,8 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		
 		pst.clearParameters();
 		
+		Integer cityId = model.getCity() != null ? model.getCity().getId() : model.getCityId();
+		
 		setParam(pst, 1, model.getName());
 		setParam(pst, 2, model.getBirthDate());
 		setParam(pst, 3, model.getGenre());
@@ -115,7 +119,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		setParam(pst, 9, model.getNumber());
 		setParam(pst, 10, model.getAddressComplement());
 		setParam(pst, 11, model.getNeighborhood());
-		setParam(pst, 12, model.getCityId());
+		setParam(pst, 12, cityId);
 		setParam(pst, 13, model.getPostalCode());
 		
 		int result = pst.executeUpdate();

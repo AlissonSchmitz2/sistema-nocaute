@@ -93,10 +93,24 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//TODO: validar campos obrigatórios
+				
 				StudentModel model = new StudentModel();
+				model.setName(txfAluno.getText());
+				model.setEmail(txfEmail.getText());
+				model.setGenre('M');
+				model.setCityId(1);
 				
 				try {
-					dao.insert(model);
+					StudentModel insertedModel = dao.insert(model);
+					
+					if (insertedModel != null) {
+						//TODO: Mensagem de sucesso
+						// bubbleSuccess("Mensagem");
+					} else {
+						//TODO: Mensagem de erro
+						//bubbleError("Mensagem");
+					}
 				} catch (SQLException error) {
 					error.printStackTrace();
 				}
