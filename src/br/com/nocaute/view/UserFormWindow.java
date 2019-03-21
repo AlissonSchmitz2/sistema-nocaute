@@ -3,6 +3,7 @@ package br.com.nocaute.view;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,13 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import br.com.nocaute.dao.UserDao;
+import br.com.nocaute.model.UserModel;
+
 public class UserFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = -2537423200954897351L;
+	
+	private UserDao userDao;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	List<Component> formFields = new ArrayList<Component>();
@@ -42,6 +48,12 @@ public class UserFormWindow extends AbstractWindowFrame{
 		super("Usuários", 455, 200, desktop);
 		setFrameIcon(iconJanela);
 		
+		try {
+			userDao = new UserDao(CONNECTION);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		criarComponentes();
 		
 		// Por padrão campos são desabilitados ao iniciar
@@ -56,6 +68,24 @@ public class UserFormWindow extends AbstractWindowFrame{
 			public void actionPerformed(ActionEvent e) {
 				// Ativa campos
 				enableComponents(formFields);
+			}
+		});
+		
+		btnSalvar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Cadastra usuario
+				UserModel model = new UserModel();
+				
+				model.setUser(txfUsuario.getText());
+				model.setPassword(txfSenha.getText());
+				model.setProfile(cbxPerfil.getSelectedItem().toString());
+				
+				try {
+					userDao.insert(model);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 	}

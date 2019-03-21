@@ -14,31 +14,22 @@ public class UserDao extends AbstractDAO<UserModel> {
 
 	private static final String TABLE_NAME = "usuarios";
 
-	private String columnId = "id";
+	private String columnId = "id_usuario";
 
 	private String defaultOrderBy = "usuario ASC";
 
-	private String[] columsToInsert = new String[] {
-		"id",
-		"usuario",
-		"senha",
-		"perfil" 
-	};
+	private String[] columsToInsert = new String[] { "id_usuario", "usuario", "perfil" };
 
-	private String[] defaultValuesToInsert = new String[] { 
-		"DEFAULT" 
-	};
+	private String[] defaultValuesToInsert = new String[] { "DEFAULT" };
 
-	private String[] columsToUpdate = new String[] {
-		"usuario",
-		"senha",
-		"perfil" 
-	};
+	private String[] columsToUpdate = new String[] { "usuario", "perfil" };
 
 	Connection connection;
 
 	public UserDao(Connection connection) throws Exception {
 		this.connection = connection;
+		
+		connection.setAutoCommit(false);
 	}
 
 	@Override
@@ -86,8 +77,7 @@ public class UserDao extends AbstractDAO<UserModel> {
 		pst.clearParameters();
 
 		setParam(pst, 1, model.getUser());
-		setParam(pst, 2, model.getPassword());
-		setParam(pst, 3, model.getProfile());
+		setParam(pst, 2, model.getProfile());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -114,7 +104,6 @@ public class UserDao extends AbstractDAO<UserModel> {
 		PreparedStatement pst = connection.prepareStatement(query);
 
 		setParam(pst, 1, model.getUser());
-		setParam(pst, 2, model.getPassword());
 		setParam(pst, 3, model.getProfile());
 
 		// Identificador WHERE
@@ -165,7 +154,6 @@ public class UserDao extends AbstractDAO<UserModel> {
 		model.setCode(rst.getInt("id"));
 		model.setUser(rst.getString("usuario"));
 		model.setProfile(rst.getString("perfil"));
-		model.setPassword(rst.getString("password"));
 
 		return model;
 
