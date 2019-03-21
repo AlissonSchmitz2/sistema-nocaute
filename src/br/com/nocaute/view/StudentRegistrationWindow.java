@@ -5,19 +5,27 @@ import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.text.MaskFormatter;
+
+import br.com.nocaute.table.model.StudentRegistrationTableModel;
 
 public class StudentRegistrationWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = -4201960150625152379L;
 	
 	// Componentes
-	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
+	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar, btnAddModalidade;
 	private JLabel label;
-	private JTextField txfMatricula, txfAluno, txfAlunoDescricao, txfVencFatura;
+	private JTextField txfMatricula, txfAluno, txfAlunoDescricao;
+	private JFormattedTextField txfDtMatricula, txfVencFatura;
 
-	//private DegreeTableModel model;
-	//private JTable jTableGraduacoes;
+	private StudentRegistrationTableModel model;
+	private JTable jTableRegistration;
 
 	// Icones
 	private ImageIcon iconBuscar = new ImageIcon(
@@ -32,7 +40,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow{
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
 	public StudentRegistrationWindow(JDesktopPane desktop) {
-			super("Matricular Aluno", 450, 460, desktop);
+			super("Matricular Aluno", 450, 380, desktop);
 			setFrameIcon(iconJanela);
 			
 			criarComponentes();
@@ -111,13 +119,44 @@ public class StudentRegistrationWindow extends AbstractGridWindow{
 		
 		*/
 		label = new JLabel("Dia do vencimento da fatura: ");
-		label.setBounds(200, 105, 150, 25);
+		label.setBounds(223, 105, 150, 25);
 		getContentPane().add(label);
 		
-		/*txf = new JTextField();
-		txfMatricula.setBounds(90, 55, 70, 20);
-		getContentPane().add(txfMatricula);*/
+		try {
+			txfDtMatricula = new JFormattedTextField(new MaskFormatter("  ## /  ##  / ####       "));
+			txfDtMatricula.setFocusLostBehavior(JFormattedTextField.COMMIT);
+			txfDtMatricula.setBounds(90, 105, 90, 20);
+			txfDtMatricula.setToolTipText("Data da matrícula");
+			getContentPane().add(txfDtMatricula);
+			
+			txfVencFatura = new JFormattedTextField(new MaskFormatter("#######"));
+			txfVencFatura.setFocusLostBehavior(JFormattedTextField.COMMIT);
+			txfVencFatura.setBounds(373, 105, 50, 20);
+			getContentPane().add(txfVencFatura);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		
+		btnAddModalidade = new JButton("Adicionar Modalidade");
+		btnAddModalidade.setBounds(5, 140, 150, 23);
+		btnAddModalidade.setToolTipText("Clique aqui para adicionar uma modalidade");
+		getContentPane().add(btnAddModalidade);
 		
+		carregarGrid();
+	}
+	
+	private void carregarGrid() {
+		model = new StudentRegistrationTableModel();
+		jTableRegistration = new JTable(model);
+
+		// Habilita a seleção por linha
+		jTableRegistration.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		grid = new JScrollPane(jTableRegistration);
+		setLayout(null);
+		redimensionarGrid(grid, 5, 170, 420, 170);
+		grid.setVisible(true);
+
+		add(grid);
 	}
 }
