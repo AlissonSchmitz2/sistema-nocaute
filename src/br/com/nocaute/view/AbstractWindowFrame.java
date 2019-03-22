@@ -35,7 +35,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		// Abrir janela centralizada
 		setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
 		//Bloquear movimento da janela
-		windowWasMove();
+		//windowWasMove();
 		
 		// Listener janela ancestral for alterada
 		addHierarchyBoundsListener(new HierarchyBoundsListener() {
@@ -50,7 +50,6 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	}
 
 	protected void windowWasMove() {
-		
 		// bloquear icone
 		//this.getDesktopIcon().removeMouseMotionListener(this.getDesktopIcon().getMouseMotionListeners()[0]);
 
