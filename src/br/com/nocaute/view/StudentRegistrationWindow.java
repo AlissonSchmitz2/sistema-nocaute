@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.MaskFormatter;
 
-import br.com.nocaute.table.model.StudentRegistrationTableModel;
+import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
 
 public class StudentRegistrationWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -4201960150625152379L;

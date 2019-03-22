@@ -1,4 +1,4 @@
-package br.com.nocaute.table.model;
+package br.com.nocaute.view.tableModel;
 
 import java.util.ArrayList;
 import java.util.List;

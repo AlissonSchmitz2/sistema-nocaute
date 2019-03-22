@@ -9,7 +9,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
-import br.com.nocaute.table.model.GraduationTableModel;
+import br.com.nocaute.view.tableModel.GraduationTableModel;
 
 public class ModalitiesFormWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = 7836235315411293572L;

@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.model.UserModel;
-import br.com.nocaute.table.model.StudentTableModel;
+import br.com.nocaute.view.tableModel.StudentTableModel;
 
 public class ListStudentFormWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -8074030868088770858L;

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -95,14 +96,29 @@ public class StudentFormWindow extends AbstractWindowFrame {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: validar campos obrigatórios
 				
+				//Date birthDate = new Date("2018-01-10");
+				//txfDtNascimento.getText()
+				
 				StudentModel model = new StudentModel();
 				model.setName(txfAluno.getText());
-				model.setEmail(txfEmail.getText());
+				//model.setBirthDate(birthDate);
 				model.setGenre('M');
-				model.setCityId(1);
+				model.setTelephone(txfTelefone.getText());
+				model.setMobilePhone(txfCelular.getText());
+				model.setEmail(txfEmail.getText());
+				model.setObservation(txfObservacao.getText());
+				model.setAddress(txfEndereco.getText());
+				model.setNumber(txfNumero.getText());
+				model.setAddressComplement(txfComplemento.getText());
+				model.setNeighborhood(txfBairro.getText());
+				//model.setCityId(1);
+				model.setPostalCode(txfCEP.getText());
+				
+				System.out.println(model);
 				
 				try {
-					StudentModel insertedModel = dao.insert(model);
+					StudentModel insertedModel = dao.insert(null);
+					//StudentModel insertedModel = dao.insert(model);
 					
 					if (insertedModel != null) {
 						//TODO: Mensagem de sucesso
@@ -146,7 +162,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		getContentPane().add(btnSalvar);
 		btnSalvar.setEnabled(false);
 		
-		label = new JLabel("Aluno: ");
+		label = new JLabel("Nome: ");
 		label.setBounds(5, 55, 50, 25);
 		getContentPane().add(label);
 		
@@ -182,8 +198,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 			getContentPane().add(txfCelular);
 			formFields.add(txfCelular);
 			
-			txfNumero = new JFormattedTextField(new MaskFormatter("#######"));
-			txfCelular.setFocusLostBehavior(JFormattedTextField.COMMIT);
+			txfNumero = new JFormattedTextField();
 			txfNumero.setBounds(297, 5, 110, 20);
 			txfNumero.setToolTipText("Digite o número");
 			formFields.add(txfNumero);
