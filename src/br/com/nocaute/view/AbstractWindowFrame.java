@@ -71,7 +71,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	protected void showFrame() {
 		try {
 			setVisible(true);
-			setMaximum(true);
+			//setMaximum(true);
 			setSelected(true);
 		} catch (PropertyVetoException e) {
 		}

@@ -11,7 +11,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -50,7 +49,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 	public StudentRegistrationWindow(JDesktopPane desktop) {
 		super("Matricular Aluno", 450, 380, desktop);
 		setFrameIcon(iconJanela);
-
+		
 		criarComponentes();
 		
 		// Por padrão campos são desabilitados ao iniciar
@@ -83,7 +82,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 		// Ação Adicionar Modalidade
 		btnAddModalidade.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Abrir janela adicionar modalidade
+				//TODO: Abrir Janela de adicionar modalidades (StudentRegistrationAddModalities)
 			}
 		});
 	}

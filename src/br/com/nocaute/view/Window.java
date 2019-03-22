@@ -34,8 +34,10 @@ public class Window extends JFrame {
 	private ModalitiesFormWindow frameModalitiesForm;
 	private PlansFormWindow framePlansForm;
 	private StudentRegistrationWindow frameStudentRegistration;
+	
 	//TESTE
-	private ListStudentFormWindow frameTeste;
+	//private ListStudentFormWindow frameTeste;
+	//private StudentRegistrationAddModalitiesWindow frameStudentRegistrationAddModalities;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -252,8 +254,10 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela processos/faturamento/gerar faturas
-				// abrirFrame();
+				//TODO:GERAR FATURAS
+				//TESTE
+				//frameStudentRegistrationAddModalities = new StudentRegistrationAddModalitiesWindow(desktop);
+				//abrirFrame(frameStudentRegistrationAddModalities);
 			}
 		});
 
@@ -315,8 +319,9 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameTeste = new ListStudentFormWindow(desktop);
-				abrirFrame(frameTeste);
+				//TODO: MATRICULAS
+				//frameTeste = new ListStudentFormWindow(desktop);
+				//abrirFrame(frameTeste);
 			}
 		});
 
