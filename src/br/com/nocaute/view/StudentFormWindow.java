@@ -24,7 +24,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.MaskFormatter;
 
 import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.enums.Genres;
 import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.pojos.Genre;
+import br.com.nocaute.view.comboModel.GenericComboModel;
 
 public class StudentFormWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 1631880171317467520L;
@@ -40,7 +43,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	private JTextField txfAluno, txfEmail;
 	private JFormattedTextField txfDtNascimento, txfTelefone, txfCelular, txfNumero;
 	private JTextArea txfObservacao;
-	private JComboBox<String> cbxSexo;
+	private JComboBox<Genre> cbxSexo;
 	
 	//Endereço
 	private JTextField txfEndereco, txfComplemento, txfBairro, txfCidade, txfEstado, txfPais, txfCEP;
@@ -99,10 +102,12 @@ public class StudentFormWindow extends AbstractWindowFrame {
 				//Date birthDate = new Date("2018-01-10");
 				//txfDtNascimento.getText()
 				
+				Genre selectedGenre = (Genre) cbxSexo.getSelectedItem();
+				
 				StudentModel model = new StudentModel();
 				model.setName(txfAluno.getText());
 				//model.setBirthDate(birthDate);
-				model.setGenre('M');
+				model.setGenre(selectedGenre.getCode().charAt(0));
 				model.setTelephone(txfTelefone.getText());
 				model.setMobilePhone(txfCelular.getText());
 				model.setEmail(txfEmail.getText());
@@ -211,10 +216,13 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		label.setBounds(250, 80, 150, 25);
 		getContentPane().add(label);
 		
-		cbxSexo = new JComboBox<String>();
-		cbxSexo.addItem("-- Selecione --");
-		cbxSexo.addItem("Masculino");
-		cbxSexo.addItem("Feminino");
+		//Cria uma lista com opções vindas do ENUM Genres
+		List<Genre> genresList = new ArrayList<>();
+		genresList.add(new Genre("", "-- Selecione --"));
+		Genres.getGenres().forEach((code, description) -> genresList.add(new Genre(code, description)));
+		
+		cbxSexo = new JComboBox<Genre>();
+		cbxSexo.setModel(new GenericComboModel<Genre>(genresList));	
 		cbxSexo.setBounds(285, 80, 140, 20);
 		cbxSexo.setToolTipText("Informe o sexo");
 		getContentPane().add(cbxSexo);
