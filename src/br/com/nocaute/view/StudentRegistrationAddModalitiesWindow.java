@@ -25,6 +25,9 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop) {
 		super("Adicionar Modalidades", 300, 225, desktop);
 		setFrameIcon(iconJanela);
+		
+		desktop.add(this);
+		showFrame();
 
 		criarComponentes();
 	}
@@ -70,13 +73,13 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 		getContentPane().add(label);
 		
 		try {
-			txfDtInicio = new JFormattedTextField(new MaskFormatter("     ## /  ##  / ####       "));
+			txfDtInicio = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txfDtInicio.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfDtInicio.setBounds(70, 100, 100, 20);
 			txfDtInicio.setToolTipText("Data de início");
 			getContentPane().add(txfDtInicio);
 			
-			txfDtFim = new JFormattedTextField(new MaskFormatter("     ## /  ##  / ####       "));
+			txfDtFim = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txfDtFim.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfDtFim.setBounds(70, 130, 100, 20);
 			txfDtFim.setToolTipText("Data do fim da matrícula");
