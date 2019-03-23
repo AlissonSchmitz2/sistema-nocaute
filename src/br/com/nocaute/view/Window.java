@@ -33,7 +33,7 @@ public class Window extends JFrame {
 	private StudentRegistrationWindow frameStudentRegistration;
 	
 	//TESTE
-	//private ListStudentFormWindow frameTeste;
+	//private ListStudentsFormWindow frameTeste;
 	//private StudentRegistrationAddModalitiesWindow frameStudentRegistrationAddModalities;
 
 	private JMenu menuSistema;
@@ -317,7 +317,7 @@ public class Window extends JFrame {
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: MATRICULAS
-				//frameTeste = new ListStudentFormWindow(desktop);
+				//frameTeste = new ListStudentsFormWindow(desktop);
 				//abrirFrame(frameTeste);
 			}
 		});

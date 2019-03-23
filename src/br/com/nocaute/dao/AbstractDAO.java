@@ -7,9 +7,7 @@ import java.sql.Types;
 import java.util.Date;
 import java.util.List;
 
-import br.com.nocaute.model.Model;
-
-public abstract class AbstractDAO<T extends Model> {
+public abstract class AbstractDAO<T> {
 	public abstract List<T> selectAll() throws SQLException;
 	
 	public abstract T findById(Integer id) throws SQLException;

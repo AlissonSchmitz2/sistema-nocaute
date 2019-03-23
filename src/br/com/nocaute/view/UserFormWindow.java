@@ -14,13 +14,13 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import br.com.nocaute.dao.UserDao;
+import br.com.nocaute.dao.UserDAO;
 import br.com.nocaute.model.UserModel;
 
 public class UserFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = -2537423200954897351L;
 	
-	private UserDao userDao;
+	private UserDAO userDao;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	List<Component> formFields = new ArrayList<Component>();
@@ -49,7 +49,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		setFrameIcon(iconJanela);
 		
 		try {
-			userDao = new UserDao(CONNECTION);
+			userDao = new UserDAO(CONNECTION);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

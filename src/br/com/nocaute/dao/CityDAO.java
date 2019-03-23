@@ -9,7 +9,7 @@ import java.util.List;
 
 import br.com.nocaute.model.CityModel;
 
-public class CityDao extends AbstractDAO<CityModel>{
+public class CityDAO extends AbstractDAO<CityModel>{
 
 private static final String TABLE_NAME = "cidades";
 	
@@ -19,7 +19,7 @@ private static final String TABLE_NAME = "cidades";
 	
 	Connection connection;
 	
-	public CityDao(Connection connection) throws SQLException{
+	public CityDAO(Connection connection) throws SQLException{
 		this.connection = connection;
 	}
 
@@ -44,6 +44,10 @@ private static final String TABLE_NAME = "cidades";
 		}
 		
 		return cityList;
+	}
+	
+	public List<CityModel> search(String word) throws SQLException {
+		return null;
 	}
 
 	@Override

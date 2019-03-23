@@ -23,7 +23,7 @@ import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.view.tableModel.StudentTableModel;
 
-public class ListStudentFormWindow extends AbstractGridWindow {
+public class ListStudentsFormWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -8074030868088770858L;
 	
 	private StudentDAO dao;
@@ -33,10 +33,10 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 	private JTextField txfSearch;
 
 	private StudentTableModel tableModel;
-	private JTable jTableStudents;
+	private JTable jTableModels;
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
-	public ListStudentFormWindow(JDesktopPane desktop) {
+	public ListStudentsFormWindow(JDesktopPane desktop) {
 		super("Alunos", 445, 310, desktop);
 		
 		try {
@@ -79,14 +79,14 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 
 	private void createGrid() {
 		tableModel = new StudentTableModel();
-		jTableStudents = new JTable(tableModel);
+		jTableModels = new JTable(tableModel);
 		
-		jTableStudents.addMouseListener(new MouseAdapter() {
+		jTableModels.addMouseListener(new MouseAdapter() {
 
 	        public void mouseClicked (MouseEvent me) {
 	            if (me.getClickCount() == 2) {
 	            	//Atribui o model da linha clicada
-	            	selectedModel = tableModel.getStudent(jTableStudents.getSelectedRow());
+	            	selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
 	            	
 	            	//Fecha a janela
 	            	try {
@@ -99,10 +99,10 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 	    });
 
 		// Habilita a seleção por linha
-		jTableStudents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		jTableStudents.setDefaultRenderer(Object.class, renderer);
+		jTableModels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jTableModels.setDefaultRenderer(Object.class, renderer);
 		
-		grid = new JScrollPane(jTableStudents);
+		grid = new JScrollPane(jTableModels);
 		setLayout(null);
 		resizeGrid(grid, 5, 40, 420, 230);
 		grid.setVisible(true);

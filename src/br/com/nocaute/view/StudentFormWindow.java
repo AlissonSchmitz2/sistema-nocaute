@@ -40,7 +40,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	
 	private StudentDAO dao;
 	private StudentModel model = new StudentModel();
-	private ListStudentFormWindow listStudentWindow;
+	private ListStudentsFormWindow listStudentWindow;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -227,12 +227,12 @@ public class StudentFormWindow extends AbstractWindowFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (listStudentWindow == null) {
-					listStudentWindow = new ListStudentFormWindow(desktop);
+					listStudentWindow = new ListStudentsFormWindow(desktop);
 					
 					listStudentWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
-							StudentModel selectedModel = ((ListStudentFormWindow) e.getInternalFrame()).getSelectedModel();
+							StudentModel selectedModel = ((ListStudentsFormWindow) e.getInternalFrame()).getSelectedModel();
 							
 							if (selectedModel != null) {
 								//Atribui o model selecionado

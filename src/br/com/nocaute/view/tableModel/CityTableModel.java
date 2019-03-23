@@ -1,19 +1,19 @@
 package br.com.nocaute.view.tableModel;
 
-import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.model.CityModel;
 
-public class StudentTableModel extends AbstractTableModel<StudentModel> {
+public class CityTableModel extends AbstractTableModel<CityModel> {
 	private static final long serialVersionUID = 1242843030000425873L;
 	
-	public StudentTableModel() {
-		super(new String[] { "ID", "Aluno" });
+	public CityTableModel() {
+		super(new String[] { "ID", "Nome" });
 	}
 
 	@Override
-	protected void setModelValueAt(int columnIndex, StudentModel model, Object aValue) {
+	protected void setModelValueAt(int columnIndex, CityModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
-				model.setCode(Integer.parseInt(aValue.toString()));
+				model.setId(Integer.parseInt(aValue.toString()));
 			case 1:
 				model.setName(aValue.toString());
 			default:
@@ -22,12 +22,12 @@ public class StudentTableModel extends AbstractTableModel<StudentModel> {
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, StudentModel model) {
+	protected Object getModelValueAt(int columnIndex, CityModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {
 		case 0:
-			valueObject = model.getCode().toString();
+			valueObject = model.getId().toString();
 			break;
 		case 1:
 			valueObject = model.getName();

@@ -10,7 +10,7 @@ import java.util.List;
 
 import br.com.nocaute.model.UserModel;
 
-public class UserDao extends AbstractDAO<UserModel> {
+public class UserDAO extends AbstractDAO<UserModel> {
 
 	private static final String TABLE_NAME = "usuarios";
 
@@ -26,7 +26,7 @@ public class UserDao extends AbstractDAO<UserModel> {
 
 	Connection connection;
 
-	public UserDao(Connection connection) throws Exception {
+	public UserDAO(Connection connection) throws Exception {
 		this.connection = connection;
 		
 		connection.setAutoCommit(false);
