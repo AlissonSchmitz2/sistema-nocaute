@@ -200,7 +200,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 
 		grid = new JScrollPane(jTableRegistration);
 		setLayout(null);
-		redimensionarGrid(grid, 5, 170, 420, 170);
+		resizeGrid(grid, 5, 170, 420, 170);
 		grid.setVisible(true);
 
 		add(grid);

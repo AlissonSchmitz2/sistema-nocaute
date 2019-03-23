@@ -5,24 +5,24 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import br.com.nocaute.model.UserModel;
+import br.com.nocaute.model.StudentModel;
 
-public class StudentTableModel extends AbstractTableModel{
+public class StudentTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1242843030000425873L;
 	
-	private List<UserModel> userModel;
+	private List<StudentModel> modelsList;
 	private String[] colunas = new String[] { "ID", "Aluno" };
 
-	public StudentTableModel(List<UserModel> userModel) {
-		this.userModel = userModel;
+	public StudentTableModel(List<StudentModel> modelsList) {
+		this.modelsList = modelsList;
 	}
 
 	public StudentTableModel() {
-		this.userModel = new ArrayList<UserModel>();
+		this.modelsList = new ArrayList<StudentModel>();
 	}
 
 	public int getRowCount() {
-		return userModel.size();
+		return modelsList.size();
 	}
 
 	public int getColumnCount() {
@@ -37,11 +37,11 @@ public class StudentTableModel extends AbstractTableModel{
 		return String.class;
 	}
 
-	public void setValueAt(UserModel aValue, int rowIndex) {
-		UserModel user = userModel.get(rowIndex);
+	public void setValueAt(StudentModel aValue, int rowIndex) {
+		StudentModel model = modelsList.get(rowIndex);
 
-		user.setCode(aValue.getCode());
-		user.setUser(aValue.getUser());
+		model.setCode(aValue.getCode());
+		model.setName(aValue.getName());
 
 		fireTableCellUpdated(rowIndex, 0);
 		fireTableCellUpdated(rowIndex, 1);
@@ -49,13 +49,13 @@ public class StudentTableModel extends AbstractTableModel{
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		UserModel user = userModel.get(rowIndex);
+		StudentModel model = modelsList.get(rowIndex);
 
 		switch (columnIndex) {
 		case 0:
-			user.setCode(Integer.parseInt(aValue.toString()));
+			model.setCode(Integer.parseInt(aValue.toString()));
 		case 1:
-			user.setUser(aValue.toString());
+			model.setName(aValue.toString());
 		default:
 			System.err.println("Índice da coluna inválido");
 		}
@@ -63,17 +63,17 @@ public class StudentTableModel extends AbstractTableModel{
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		UserModel userSelecionado = userModel.get(rowIndex);
+		StudentModel selectedModel = modelsList.get(rowIndex);
 		String valueObject = null;
 		switch (columnIndex) {
 		case 0:
-			valueObject = userSelecionado.getCode().toString();
+			valueObject = selectedModel.getCode().toString();
 			break;
 		case 1:
-			valueObject = userSelecionado.getUser();
+			valueObject = selectedModel.getName();
 			break;
 		default:
-			System.err.println("Índice inválido para propriedade do bean Aluno.class");
+			System.err.println("Índice inválido para propriedade do bean Student.class");
 		}
 
 		return valueObject;
@@ -84,37 +84,37 @@ public class StudentTableModel extends AbstractTableModel{
 		return false;
 	}
 
-	public UserModel getUser(int indiceLinha) {
-		return userModel.get(indiceLinha);
+	public StudentModel getUser(int rowIndex) {
+		return modelsList.get(rowIndex);
 	}
 
-	public void addStudent(UserModel u) {
-		userModel.add(u);
+	public void addStudent(StudentModel model) {
+		modelsList.add(model);
 
-		int ultimoIndice = getRowCount() - 1;
+		int lastIndex = getRowCount() - 1;
 
-		fireTableRowsInserted(ultimoIndice, ultimoIndice);
+		fireTableRowsInserted(lastIndex, lastIndex);
 	}
 
-	public void removeAluno(int indiceLinha) {
-		userModel.remove(indiceLinha);
+	public void removeAluno(int rowIndex) {
+		modelsList.remove(rowIndex);
 
-		fireTableRowsDeleted(indiceLinha, indiceLinha);
+		fireTableRowsDeleted(rowIndex, rowIndex);
 	}
 
-	public void addListaDeCursos(List<UserModel> newUsers) {
+	public void addModelsList(List<StudentModel> models) {
 
-		int tamanhoAntigo = getRowCount();
-		userModel.addAll(newUsers);
-		fireTableRowsInserted(tamanhoAntigo, getRowCount() - 1);
+		int oldSize = getRowCount();
+		modelsList.addAll(models);
+		fireTableRowsInserted(oldSize, getRowCount() - 1);
 	}
 
-	public void limpar() {
-		userModel.clear();
+	public void clear() {
+		modelsList.clear();
 		fireTableDataChanged();
 	}
 
 	public boolean isEmpty() {
-		return userModel.isEmpty();
+		return modelsList.isEmpty();
 	}
 }

@@ -16,7 +16,7 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame  {
 		showFrame();
 	}
 	
-	public void redimensionarGrid(JScrollPane grid, int x, int y, int width, int height) {
+	public void resizeGrid(JScrollPane grid, int x, int y, int width, int height) {
 		grid.setBounds(x, y, width, height);
 		
 	}

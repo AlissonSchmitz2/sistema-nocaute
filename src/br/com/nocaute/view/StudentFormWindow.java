@@ -96,67 +96,6 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	}
 	
 	private void setButtonsActions() {
-		//Ação Buscar
-		btnBuscar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (listStudentWindow == null) {
-					listStudentWindow = new ListStudentFormWindow(desktop);
-					
-					listStudentWindow.addInternalFrameListener(new InternalFrameListener() {
-						@Override
-						public void internalFrameClosed(InternalFrameEvent e) {
-							StudentModel selectedModel = ((ListStudentFormWindow) e.getInternalFrame()).getSelectedModel();
-							
-							if (selectedModel != null) {
-								//Atribui o model selecionado
-								model = selectedModel;
-								
-								//Seta form para modo Edição
-								setFormMode(UPDATE_MODE);
-								
-								//Ativa campos
-								enableComponents(formFields);
-								
-								//Ativa botão salvar
-								btnSalvar.setEnabled(true);
-								
-								//Ativa botão remover
-								btnRemover.setEnabled(true);
-								
-								//Reseta janela
-								listStudentWindow = null;
-							}
-						}
-						
-						@Override
-						public void internalFrameOpened(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameIconified(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameDeiconified(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameDeactivated(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameClosing(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameActivated(InternalFrameEvent e) {
-						}
-					});
-				}
-			}
-		});
-		
 		//Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -174,6 +113,9 @@ public class StudentFormWindow extends AbstractWindowFrame {
 				
 				//Ativa botão salvar
 				btnSalvar.setEnabled(true);
+				
+				//Desativa botão Remover
+				btnRemover.setEnabled(false);
 			}
 		});
 		
@@ -276,6 +218,67 @@ public class StudentFormWindow extends AbstractWindowFrame {
 					}
 				} catch (SQLException error) {
 					error.printStackTrace();
+				}
+			}
+		});
+		
+		//Ação Buscar
+		btnBuscar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (listStudentWindow == null) {
+					listStudentWindow = new ListStudentFormWindow(desktop);
+					
+					listStudentWindow.addInternalFrameListener(new InternalFrameListener() {
+						@Override
+						public void internalFrameClosed(InternalFrameEvent e) {
+							StudentModel selectedModel = ((ListStudentFormWindow) e.getInternalFrame()).getSelectedModel();
+							
+							if (selectedModel != null) {
+								//Atribui o model selecionado
+								model = selectedModel;
+								
+								//Seta form para modo Edição
+								setFormMode(UPDATE_MODE);
+								
+								//Ativa campos
+								enableComponents(formFields);
+								
+								//Ativa botão salvar
+								btnSalvar.setEnabled(true);
+								
+								//Ativa botão remover
+								btnRemover.setEnabled(true);
+							}
+							
+							//Reseta janela
+							listStudentWindow = null;
+						}
+						
+						@Override
+						public void internalFrameOpened(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameIconified(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameDeiconified(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameDeactivated(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameClosing(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameActivated(InternalFrameEvent e) {
+						}
+					});
 				}
 			}
 		});

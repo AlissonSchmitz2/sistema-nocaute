@@ -110,7 +110,7 @@ public class ModalitiesFormWindow extends AbstractGridWindow{
 
 		grid = new JScrollPane(jTableGraduacoes);
 		setLayout(null);
-		redimensionarGrid(grid, 5, 110, 420, 170);
+		resizeGrid(grid, 5, 110, 420, 170);
 		grid.setVisible(true);
 
 		add(grid);
