@@ -10,6 +10,10 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame  {
 	
 	public AbstractGridWindow(String nomeTela, int width, int height, JDesktopPane desktop) {
 		super(nomeTela, width, height, desktop);
+		
+		//Abre a janela grid automaticamente
+		desktop.add(this);
+		showFrame();
 	}
 	
 	public void redimensionarGrid(JScrollPane grid, int x, int y, int width, int height) {

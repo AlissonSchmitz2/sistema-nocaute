@@ -13,16 +13,19 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.view.tableModel.StudentTableModel;
 
 public class ListStudentFormWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -8074030868088770858L;
+	
+	private StudentModel selectedModel;
 
 	private JButton btnBuscar;
 	private JTextField txfBuscar;
 
-	private StudentTableModel model;
+	private StudentTableModel tableModel;
 	private JTable jTableUsers;
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
@@ -30,6 +33,10 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 		super("Alunos", 445, 310, desktop);
 
 		criarComponentes();
+	}
+	
+	public StudentModel getSelectedModel() {
+		return selectedModel;
 	}
 
 	private void criarComponentes() {
@@ -47,8 +54,8 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 	}
 
 	private void carregarGrid() {
-		model = new StudentTableModel();
-		jTableUsers = new JTable(model);
+		tableModel = new StudentTableModel();
+		jTableUsers = new JTable(tableModel);
 
 		// Habilita a seleção por linha
 		jTableUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -82,12 +89,12 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 		user6.setUser("Edvaldo da Rosa");
 
 		try {
-			model.addAluno(user1);
-			model.addAluno(user2);
-			model.addAluno(user3);
-			model.addAluno(user4);
-			model.addAluno(user5);
-			model.addAluno(user6);
+			tableModel.addStudent(user1);
+			tableModel.addStudent(user2);
+			tableModel.addStudent(user3);
+			tableModel.addStudent(user4);
+			tableModel.addStudent(user5);
+			tableModel.addStudent(user6);
 		} catch (Exception e) {
 			System.err.printf("Erro ao iniciar lista de cursos: %s.\n", e.getMessage());
 		}

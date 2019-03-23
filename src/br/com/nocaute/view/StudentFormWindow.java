@@ -24,6 +24,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.text.MaskFormatter;
 
 import br.com.nocaute.dao.StudentDAO;
@@ -37,8 +39,8 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 1631880171317467520L;
 	
 	private StudentDAO dao;
-
-	StudentModel model = new StudentModel();
+	private StudentModel model = new StudentModel();
+	private ListStudentFormWindow listStudentWindow;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -70,9 +72,13 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	private ImageIcon iconJanela = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
+	private JDesktopPane desktop;
+
 	public StudentFormWindow(JDesktopPane desktop) {
 		super("Cadastro de Alunos", 450, 460, desktop);
 		setFrameIcon(iconJanela);
+		
+		this.desktop = desktop;
 		
 		try {
 			dao = new StudentDAO(CONNECTION);
@@ -90,6 +96,67 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	}
 	
 	private void setButtonsActions() {
+		//Ação Buscar
+		btnBuscar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (listStudentWindow == null) {
+					listStudentWindow = new ListStudentFormWindow(desktop);
+					
+					listStudentWindow.addInternalFrameListener(new InternalFrameListener() {
+						@Override
+						public void internalFrameClosed(InternalFrameEvent e) {
+							StudentModel selectedModel = ((ListStudentFormWindow) e.getInternalFrame()).getSelectedModel();
+							
+							if (selectedModel != null) {
+								//Atribui o model selecionado
+								model = selectedModel;
+								
+								//Seta form para modo Edição
+								setFormMode(UPDATE_MODE);
+								
+								//Ativa campos
+								enableComponents(formFields);
+								
+								//Ativa botão salvar
+								btnSalvar.setEnabled(true);
+								
+								//Ativa botão remover
+								btnRemover.setEnabled(true);
+								
+								//Reseta janela
+								listStudentWindow = null;
+							}
+						}
+						
+						@Override
+						public void internalFrameOpened(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameIconified(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameDeiconified(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameDeactivated(InternalFrameEvent e) {
+						}
+						
+						@Override
+						public void internalFrameClosing(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameActivated(InternalFrameEvent e) {
+						}
+					});
+				}
+			}
+		});
+		
 		//Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -394,12 +461,12 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		txfCidade.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				System.out.println("Focus");
+				//TODO
+				System.out.println("Abrir modal para selecionar cidade");
 			}
 
 			@Override
 			public void focusLost(FocusEvent e) {
-				System.out.println("Blur");
 			}
 		});
 		painelAba.add(txfCidade);

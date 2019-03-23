@@ -88,7 +88,7 @@ public class StudentTableModel extends AbstractTableModel{
 		return userModel.get(indiceLinha);
 	}
 
-	public void addAluno(UserModel u) {
+	public void addStudent(UserModel u) {
 		userModel.add(u);
 
 		int ultimoIndice = getRowCount() - 1;

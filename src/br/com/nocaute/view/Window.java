@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
-import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,8 +21,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
-
-import br.com.nocaute.database.ConnectionFactory;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
@@ -397,18 +394,20 @@ public class Window extends JFrame {
 
 	// HELPERS
 	private void abrirFrame(AbstractWindowFrame frame) {
-		boolean frameJaExiste = false;
+		boolean frameAlreadyExists = false;
 
 		// Percorre todos os frames adicionados
 		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
-			// Se o frame a ser adicionado já estiver
+			System.out.println(addedFrame.getTitle() + " ---  " + frame.getTitle());
+			
 			if (addedFrame.getTitle().equals(frame.getTitle())) {
-				// Se for uma tela com grid, remove a existente para forçar a atualização da
-				// lista
+				System.out.println("Remover");
+				//Remove janelas duplicadas
 				desktop.remove(addedFrame);
 			} else {
+				//Descomente o c�digo abaixo para permitir a abertura de apenas uma tela por vez
 				frame = (AbstractWindowFrame) addedFrame;
-				frameJaExiste = true;
+				frameAlreadyExists = true;
 			}
 
 			break;
@@ -416,7 +415,7 @@ public class Window extends JFrame {
 		}
 
 		try {
-			if (!frameJaExiste) {
+			if (!frameAlreadyExists) {
 				desktop.add(frame);
 			}
 
