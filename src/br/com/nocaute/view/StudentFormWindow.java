@@ -264,8 +264,13 @@ public class StudentFormWindow extends AbstractWindowFrame {
 								txfNumero.setText(model.getNumber());
 								txfComplemento.setText(model.getAddressComplement());
 								txfBairro.setText(model.getNeighborhood());
-								//City: TODO
 								txfCEP.setText(model.getPostalCode());
+								
+								if (model.getCity() != null) {
+									txfCidade.setText(model.getCity().getName());
+									txfEstado.setText(model.getCity().getState());
+									txfPais.setText(model.getCity().getCountry());
+								}
 								
 								//Seta form para modo Edição
 								setFormMode(UPDATE_MODE);

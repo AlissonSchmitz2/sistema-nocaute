@@ -8,138 +8,124 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.StudentModel;
 
 public class StudentDAO extends AbstractDAO<StudentModel> {
 	private static final String TABLE_NAME = "alunos";
-	
+
 	private String columnId = "codigo_aluno";
-	
+
 	private String defaultOrderBy = "aluno ASC";
-	
-	private String[] columnsToInsert = new String[] {
-		"codigo_aluno",
-		"aluno",
-		"data_nascimento",
-		"sexo",
-		"telefone",
-		"celular",
-		"email",
-		"observacao",
-		"endereco",
-		"numero",
-		"complemento",
-		"bairro",
-		"id_cidade",
-		"cep"
-	};
-	
-	private String[] defaultValuesToInsert = new String[] {
-		"DEFAULT"
-	};
-	
-	private String[] columnsToUpdate = new String[] {
-		"aluno",
-		"data_nascimento",
-		"sexo",
-		"telefone",
-		"celular",
-		"email",
-		"observacao",
-		"endereco",
-		"numero",
-		"complemento",
-		"bairro",
-		"id_cidade",
-		"cep"
-	};
-	
+
+	private String[] columnsToInsert = new String[] { "codigo_aluno", "aluno", "data_nascimento", "sexo", "telefone",
+			"celular", "email", "observacao", "endereco", "numero", "complemento", "bairro", "id_cidade", "cep" };
+
+	private String[] defaultValuesToInsert = new String[] { "DEFAULT" };
+
+	private String[] columnsToUpdate = new String[] { "aluno", "data_nascimento", "sexo", "telefone", "celular",
+			"email", "observacao", "endereco", "numero", "complemento", "bairro", "id_cidade", "cep" };
+
 	Connection connection;
-	
+
 	public StudentDAO(Connection connection) throws SQLException {
 		this.connection = connection;
-		
+
 		this.connection.setAutoCommit(false);
 	}
-		
+
 	@Override
 	public List<StudentModel> selectAll() throws SQLException {
 		String query = getSelectAllQuery(TABLE_NAME, "*", defaultOrderBy);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		List<StudentModel> studentsList = new ArrayList<StudentModel>();
-		
+
 		ResultSet rst = pst.executeQuery();
-		
+
 		while (rst.next()) {
 			StudentModel model = createModelFromResultSet(rst);
-			
+
 			studentsList.add(model);
 		}
-		
+
 		return studentsList;
 	}
-	
+
 	public List<StudentModel> search(String word) throws SQLException {
 		String query = "";
 		PreparedStatement pst = null;
-		
+
 		try {
 			int code = Integer.parseInt(word);
-			
-			query = "SELECT * FROM " + TABLE_NAME + " WHERE aluno ILIKE ? OR codigo_aluno=? ORDER BY " + defaultOrderBy;
+
+			query = "SELECT m.*, c.cidade, c.estado, c.pais FROM " + TABLE_NAME
+					+ "  AS m LEFT JOIN cidades AS c ON m.id_cidade=c.id_cidade WHERE m.aluno ILIKE ? OR m.codigo_aluno=? ORDER BY m."
+					+ defaultOrderBy;
 			pst = connection.prepareStatement(query);
-			
+
 			setParam(pst, 2, code);
-			
+
 		} catch (NumberFormatException e) {
-			query = "SELECT * FROM " + TABLE_NAME + " WHERE aluno ILIKE ? ORDER BY " + defaultOrderBy;
+			query = "SELECT m.*, c.cidade, c.estado, c.pais FROM " + TABLE_NAME
+					+ " AS m LEFT JOIN cidades AS c ON m.id_cidade=c.id_cidade WHERE m.aluno ILIKE ? ORDER BY m."
+					+ defaultOrderBy;
 			pst = connection.prepareStatement(query);
 		}
-		
+
 		setParam(pst, 1, "%" + word + "%");
-		
+
 		List<StudentModel> studentsList = new ArrayList<StudentModel>();
-		
+
 		ResultSet rst = pst.executeQuery();
-		
+
 		while (rst.next()) {
 			StudentModel model = createModelFromResultSet(rst);
 			
+			if (Integer.valueOf(rst.getInt("id_cidade")) != null) {
+				CityModel city = new CityModel();
+				city.setId(rst.getInt("id_cidade"));
+				city.setName(rst.getString("cidade"));
+				city.setState(rst.getString("estado"));
+				city.setCountry(rst.getString("pais"));
+				
+				model.setCity(city);
+			}
+
 			studentsList.add(model);
 		}
-		
+
 		return studentsList;
 	}
 
 	@Override
 	public StudentModel findById(Integer id) throws SQLException {
 		StudentModel model = null;
-		
+
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, id);
 		ResultSet rst = pst.executeQuery();
-		
+
 		if (rst.next()) {
 			model = createModelFromResultSet(rst);
 		}
-		
+
 		return model;
 	}
-	
+
 	@Override
 	public StudentModel insert(StudentModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-		
+
 		pst.clearParameters();
-		
+
 		Integer cityId = model.getCity() != null ? model.getCity().getId() : model.getCityId();
-		
+
 		setParam(pst, 1, model.getName());
 		setParam(pst, 2, model.getBirthDate());
 		setParam(pst, 3, model.getGenre());
@@ -153,31 +139,31 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		setParam(pst, 11, model.getNeighborhood());
 		setParam(pst, 12, cityId);
 		setParam(pst, 13, model.getPostalCode());
-		
+
 		int result = pst.executeUpdate();
-        if (result > 0) {
+		if (result > 0) {
 			connection.commit();
-			
+
 			ResultSet rs = pst.getGeneratedKeys();
-	        if(rs.next()) {
-	            int lastInsertedCode = rs.getInt(columnId);
-	            
-	            // Antes de retornar, seta o código ao objeto aluno
-	            model.setCode(lastInsertedCode);
-	            
-	            return model;
-	        }
+			if (rs.next()) {
+				int lastInsertedCode = rs.getInt(columnId);
+
+				// Antes de retornar, seta o código ao objeto aluno
+				model.setCode(lastInsertedCode);
+
+				return model;
+			}
 		}
-        
-        return null;
+
+		return null;
 	}
 
 	@Override
 	public boolean update(StudentModel model) throws SQLException {
 		String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, model.getName());
 		setParam(pst, 2, model.getBirthDate());
 		setParam(pst, 3, model.getGenre());
@@ -191,18 +177,18 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		setParam(pst, 11, model.getNeighborhood());
 		setParam(pst, 12, model.getCityId());
 		setParam(pst, 13, model.getPostalCode());
-		
+
 		// Identificador WHERE
 		setParam(pst, 14, model.getCode());
-		
+
 		int result = pst.executeUpdate();
-        if (result > 0) {
+		if (result > 0) {
 			connection.commit();
-			
+
 			return true;
-        }
-        
-        return false;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -214,28 +200,29 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 	public boolean deleteById(Integer id) throws SQLException {
 		String query = getDeleteQuery(TABLE_NAME, columnId);
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, id);
-		
+
 		int result = pst.executeUpdate();
-        if (result > 0) {
-        	connection.commit();
-        	
-        	return true;
-        }
-        
-        return false;
+		if (result > 0) {
+			connection.commit();
+
+			return true;
+		}
+
+		return false;
 	}
-	
+
 	/**
 	 * Cria um objeto Model apartir do resultado obtido no banco de dados
+	 * 
 	 * @param rst
 	 * @return StudentModel
 	 * @throws SQLException
 	 */
 	private StudentModel createModelFromResultSet(ResultSet rst) throws SQLException {
 		StudentModel model = new StudentModel();
-		
+
 		model.setCode(rst.getInt("codigo_aluno"));
 		model.setName(rst.getString("aluno"));
 		model.setBirthDate(rst.getDate("data_nascimento"));
@@ -250,7 +237,7 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		model.setNeighborhood(rst.getString("bairro"));
 		model.setCityId(rst.getInt("id_cidade"));
 		model.setPostalCode(rst.getString("cep"));
-		
+
 		return model;
 	}
 }
