@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +17,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.text.MaskFormatter;
 
+import br.com.nocaute.enums.Genres;
+import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
 
 public class StudentRegistrationWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -4201960150625152379L;
-	
+
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
 
@@ -34,6 +39,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 
 	private StudentRegistrationTableModel model;
 	private JTable jTableRegistration;
+	private StudentRegistrationAddModalitiesWindow studentRegistrationAddModalitiesWindow;
+	
+	private JDesktopPane desktop;
 
 	// Icones
 	private ImageIcon iconBuscar = new ImageIcon(
@@ -49,9 +57,11 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 	public StudentRegistrationWindow(JDesktopPane desktop) {
 		super("Matricular Aluno", 450, 380, desktop);
 		setFrameIcon(iconJanela);
+
+		this.desktop = desktop;
 		
 		criarComponentes();
-		
+
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
 
@@ -78,11 +88,47 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 				// TODO: Salvar
 			}
 		});
-		
+
 		// Ação Adicionar Modalidade
 		btnAddModalidade.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Abrir Janela de adicionar modalidades (StudentRegistrationAddModalities)
+				if (studentRegistrationAddModalitiesWindow == null) {
+					studentRegistrationAddModalitiesWindow = new StudentRegistrationAddModalitiesWindow(desktop);
+
+					studentRegistrationAddModalitiesWindow.addInternalFrameListener(new InternalFrameListener() {
+						@Override
+						public void internalFrameClosed(InternalFrameEvent e) {
+							
+							// Reseta janela
+							studentRegistrationAddModalitiesWindow = null;
+						}
+
+						@Override
+						public void internalFrameOpened(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameIconified(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameDeiconified(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameDeactivated(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameClosing(InternalFrameEvent e) {
+						}
+
+						@Override
+						public void internalFrameActivated(InternalFrameEvent e) {
+						}
+					});
+				}
 			}
 		});
 	}

@@ -11,7 +11,7 @@ import br.com.nocaute.model.StudentModel;
 public class DatabaseConnectionTest {
 
 	public DatabaseConnectionTest(){
-		Connection conn = ConnectionFactory.getConnection("master", "admin", "admin");
+		Connection conn = ConnectionFactory.getConnection("master", "admim", "admin");
 		
 		try {
 			conn.setAutoCommit(false);
