@@ -9,9 +9,12 @@ import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.util.List;
 
+import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 import br.com.nocaute.database.ConnectionFactory;
@@ -96,6 +99,18 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	
 	protected void enableComponents(List<Component> components) {
 		components.forEach(component -> component.setEnabled(true));
+	}
+	
+	protected void clearFormFields(List<Component> components) {
+		components.forEach(component -> {
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			} else if (component instanceof JTextArea) {
+				((JTextArea) component).setText("");
+			} else if (component instanceof JComboBox) {
+				((JComboBox<?>) component).setSelectedIndex(0);
+			}
+		});
 	}
 	
 	protected void bubbleSuccess(String message) {

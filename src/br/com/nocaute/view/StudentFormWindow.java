@@ -90,7 +90,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	}
 	
 	private void setButtonsActions() {
-		// Ação Adicionar
+		//Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Seta form para modo Cadastro
@@ -99,7 +99,8 @@ public class StudentFormWindow extends AbstractWindowFrame {
 				//Ativa campos
 				enableComponents(formFields);
 				
-				//TODO: Limpa todos os campos do form
+				//Limpar dados dos campos
+				clearFormFields(formFields);
 				
 				//Cria nova entidade model
 				model = new StudentModel();
@@ -109,7 +110,44 @@ public class StudentFormWindow extends AbstractWindowFrame {
 			}
 		});
 		
-		// Ação Salvar
+		//Ação Remover
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (isEditing()) {
+						boolean result = dao.delete(model);
+						
+						if (result) {
+							bubbleSuccess("Aluno excluído com sucesso");
+							
+							//Seta form para modo Cadastro
+							setFormMode(CREATE_MODE);
+							
+							//Desativa campos
+							disableComponents(formFields);
+							
+							//Limpar dados dos campos
+							clearFormFields(formFields);
+							
+							//Cria nova entidade model
+							model = new StudentModel();
+							
+							//Desativa botão salvar
+							btnSalvar.setEnabled(false);
+							
+							//Desativa botão remover
+							btnRemover.setEnabled(false);
+						} else {
+							bubbleError("Houve um erro ao excluir aluno");
+						}
+					}
+				} catch (SQLException error) {
+					error.printStackTrace();
+				}
+			}
+		});
+		
+		//Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: validar campos obrigatórios
@@ -162,6 +200,9 @@ public class StudentFormWindow extends AbstractWindowFrame {
 							
 							//Seta form para edição
 							setFormMode(UPDATE_MODE);
+							
+							//Ativa botão Remover
+							btnRemover.setEnabled(true);
 						} else {
 							bubbleError("Houve um erro ao cadastrar aluno");
 						}
