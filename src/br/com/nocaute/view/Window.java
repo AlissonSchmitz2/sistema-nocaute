@@ -31,6 +31,7 @@ public class Window extends JFrame {
 	private ModalitiesFormWindow frameModalitiesForm;
 	private PlansFormWindow framePlansForm;
 	private StudentRegistrationWindow frameStudentRegistration;
+	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
 	
 	//TESTE
 	//private ListStudentsFormWindow frameTeste;
@@ -251,10 +252,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO:GERAR FATURAS
-				//TESTE
-				//frameStudentRegistrationAddModalities = new StudentRegistrationAddModalitiesWindow(desktop);
-				//abrirFrame(frameStudentRegistrationAddModalities);
+				frameGeneratePaymentsForm = new GeneratePaymentsFormWindow(desktop);
+				abrirFrame(frameGeneratePaymentsForm);
 			}
 		});
 
