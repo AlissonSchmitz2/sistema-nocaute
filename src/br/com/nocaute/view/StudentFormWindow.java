@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,12 +30,15 @@ import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.enums.Genres;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.pojos.Genre;
+import br.com.nocaute.util.PlaceholderTextField;
 import br.com.nocaute.view.comboModel.GenericComboModel;
 
 public class StudentFormWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 1631880171317467520L;
 	
 	private StudentDAO dao;
+
+	StudentModel model = new StudentModel();
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -46,7 +52,8 @@ public class StudentFormWindow extends AbstractWindowFrame {
 	private JComboBox<Genre> cbxSexo;
 	
 	//Endereço
-	private JTextField txfEndereco, txfComplemento, txfBairro, txfCidade, txfEstado, txfPais, txfCEP;
+	private JTextField txfEndereco, txfComplemento, txfBairro, txfEstado, txfPais, txfCEP;
+	private PlaceholderTextField txfCidade;
 
 	private JPanel painelAba;
 	private JTabbedPane tabelPane;
@@ -86,8 +93,16 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Ativa campos
+				//Seta form para modo Cadastro
+				setFormMode(CREATE_MODE);
+				
+				//Ativa campos
 				enableComponents(formFields);
+				
+				//TODO: Limpa todos os campos do form
+				
+				//Cria nova entidade model
+				model = new StudentModel();
 				
 				//Ativa botão salvar
 				btnSalvar.setEnabled(true);
@@ -99,14 +114,20 @@ public class StudentFormWindow extends AbstractWindowFrame {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: validar campos obrigatórios
 				
-				//Date birthDate = new Date("2018-01-10");
-				//txfDtNascimento.getText()
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				Date birthDate = null;
+				try {
+					if (!txfDtNascimento.getText().isEmpty()) {
+						birthDate = dateFormat.parse(txfDtNascimento.getText());
+					}
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				
 				Genre selectedGenre = (Genre) cbxSexo.getSelectedItem();
 				
-				StudentModel model = new StudentModel();
 				model.setName(txfAluno.getText());
-				//model.setBirthDate(birthDate);
+				model.setBirthDate(birthDate);
 				model.setGenre(selectedGenre.getCode().charAt(0));
 				model.setTelephone(txfTelefone.getText());
 				model.setMobilePhone(txfCelular.getText());
@@ -116,21 +137,34 @@ public class StudentFormWindow extends AbstractWindowFrame {
 				model.setNumber(txfNumero.getText());
 				model.setAddressComplement(txfComplemento.getText());
 				model.setNeighborhood(txfBairro.getText());
-				//model.setCityId(1);
+				model.setCityId(1); //TODO: Recuperar cidade do model vindo da janela externa
 				model.setPostalCode(txfCEP.getText());
 				
-				System.out.println(model);
-				
 				try {
-					StudentModel insertedModel = dao.insert(null);
-					//StudentModel insertedModel = dao.insert(model);
-					
-					if (insertedModel != null) {
-						//TODO: Mensagem de sucesso
-						// bubbleSuccess("Mensagem");
+					//EDIÇÃO CADASTRO
+					if (isEditing()) {
+						boolean result = dao.update(model);
+						
+						if (result) {
+							bubbleSuccess("Aluno editado com sucesso");
+						} else {
+							bubbleError("Houve um erro ao editar aluno");
+						}
+					//NOVO CADASTRO
 					} else {
-						//TODO: Mensagem de erro
-						//bubbleError("Mensagem");
+						StudentModel insertedModel = dao.insert(model);
+						
+						if (insertedModel != null) {
+							bubbleSuccess("Aluno cadastrado com sucesso");
+							
+							//Atribui o model recém criado ao model
+							model = insertedModel;
+							
+							//Seta form para edição
+							setFormMode(UPDATE_MODE);
+						} else {
+							bubbleError("Houve um erro ao cadastrar aluno");
+						}
 					}
 				} catch (SQLException error) {
 					error.printStackTrace();
@@ -182,21 +216,21 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		getContentPane().add(label);
 		
 		try {
-			txfDtNascimento = new JFormattedTextField(new MaskFormatter("     ## /  ##  / ####       "));
+			txfDtNascimento = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txfDtNascimento.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfDtNascimento.setBounds(110, 80, 125, 20);
 			txfDtNascimento.setToolTipText("Data de nascimento do aluno");
 			getContentPane().add(txfDtNascimento);
 			formFields.add(txfDtNascimento);
 			
-			txfTelefone = new JFormattedTextField(new MaskFormatter(" # ####-#### "));
+			txfTelefone = new JFormattedTextField(new MaskFormatter("## ####-#####"));
 			txfTelefone.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfTelefone.setBounds(110, 105, 125, 20);
 			txfTelefone.setToolTipText("Digite o telefone do aluno");
 			getContentPane().add(txfTelefone);
 			formFields.add(txfTelefone);
 			
-			txfCelular = new JFormattedTextField(new MaskFormatter(" # ####-#### "));
+			txfCelular = new JFormattedTextField(new MaskFormatter("## ####-#####"));
 			txfCelular.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfCelular.setBounds(285, 105, 140, 20);
 			txfCelular.setToolTipText("Digite o celular do aluno");
@@ -310,12 +344,23 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		label.setBounds(250, 55, 150, 25);
 		painelAba.add(label);
 		
-		txfCidade = new JTextField();
+		txfCidade = new PlaceholderTextField();
 		txfCidade.setBounds(297, 55, 110, 20);
 		txfCidade.setToolTipText("Informe a cidade");
 		txfCidade.setBackground(Color.yellow);
 		txfCidade.setEditable(false);
-		txfCidade.setText("Teclar F9");
+		txfCidade.setPlaceholder("Teclar F9");
+		txfCidade.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				System.out.println("Focus");
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				System.out.println("Blur");
+			}
+		});
 		painelAba.add(txfCidade);
 		formFields.add(txfCidade);
 
@@ -327,6 +372,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		txfEstado.setBounds(80, 80, 155, 20);
 		txfEstado.setToolTipText("Digite o estado");
 		txfEstado.setEditable(false);
+		txfEstado.setFocusable(false);
 		painelAba.add(txfEstado);
 		
 		label = new JLabel("País: ");
@@ -337,8 +383,8 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		txfPais.setBounds(297, 80, 110, 20);
 		txfPais.setToolTipText("Informe o país");
 		txfPais.setEditable(false);
+		txfEstado.setFocusable(false);
 		painelAba.add(txfPais);
-		formFields.add(txfPais);
 
 		label = new JLabel("CEP: ");
 		label.setBounds(5, 105, 150, 25);

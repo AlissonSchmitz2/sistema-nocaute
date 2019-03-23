@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 import br.com.nocaute.database.ConnectionFactory;
@@ -18,8 +19,8 @@ import br.com.nocaute.database.ConnectionFactory;
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
 	
-	private static final String CREATE_MODE = "create";
-	private static final String UPDATE_MODE = "update";
+	protected static final String CREATE_MODE = "create";
+	protected static final String UPDATE_MODE = "update";
 	private String formMode = CREATE_MODE;
 	
 	public static final Connection CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
@@ -85,7 +86,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		return formMode.equals(UPDATE_MODE);
 	}
 	
-	protected void setFormMode(String mode) throws Exception {
+	protected void setFormMode(String mode) {
 		formMode = mode;
 	}
 	
@@ -95,5 +96,13 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	
 	protected void enableComponents(List<Component> components) {
 		components.forEach(component -> component.setEnabled(true));
+	}
+	
+	protected void bubbleSuccess(String message) {
+		JOptionPane.showMessageDialog(null, message);
+	}
+	
+	protected void bubbleError(String message) {
+		JOptionPane.showMessageDialog(null, message, "", JOptionPane.ERROR_MESSAGE, null);
 	}
 }
