@@ -6,16 +6,16 @@ public class CityTableModel extends AbstractTableModel<CityModel> {
 	private static final long serialVersionUID = 1242843030000425873L;
 	
 	public CityTableModel() {
-		super(new String[] { "ID", "Nome" });
+		super(new String[] { "Nome", "Estado" });
 	}
 
 	@Override
 	protected void setModelValueAt(int columnIndex, CityModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
-				model.setId(Integer.parseInt(aValue.toString()));
-			case 1:
 				model.setName(aValue.toString());
+			case 1:
+				model.setState(aValue.toString());
 			default:
 				System.err.println("Índice da coluna inválido");
 		}
@@ -27,10 +27,10 @@ public class CityTableModel extends AbstractTableModel<CityModel> {
 		
 		switch (columnIndex) {
 		case 0:
-			valueObject = model.getId().toString();
+			valueObject = model.getName();
 			break;
 		case 1:
-			valueObject = model.getName();
+			valueObject = model.getState();
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");

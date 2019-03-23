@@ -2,10 +2,13 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.KeyEventPostProcessor;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,22 +28,25 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
+
+import br.com.nocaute.util.InternalFrameListener;
 import javax.swing.text.MaskFormatter;
 
 import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.enums.Genres;
+import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.pojos.Genre;
 import br.com.nocaute.util.PlaceholderTextField;
 import br.com.nocaute.view.comboModel.GenericComboModel;
 
-public class StudentFormWindow extends AbstractWindowFrame {
+public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPostProcessor {
 	private static final long serialVersionUID = 1631880171317467520L;
 	
 	private StudentDAO dao;
 	private StudentModel model = new StudentModel();
-	private ListStudentsFormWindow listStudentWindow;
+	private ListStudentsFormWindow searchStudentWindow;
+	private ListCitiesFormWindow searchCityWindow;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -93,6 +99,10 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
+		
+		// Register a key event post processor.
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .addKeyEventPostProcessor(this);
 	}
 	
 	private void setButtonsActions() {
@@ -166,6 +176,8 @@ public class StudentFormWindow extends AbstractWindowFrame {
 				try {
 					if (!txfDtNascimento.getText().isEmpty()) {
 						birthDate = dateFormat.parse(txfDtNascimento.getText());
+					} else {
+						birthDate = null;
 					}
 				} catch (ParseException e1) {
 					e1.printStackTrace();
@@ -184,7 +196,6 @@ public class StudentFormWindow extends AbstractWindowFrame {
 				model.setNumber(txfNumero.getText());
 				model.setAddressComplement(txfComplemento.getText());
 				model.setNeighborhood(txfBairro.getText());
-				model.setCityId(1); //TODO: Recuperar cidade do model vindo da janela externa
 				model.setPostalCode(txfCEP.getText());
 				
 				try {
@@ -226,10 +237,10 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (listStudentWindow == null) {
-					listStudentWindow = new ListStudentsFormWindow(desktop);
+				if (searchStudentWindow == null) {
+					searchStudentWindow = new ListStudentsFormWindow(desktop);
 					
-					listStudentWindow.addInternalFrameListener(new InternalFrameListener() {
+					searchStudentWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
 							StudentModel selectedModel = ((ListStudentsFormWindow) e.getInternalFrame()).getSelectedModel();
@@ -255,7 +266,6 @@ public class StudentFormWindow extends AbstractWindowFrame {
 										}
 								    }
 								}
-								//model.getGenre(selectedGenre.getCode().charAt(0));
 								txfTelefone.setText(model.getTelephone());
 								txfCelular.setText(model.getMobilePhone());
 								txfEmail.setText(model.getEmail());
@@ -286,36 +296,52 @@ public class StudentFormWindow extends AbstractWindowFrame {
 							}
 							
 							//Reseta janela
-							listStudentWindow = null;
-						}
-						
-						@Override
-						public void internalFrameOpened(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameIconified(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameDeiconified(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameDeactivated(InternalFrameEvent e) {
-						}
-						
-						@Override
-						public void internalFrameClosing(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameActivated(InternalFrameEvent e) {
+							searchStudentWindow = null;
 						}
 					});
 				}
 			}
 		});
+	}
+	
+	@Override
+	public boolean postProcessKeyEvent(KeyEvent ke) {
+		//Abre tela seleção cidade ao clicar F9
+        if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_F9) {
+        	if (btnSalvar.isEnabled()) {
+        		openSearchCityWindow();
+        	}
+
+            return true;
+        }
+
+        return false;
+    }
+	
+	private void openSearchCityWindow() {
+		if (searchCityWindow == null) {
+			searchCityWindow = new ListCitiesFormWindow(desktop);
+			
+			searchCityWindow.addInternalFrameListener(new InternalFrameListener() {
+				@Override
+				public void internalFrameClosed(InternalFrameEvent e) {
+					CityModel selectedModel = ((ListCitiesFormWindow) e.getInternalFrame()).getSelectedModel();
+					
+					if (selectedModel != null) {
+						//Atribui cidade para o model
+						model.setCity(selectedModel);
+						
+						//Seta valores da cidade para o campo
+						txfCidade.setText(selectedModel.getName());
+						txfEstado.setText(selectedModel.getState());
+						txfPais.setText(selectedModel.getCountry());
+					}
+					
+					//Reseta janela
+					searchCityWindow = null;
+				}
+			});
+		}
 	}
 	
 	private void criarComponentes() {
@@ -491,15 +517,17 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		
 		txfCidade = new PlaceholderTextField();
 		txfCidade.setBounds(297, 55, 110, 20);
-		txfCidade.setToolTipText("Informe a cidade");
+		txfCidade.setToolTipText("Tecle F9 para selecionar uma cidade");
 		txfCidade.setBackground(Color.yellow);
 		txfCidade.setEditable(false);
 		txfCidade.setPlaceholder("Teclar F9");
 		txfCidade.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				//TODO
-				System.out.println("Abrir modal para selecionar cidade");
+				//Retira o foco do campo após abrir a tela de busca
+				txfCEP.requestFocusInWindow();
+				
+				openSearchCityWindow();
 			}
 
 			@Override
@@ -519,6 +547,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		txfEstado.setEditable(false);
 		txfEstado.setFocusable(false);
 		painelAba.add(txfEstado);
+		formFields.add(txfEstado);
 		
 		label = new JLabel("País: ");
 		label.setBounds(250, 80, 150, 25);
@@ -530,6 +559,7 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		txfPais.setEditable(false);
 		txfEstado.setFocusable(false);
 		painelAba.add(txfPais);
+		formFields.add(txfPais);
 
 		label = new JLabel("CEP: ");
 		label.setBounds(5, 105, 150, 25);
@@ -541,5 +571,4 @@ public class StudentFormWindow extends AbstractWindowFrame {
 		painelAba.add(txfCEP);
 		formFields.add(txfCEP);
 	}
-
 }

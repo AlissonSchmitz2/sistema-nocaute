@@ -47,7 +47,26 @@ private static final String TABLE_NAME = "cidades";
 	}
 	
 	public List<CityModel> search(String word) throws SQLException {
-		return null;
+		String query = "SELECT * FROM " + TABLE_NAME
+				+ " WHERE cidade ILIKE ? OR estado ILIKE ?  OR pais ILIKE ? ORDER BY "
+				+ defaultOrderBy;
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, "%" + word + "%");
+		setParam(pst, 2, word + "%");
+		setParam(pst, 3, word + "%");
+
+		List<CityModel> citiesList = new ArrayList<CityModel>();
+
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			CityModel model = createModelFromResultSet(rst);
+
+			citiesList.add(model);
+		}
+
+		return citiesList;
 	}
 
 	@Override

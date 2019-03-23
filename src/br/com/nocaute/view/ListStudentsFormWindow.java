@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
@@ -47,6 +49,8 @@ public class ListStudentsFormWindow extends AbstractGridWindow {
 
 		createComponents();
 		
+		txfSearch.requestFocusInWindow();
+		
 		setButtonsActions();
 	}
 	
@@ -68,6 +72,20 @@ public class ListStudentsFormWindow extends AbstractGridWindow {
 		txfSearch = new JTextField();
 		txfSearch.setBounds(5, 10, 330, 20);
 		txfSearch.setToolTipText("Informe o aluno");
+		txfSearch.requestFocusInWindow();
+		txfSearch.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent ke) {
+	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+	    		  loadGrid(txfSearch.getText());
+	    	  }
+	        }
+
+	        public void keyReleased(KeyEvent keyEvent) {
+	        }
+
+	        public void keyTyped(KeyEvent keyEvent) {
+	        }
+	    });
 		getContentPane().add(txfSearch);
 
 		btnSearch = new JButton("Buscar");
