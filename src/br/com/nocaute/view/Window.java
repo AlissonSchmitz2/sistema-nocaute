@@ -401,7 +401,6 @@ public class Window extends JFrame {
 			System.out.println(addedFrame.getTitle() + " ---  " + frame.getTitle());
 			
 			if (addedFrame.getTitle().equals(frame.getTitle())) {
-				System.out.println("Remover");
 				//Remove janelas duplicadas
 				desktop.remove(addedFrame);
 			} else {
