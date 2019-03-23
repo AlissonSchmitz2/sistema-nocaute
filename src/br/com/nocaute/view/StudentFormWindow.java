@@ -238,6 +238,35 @@ public class StudentFormWindow extends AbstractWindowFrame {
 								//Atribui o model selecionado
 								model = selectedModel;
 								
+								SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+								
+								//Seta dados do model para os campos
+								txfAluno.setText(model.getName());
+								if (model.getBirthDate() != null) {
+									txfDtNascimento.setText(dateFormat.format(model.getBirthDate()));
+								}
+								if (!String.valueOf(model.getGenre()).isEmpty()) {
+									int genreCounter = 0;
+									for(String code : Genres.getGenres().keySet()) {
+										genreCounter++;
+										
+										if (model.getGenre() == code.charAt(0)) {
+											cbxSexo.setSelectedIndex(genreCounter);
+										}
+								    }
+								}
+								//model.getGenre(selectedGenre.getCode().charAt(0));
+								txfTelefone.setText(model.getTelephone());
+								txfCelular.setText(model.getMobilePhone());
+								txfEmail.setText(model.getEmail());
+								txfObservacao.setText(model.getObservation());
+								txfEndereco.setText(model.getAddress());
+								txfNumero.setText(model.getNumber());
+								txfComplemento.setText(model.getAddressComplement());
+								txfBairro.setText(model.getNeighborhood());
+								//City: TODO
+								txfCEP.setText(model.getPostalCode());
+								
 								//Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
 								
@@ -334,14 +363,14 @@ public class StudentFormWindow extends AbstractWindowFrame {
 			getContentPane().add(txfDtNascimento);
 			formFields.add(txfDtNascimento);
 			
-			txfTelefone = new JFormattedTextField(new MaskFormatter("## ####-#####"));
+			txfTelefone = new JFormattedTextField(new MaskFormatter("## ####-####"));
 			txfTelefone.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfTelefone.setBounds(110, 105, 125, 20);
 			txfTelefone.setToolTipText("Digite o telefone do aluno");
 			getContentPane().add(txfTelefone);
 			formFields.add(txfTelefone);
 			
-			txfCelular = new JFormattedTextField(new MaskFormatter("## ####-#####"));
+			txfCelular = new JFormattedTextField(new MaskFormatter("## ####-####"));
 			txfCelular.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfCelular.setBounds(285, 105, 140, 20);
 			txfCelular.setToolTipText("Digite o celular do aluno");

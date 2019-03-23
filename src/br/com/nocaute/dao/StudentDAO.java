@@ -80,6 +80,38 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 		
 		return studentsList;
 	}
+	
+	public List<StudentModel> search(String word) throws SQLException {
+		String query = "";
+		PreparedStatement pst = null;
+		
+		try {
+			int code = Integer.parseInt(word);
+			
+			query = "SELECT * FROM " + TABLE_NAME + " WHERE aluno ILIKE ? OR codigo_aluno=? ORDER BY " + defaultOrderBy;
+			pst = connection.prepareStatement(query);
+			
+			setParam(pst, 2, code);
+			
+		} catch (NumberFormatException e) {
+			query = "SELECT * FROM " + TABLE_NAME + " WHERE aluno ILIKE ? ORDER BY " + defaultOrderBy;
+			pst = connection.prepareStatement(query);
+		}
+		
+		setParam(pst, 1, "%" + word + "%");
+		
+		List<StudentModel> studentsList = new ArrayList<StudentModel>();
+		
+		ResultSet rst = pst.executeQuery();
+		
+		while (rst.next()) {
+			StudentModel model = createModelFromResultSet(rst);
+			
+			studentsList.add(model);
+		}
+		
+		return studentsList;
+	}
 
 	@Override
 	public StudentModel findById(Integer id) throws SQLException {

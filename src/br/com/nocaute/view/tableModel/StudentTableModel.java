@@ -84,7 +84,7 @@ public class StudentTableModel extends AbstractTableModel {
 		return false;
 	}
 
-	public StudentModel getUser(int rowIndex) {
+	public StudentModel getStudent(int rowIndex) {
 		return modelsList.get(rowIndex);
 	}
 

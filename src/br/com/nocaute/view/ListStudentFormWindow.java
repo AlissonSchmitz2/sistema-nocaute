@@ -2,6 +2,11 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -41,10 +46,21 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 		}
 
 		createComponents();
+		
+		setButtonsActions();
 	}
 	
 	public StudentModel getSelectedModel() {
 		return selectedModel;
+	}
+	
+	private void setButtonsActions() {
+		//Ação Buscar
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadGrid(txfSearch.getText());
+			}
+		});
 	}
 
 	private void createComponents() {
@@ -58,30 +74,50 @@ public class ListStudentFormWindow extends AbstractGridWindow {
 		btnSearch.setBounds(340, 10, 85, 22);
 		getContentPane().add(btnSearch);
 
-		loadGrid();
+		createGrid();
 	}
 
-	private void loadGrid() {
+	private void createGrid() {
 		tableModel = new StudentTableModel();
 		jTableStudents = new JTable(tableModel);
+		
+		jTableStudents.addMouseListener(new MouseAdapter() {
+
+	        public void mouseClicked (MouseEvent me) {
+	            if (me.getClickCount() == 2) {
+	            	//Atribui o model da linha clicada
+	            	selectedModel = tableModel.getStudent(jTableStudents.getSelectedRow());
+	            	
+	            	//Fecha a janela
+	            	try {
+						setClosed(true);
+					} catch (PropertyVetoException e) {
+						e.printStackTrace();
+					}
+	            }
+	        }
+	    });
 
 		// Habilita a seleção por linha
 		jTableStudents.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jTableStudents.setDefaultRenderer(Object.class, renderer);
 		
-		try {
-			tableModel.addModelsList(dao.selectAll());
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
 		grid = new JScrollPane(jTableStudents);
 		setLayout(null);
 		resizeGrid(grid, 5, 40, 420, 230);
 		grid.setVisible(true);
-
+		
 		add(grid);
-
+	}
+	
+	private void loadGrid(String word) {
+		tableModel.clear();
+		
+		try {
+			tableModel.addModelsList(dao.search(word));
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	//TODO: Refatorar para utilizar e todas as grids
