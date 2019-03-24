@@ -55,6 +55,42 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		return modalitysList;
 	}
 	
+	public List<ModalityModel> search(String word) throws SQLException {
+		String query = "";
+		PreparedStatement pst = null;
+
+		try {
+			int code = Integer.parseInt(word);
+
+			query = "SELECT * FROM " + TABLE_NAME
+					+ " WHERE UPPER(modalidade) LIKE ? OR id_modalidade=? ORDER BY "
+					+ defaultOrderBy;
+			pst = connection.prepareStatement(query);
+
+			setParam(pst, 2, code);
+
+		} catch (NumberFormatException e) {
+			query = "SELECT * FROM " + TABLE_NAME
+					+ " WHERE UPPER(modalidade) LIKE ? ORDER BY "
+					+ defaultOrderBy;
+			pst = connection.prepareStatement(query);
+		}
+
+		setParam(pst, 1, "%" + word.toUpperCase() + "%");
+
+		List<ModalityModel> modalitiesList = new ArrayList<ModalityModel>();
+
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			ModalityModel model = createModelFromResultSet(rst);
+
+			modalitiesList.add(model);
+		}
+
+		return modalitiesList;
+	}
+	
 	@Override
 	public ModalityModel findById(Integer id) throws SQLException {
 		ModalityModel model = null;
@@ -84,7 +120,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			connection.commit();
+			//connection.commit();
 
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
@@ -113,7 +149,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			connection.commit();
+			//connection.commit();
 
 			return true;
 		}
@@ -135,7 +171,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		
 		int result = pst.executeUpdate();
         if (result > 0) {
-        	connection.commit();
+        	//connection.commit();
         	
         	return true;
         }

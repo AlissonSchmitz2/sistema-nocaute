@@ -63,6 +63,10 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 	public T getModel(int rowIndex) {
 		return modelsList.get(rowIndex);
 	}
+	
+	public List<T> getModelsList() {
+		return modelsList;
+	}
 
 	public void addModel(T model) {
 		modelsList.add(model);

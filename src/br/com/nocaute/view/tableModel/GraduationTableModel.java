@@ -13,11 +13,7 @@ public class GraduationTableModel extends AbstractTableModel<GraduationModel> {
 	protected void setModelValueAt(int columnIndex, GraduationModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
-				model.setGraduationId(Integer.parseInt(aValue.toString()));
-			case 1:
 				model.setGraduationName(aValue.toString());
-			case 2:
-				model.setModalityId(Integer.parseInt(aValue.toString()));
 			default:
 				System.err.println("Índice da coluna inválido");
 		}
@@ -29,7 +25,7 @@ public class GraduationTableModel extends AbstractTableModel<GraduationModel> {
 		
 		switch (columnIndex) {
 			case 0:
-				valueObject = model.getGraduationId().toString();
+				valueObject = model.getGraduationName();				
 				break;
 			default:
 				System.err.println("Índice da coluna inválido");

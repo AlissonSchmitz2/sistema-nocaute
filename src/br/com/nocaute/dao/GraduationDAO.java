@@ -73,6 +73,24 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 		return model;
 	}
 	
+	public List<GraduationModel> findAllByModalityId(Integer id) throws SQLException {
+		GraduationModel model = null;
+		List<GraduationModel> graduationsList = new ArrayList<>();
+		
+		String query = getFindByQuery(TABLE_NAME, "id_modalidade", "*", defaultOrderBy);
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, id);
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			model = createModelFromResultSet(rst);
+			graduationsList.add(model);
+		}
+
+		return graduationsList;
+	}
+	
 	@Override
 	public GraduationModel insert(GraduationModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
@@ -86,7 +104,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			connection.commit();
+			//connection.commit();
 
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
@@ -115,7 +133,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			connection.commit();
+			//connection.commit();
 
 			return true;
 		}
@@ -137,7 +155,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			connection.commit();
+			//connection.commit();
 
 			return true;
 		}
