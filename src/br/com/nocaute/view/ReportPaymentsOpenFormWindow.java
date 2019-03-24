@@ -4,11 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDesktopPane;
 
-public class ReportRegistrationFormWindow extends AbstractReportWindowFrame {
-	private static final long serialVersionUID = -4201960150625152379L;
+public class ReportPaymentsOpenFormWindow extends AbstractReportWindowFrame{
+	private static final long serialVersionUID = -49128325842856068L;
 
-	public ReportRegistrationFormWindow(JDesktopPane desktop) {
-		super("Relatório de Matricula", desktop);
+	public ReportPaymentsOpenFormWindow(JDesktopPane desktop) {
+		super("Relatório de Faturas em Aberto", desktop);
 		
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
@@ -27,5 +27,4 @@ public class ReportRegistrationFormWindow extends AbstractReportWindowFrame {
 			}
 		});
 	}
-	
 }
