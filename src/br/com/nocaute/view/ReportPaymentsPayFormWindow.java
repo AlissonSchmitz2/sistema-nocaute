@@ -4,11 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JDesktopPane;
 
-public class ReportPaymentsOpenFormWindow extends AbstractReportWindowFrame{
+public class ReportPaymentsPayFormWindow extends AbstractReportWindowFrame{
 	private static final long serialVersionUID = -49128325842856068L;
 
-	public ReportPaymentsOpenFormWindow(JDesktopPane desktop) {
-		super("Faturas em Aberto", desktop);
+	public ReportPaymentsPayFormWindow(JDesktopPane desktop) {
+		super("Faturas Pagas", desktop);
 		
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();

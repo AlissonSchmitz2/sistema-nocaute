@@ -34,7 +34,9 @@ public class Window extends JFrame {
 	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
 	private ListPaymentsFormWindow frameListPaymentsForm;
 	private RegistrationPaymentsFormWindow frameRegistrationPaymentsForm;
-	private ReportRegistrationFormWindow FrameReportRegistrationForm;
+	private ReportRegistrationFormWindow frameReportRegistrationForm;
+	private ReportPaymentsOpenFormWindow frameReportPaymentsOpenForm;
+	private ReportPaymentsPayFormWindow frameReportPaymentsPayForm;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -314,8 +316,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrameReportRegistrationForm = new ReportRegistrationFormWindow(desktop);
-				abrirFrame(FrameReportRegistrationForm);
+				frameReportRegistrationForm = new ReportRegistrationFormWindow(desktop);
+				abrirFrame(frameReportRegistrationForm);
 			}
 		});
 
@@ -329,8 +331,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela relatorios/faturas/em aberto
-				// abrirFrame();
+				frameReportPaymentsOpenForm = new ReportPaymentsOpenFormWindow(desktop);
+				abrirFrame(frameReportPaymentsOpenForm);
 			}
 		});
 
@@ -344,8 +346,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: relatorios/faturas/pagas
-				// abrirFrame();
+				frameReportPaymentsPayForm = new ReportPaymentsPayFormWindow(desktop);
+				abrirFrame(frameReportPaymentsPayForm);
 			}
 		});
 
