@@ -33,10 +33,7 @@ public class Window extends JFrame {
 	private StudentRegistrationWindow frameStudentRegistration;
 	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
 	private ListPaymentsFormWindow frameListPaymentsForm;
-	
-	//TESTE
-	//private ListStudentsFormWindow frameTeste;
-	//private StudentRegistrationAddModalitiesWindow frameStudentRegistrationAddModalities;
+	private RegistrationPaymentsFormWindow frameRegistrationPaymentsFormWindow;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -283,8 +280,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela janela processos/faturamento/realizar pagamento
-				// abrirFrame();
+				frameRegistrationPaymentsFormWindow = new RegistrationPaymentsFormWindow(desktop);
+				abrirFrame(frameRegistrationPaymentsFormWindow);
 			}
 		});
 

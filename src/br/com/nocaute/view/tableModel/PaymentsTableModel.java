@@ -14,8 +14,22 @@ public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
 		switch (columnIndex) {
 			case 0:
 				model.setRegistrationCode(Integer.parseInt(aValue.toString()));
+				break;
 			case 1:
 				model.setStudentCode(Integer.parseInt(aValue.toString()));
+				break;
+			case 2:
+				//model.setExpirationDay(Integer.parseInt(aValue.toString()));
+				break;
+			case 3:
+				//model.set(Integer.parseInt(aValue.toString()));
+				break;
+			case 4:
+				//model.setStudentCode(Integer.parseInt(aValue.toString()));
+				break;
+			case 5:
+				//model.setClosingDate(Integer.parseInt(aValue.toString()));
+				break;
 			default:
 				System.err.println("Índice da coluna inválido");
 		}
@@ -28,6 +42,21 @@ public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
 		switch (columnIndex) {
 		case 0:
 			valueObject = model.getRegistrationCode().toString();
+			break;
+		case 1:
+			valueObject = model.getStudentCode().toString();
+			break;
+		case 2:
+			//model.setExpirationDay(Integer.parseInt(aValue.toString()));
+			break;
+		case 3:
+			//model.set(Integer.parseInt(aValue.toString()));
+			break;
+		case 4:
+			//model.setStudentCode(Integer.parseInt(aValue.toString()));
+			break;
+		case 5:
+			//model.setClosingDate(Integer.parseInt(aValue.toString()));
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");
