@@ -50,7 +50,8 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 			this.getClass().getResource("/br/com/nocaute/image/22x22/adicionar.png"));
 	private ImageIcon iconRemover = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
-	private ImageIcon iconSalvar = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
+	private ImageIcon iconSalvar = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
 	private ImageIcon iconJanela = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
