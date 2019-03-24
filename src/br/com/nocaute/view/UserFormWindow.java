@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import br.com.nocaute.dao.UserDAO;
@@ -41,7 +42,8 @@ public class UserFormWindow extends AbstractWindowFrame{
 	//Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
 	private JLabel label;
-	private JTextField txfUsuario, txfSenha, txfConfirmarSenha;
+	private JTextField txfUsuario;
+	private JPasswordField txfSenha, txfConfirmarSenha;
 	private JComboBox<String> cbxPerfil;
 	
 	public UserFormWindow(JDesktopPane desktop) {
@@ -78,7 +80,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 				UserModel model = new UserModel();
 				
 				model.setUser(txfUsuario.getText());
-				model.setPassword(txfSenha.getText());
+				model.setPassword(txfSenha.getPassword().toString());
 				model.setProfile(cbxPerfil.getSelectedItem().toString());
 				
 				try {
@@ -132,7 +134,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		label.setBounds(5, 80, 70, 25);
 		getContentPane().add(label);
 		
-		txfSenha = new JTextField();
+		txfSenha = new JPasswordField();
 		txfSenha.setBounds(100, 80, 325, 20);
 		txfSenha.setToolTipText("Digite a senha do usuário");
 		getContentPane().add(txfSenha);
@@ -142,7 +144,7 @@ public class UserFormWindow extends AbstractWindowFrame{
 		label.setBounds(5, 105, 90, 25);
 		getContentPane().add(label);
 		
-		txfConfirmarSenha = new JTextField();
+		txfConfirmarSenha = new JPasswordField();
 		txfConfirmarSenha.setBounds(100, 105, 325, 20);
 		txfConfirmarSenha.setToolTipText("Confirme a senha do usuário");
 		getContentPane().add(txfConfirmarSenha);

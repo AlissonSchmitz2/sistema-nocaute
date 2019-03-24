@@ -30,12 +30,13 @@ public class Window extends JFrame {
 	private StudentFormWindow frameStudentForm;
 	private ModalitiesFormWindow frameModalitiesForm;
 	private PlansFormWindow framePlansForm;
-	private StudentRegistrationWindow frameStudentRegistration;
+	private StudentRegistrationWindow frameStudentRegistrationForm;
 	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
-	
-	//TESTE
-	//private ListStudentsFormWindow frameTeste;
-	//private StudentRegistrationAddModalitiesWindow frameStudentRegistrationAddModalities;
+	private ListPaymentsFormWindow frameListPaymentsForm;
+	private RegistrationPaymentsFormWindow frameRegistrationPaymentsForm;
+	private ReportRegistrationFormWindow frameReportRegistrationForm;
+	private ReportPaymentsOpenFormWindow frameReportPaymentsOpenForm;
+	private ReportPaymentsPayFormWindow frameReportPaymentsPayForm;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -237,8 +238,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentRegistration = new StudentRegistrationWindow(desktop);
-				abrirFrame(frameStudentRegistration);
+				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop);
+				abrirFrame(frameStudentRegistrationForm);
 			}
 		});
 
@@ -267,8 +268,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela processos/faturamento/consultar faturas
-				// abrirFrame();
+				frameListPaymentsForm = new ListPaymentsFormWindow(desktop);
+				abrirFrame(frameListPaymentsForm);
 			}
 		});
 
@@ -282,8 +283,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela janela processos/faturamento/realizar pagamento
-				// abrirFrame();
+				frameRegistrationPaymentsForm = new RegistrationPaymentsFormWindow(desktop);
+				abrirFrame(frameRegistrationPaymentsForm);
 			}
 		});
 
@@ -315,9 +316,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: MATRICULAS
-				//frameTeste = new ListStudentsFormWindow(desktop);
-				//abrirFrame(frameTeste);
+				frameReportRegistrationForm = new ReportRegistrationFormWindow(desktop);
+				abrirFrame(frameReportRegistrationForm);
 			}
 		});
 
@@ -331,8 +331,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: janela relatorios/faturas/em aberto
-				// abrirFrame();
+				frameReportPaymentsOpenForm = new ReportPaymentsOpenFormWindow(desktop);
+				abrirFrame(frameReportPaymentsOpenForm);
 			}
 		});
 
@@ -346,8 +346,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: relatorios/faturas/pagas
-				// abrirFrame();
+				frameReportPaymentsPayForm = new ReportPaymentsPayFormWindow(desktop);
+				abrirFrame(frameReportPaymentsPayForm);
 			}
 		});
 

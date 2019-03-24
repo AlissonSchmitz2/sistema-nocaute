@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +20,6 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.text.MaskFormatter;
 
-import br.com.nocaute.enums.Genres;
-import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
 
 public class StudentRegistrationWindow extends AbstractGridWindow {
@@ -50,7 +47,8 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 			this.getClass().getResource("/br/com/nocaute/image/22x22/adicionar.png"));
 	private ImageIcon iconRemover = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
-	private ImageIcon iconSalvar = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
+	private ImageIcon iconSalvar = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
 	private ImageIcon iconJanela = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
@@ -212,7 +210,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 		getContentPane().add(label);
 
 		try {
-			txfDtMatricula = new JFormattedTextField(new MaskFormatter("  ## /  ##  / ####       "));
+			txfDtMatricula = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txfDtMatricula.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfDtMatricula.setBounds(90, 105, 90, 20);
 			txfDtMatricula.setToolTipText("Data da matrícula");
