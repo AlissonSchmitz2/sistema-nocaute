@@ -117,6 +117,7 @@ public class ListStudentsFormWindow extends AbstractGridWindow {
 		jTableModels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		//Add ayout na grid
 		jTableModels.setDefaultRenderer(Object.class, renderer);
+		jTableModels.getColumnModel().getColumn(0).setMaxWidth(60);
 		
 		grid = new JScrollPane(jTableModels);
 		setLayout(null);
