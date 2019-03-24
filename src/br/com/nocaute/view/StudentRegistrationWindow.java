@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +20,6 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.text.MaskFormatter;
 
-import br.com.nocaute.enums.Genres;
-import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
 
 public class StudentRegistrationWindow extends AbstractGridWindow {
@@ -213,7 +210,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 		getContentPane().add(label);
 
 		try {
-			txfDtMatricula = new JFormattedTextField(new MaskFormatter("  ## /  ##  / ####       "));
+			txfDtMatricula = new JFormattedTextField(new MaskFormatter("##/##/####"));
 			txfDtMatricula.setFocusLostBehavior(JFormattedTextField.COMMIT);
 			txfDtMatricula.setBounds(90, 105, 90, 20);
 			txfDtMatricula.setToolTipText("Data da matrícula");
