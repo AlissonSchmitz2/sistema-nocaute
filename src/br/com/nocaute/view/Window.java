@@ -30,10 +30,11 @@ public class Window extends JFrame {
 	private StudentFormWindow frameStudentForm;
 	private ModalitiesFormWindow frameModalitiesForm;
 	private PlansFormWindow framePlansForm;
-	private StudentRegistrationWindow frameStudentRegistration;
+	private StudentRegistrationWindow frameStudentRegistrationForm;
 	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
 	private ListPaymentsFormWindow frameListPaymentsForm;
-	private RegistrationPaymentsFormWindow frameRegistrationPaymentsFormWindow;
+	private RegistrationPaymentsFormWindow frameRegistrationPaymentsForm;
+	private ReportRegistrationFormWindow FrameReportRegistrationForm;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -235,8 +236,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentRegistration = new StudentRegistrationWindow(desktop);
-				abrirFrame(frameStudentRegistration);
+				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop);
+				abrirFrame(frameStudentRegistrationForm);
 			}
 		});
 
@@ -280,8 +281,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameRegistrationPaymentsFormWindow = new RegistrationPaymentsFormWindow(desktop);
-				abrirFrame(frameRegistrationPaymentsFormWindow);
+				frameRegistrationPaymentsForm = new RegistrationPaymentsFormWindow(desktop);
+				abrirFrame(frameRegistrationPaymentsForm);
 			}
 		});
 
@@ -313,9 +314,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: MATRICULAS
-				//frameTeste = new ListStudentsFormWindow(desktop);
-				//abrirFrame(frameTeste);
+				FrameReportRegistrationForm = new ReportRegistrationFormWindow(desktop);
+				abrirFrame(FrameReportRegistrationForm);
 			}
 		});
 
