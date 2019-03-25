@@ -21,7 +21,7 @@ import br.com.nocaute.dao.CityDAO;
 import br.com.nocaute.model.CityModel;
 import br.com.nocaute.view.tableModel.CityTableModel;
 
-public class ListCitiesFormWindow extends AbstractGridWindow {
+public class ListCitiesWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = 1L;
 
 	private CityDAO dao;
@@ -34,7 +34,7 @@ public class ListCitiesFormWindow extends AbstractGridWindow {
 	private JTable jTableModels;
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
-	public ListCitiesFormWindow(JDesktopPane desktop) {
+	public ListCitiesWindow(JDesktopPane desktop) {
 		super("Cidades", 445, 310, desktop);
 
 		try {

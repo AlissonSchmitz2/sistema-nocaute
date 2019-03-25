@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 
-public class GeneratePaymentsFormWindow extends AbstractWindowFrame {
+public class GeneratePaymentsWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 7934307046018321070L;
 	
 	//Componentes
@@ -18,7 +18,7 @@ public class GeneratePaymentsFormWindow extends AbstractWindowFrame {
 	private ImageIcon icon = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/novo.png"));
 
-	public GeneratePaymentsFormWindow(JDesktopPane desktop) {
+	public GeneratePaymentsWindow(JDesktopPane desktop) {
 		super("Gerar Faturas", 270, 120, desktop);
 		setFrameIcon(icon);
 

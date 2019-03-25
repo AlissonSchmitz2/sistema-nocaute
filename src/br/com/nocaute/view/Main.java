@@ -1,13 +1,8 @@
 package br.com.nocaute.view;
 
-import br.com.nocaute.test.DatabaseConnectionTest;
-
 public class Main {
 
 	public static void main(String[] args) {
-		
-		//Testar conexão cm o banco.
-		//new DatabaseConnectionTest();
 
 		//Muda o Layout da janela para o padrão do Windows
 		 try {

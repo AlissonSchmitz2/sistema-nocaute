@@ -38,7 +38,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	private List<GraduationModel> graduationList = new ArrayList<>();
 	private List<GraduationModel> graduationDeleteList = new ArrayList<>();
 	private List<GraduationModel> graduationAddList = new ArrayList<>();
-	private ListModalitiesFormWindow searchModalityWindow;
+	private ListModalitiesWindow searchModalityWindow;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -262,13 +262,13 @@ public class ModalityFormWindow extends AbstractGridWindow{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchModalityWindow == null) {
-					searchModalityWindow = new ListModalitiesFormWindow(desktop);
+					searchModalityWindow = new ListModalitiesWindow(desktop);
 					
 					searchModalityWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
-							ModalityModel selectedModalityModel = ((ListModalitiesFormWindow) e.getInternalFrame()).getSelectedModel();
-							List<GraduationModel> selectedGraduationList = ((ListModalitiesFormWindow) e.getInternalFrame()).getGraduationList();
+							ModalityModel selectedModalityModel = ((ListModalitiesWindow) e.getInternalFrame()).getSelectedModel();
+							List<GraduationModel> selectedGraduationList = ((ListModalitiesWindow) e.getInternalFrame()).getGraduationList();
 							
 							if (selectedModalityModel != null && selectedGraduationList != null) {
 								//Atribui o model selecionado

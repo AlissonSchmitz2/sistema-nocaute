@@ -17,7 +17,7 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 
-public class ListPaymentsFormWindow extends AbstractGridWindow {
+public class ListPaymentsWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -4201960150625152379L;
 
 	// Componentes
@@ -33,7 +33,7 @@ public class ListPaymentsFormWindow extends AbstractGridWindow {
 	private ImageIcon iconPesquisar = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/localizar.png"));
 
-	public ListPaymentsFormWindow(JDesktopPane desktop) {
+	public ListPaymentsWindow(JDesktopPane desktop) {
 		super("Consultar Faturas", 610, 380, desktop);
 		setFrameIcon(iconPesquisar);
 		

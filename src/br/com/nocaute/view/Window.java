@@ -31,8 +31,8 @@ public class Window extends JFrame {
 	private ModalityFormWindow frameModalitiesForm;
 	private PlanFormWindow framePlansForm;
 	private StudentRegistrationWindow frameStudentRegistrationForm;
-	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
-	private ListPaymentsFormWindow frameListPaymentsForm;
+	private GeneratePaymentsWindow frameGeneratePaymentsForm;
+	private ListPaymentsWindow frameListPaymentsForm;
 	private RegistrationPaymentsFormWindow frameRegistrationPaymentsForm;
 	private ReportRegistrationFormWindow frameReportRegistrationForm;
 	private ReportPaymentsOpenFormWindow frameReportPaymentsOpenForm;
@@ -253,7 +253,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameGeneratePaymentsForm = new GeneratePaymentsFormWindow(desktop);
+				frameGeneratePaymentsForm = new GeneratePaymentsWindow(desktop);
 				abrirFrame(frameGeneratePaymentsForm);
 			}
 		});
@@ -268,7 +268,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameListPaymentsForm = new ListPaymentsFormWindow(desktop);
+				frameListPaymentsForm = new ListPaymentsWindow(desktop);
 				abrirFrame(frameListPaymentsForm);
 			}
 		});

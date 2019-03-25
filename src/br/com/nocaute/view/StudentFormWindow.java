@@ -47,8 +47,8 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 	private StudentDAO studentDao;
 	private StudentModel model = new StudentModel();
-	private ListStudentsFormWindow searchStudentWindow;
-	private ListCitiesFormWindow searchCityWindow;
+	private ListStudentsWindow searchStudentWindow;
+	private ListCitiesWindow searchCityWindow;
 
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -235,12 +235,12 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchStudentWindow == null) {
-					searchStudentWindow = new ListStudentsFormWindow(desktop);
+					searchStudentWindow = new ListStudentsWindow(desktop);
 
 					searchStudentWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
-							StudentModel selectedModel = ((ListStudentsFormWindow) e.getInternalFrame())
+							StudentModel selectedModel = ((ListStudentsWindow) e.getInternalFrame())
 									.getSelectedModel();
 
 							if (selectedModel != null) {
@@ -316,12 +316,12 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 	private void openSearchCityWindow() {
 		if (searchCityWindow == null) {
-			searchCityWindow = new ListCitiesFormWindow(desktop);
+			searchCityWindow = new ListCitiesWindow(desktop);
 
 			searchCityWindow.addInternalFrameListener(new InternalFrameListener() {
 				@Override
 				public void internalFrameClosed(InternalFrameEvent e) {
-					CityModel selectedModel = ((ListCitiesFormWindow) e.getInternalFrame()).getSelectedModel();
+					CityModel selectedModel = ((ListCitiesWindow) e.getInternalFrame()).getSelectedModel();
 
 					if (selectedModel != null) {
 						// Atribui cidade para o model
