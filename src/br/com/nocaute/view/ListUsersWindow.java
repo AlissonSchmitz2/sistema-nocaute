@@ -21,7 +21,7 @@ import br.com.nocaute.dao.UserDAO;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.view.tableModel.UserTableModel;
 
-public class ListUsersFormWindow extends AbstractGridWindow {
+public class ListUsersWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = 1L;
 
 	private UserDAO dao;
@@ -36,7 +36,7 @@ public class ListUsersFormWindow extends AbstractGridWindow {
 	// Utilizado para alterar o layout da grid
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
-	public ListUsersFormWindow(JDesktopPane desktop) {
+	public ListUsersWindow(JDesktopPane desktop) {
 		super("Usuarios", 445, 310, desktop);
 
 		try {
