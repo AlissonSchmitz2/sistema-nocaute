@@ -118,10 +118,10 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	}
 	
 	protected void bubbleError(String message) {
-		JOptionPane.showMessageDialog(null, message, "", JOptionPane.ERROR_MESSAGE, null);
+		JOptionPane.showMessageDialog(null, message, "Erro", JOptionPane.ERROR_MESSAGE, null);
 	}
 	
 	protected void bubbleWarning(String message) {
-		JOptionPane.showMessageDialog(null, message, "", JOptionPane.WARNING_MESSAGE, null);
+		JOptionPane.showMessageDialog(null, message, "Aviso", JOptionPane.WARNING_MESSAGE, null);
 	}
 }

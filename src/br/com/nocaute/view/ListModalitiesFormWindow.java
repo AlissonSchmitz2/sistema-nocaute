@@ -1,7 +1,5 @@
 package br.com.nocaute.view;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,12 +13,10 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.GraduationDAO;
@@ -158,30 +154,4 @@ public class ListModalitiesFormWindow extends AbstractGridWindow {
 			e1.printStackTrace();
 		}
 	}
-
-	//TODO: Refatorar para utilizar e todas as grids
-	class EvenOddRenderer implements TableCellRenderer {
-		public DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
-
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-					column);
-			((JLabel) renderer).setOpaque(true);
-			Color background;
-			if (isSelected) {
-				background = new Color(65, 105, 225);
-			} else {
-				if (row % 2 == 0) {
-					background = new Color(220, 220, 220);
-				} else {
-					background = Color.WHITE;
-				}
-			}
-
-			renderer.setBackground(background);
-			return renderer;
-		}
-	}
-	
 }
