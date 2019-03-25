@@ -29,7 +29,7 @@ import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.view.tableModel.GraduationTableModel;
 
-public class ModalitiesFormWindow extends AbstractGridWindow{
+public class ModalityFormWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = 7836235315411293572L;
 	
 	private ModalityDAO modalityDAO;
@@ -68,7 +68,7 @@ public class ModalitiesFormWindow extends AbstractGridWindow{
 	
 	private JDesktopPane desktop;
 	
-	public ModalitiesFormWindow(JDesktopPane desktop) {
+	public ModalityFormWindow(JDesktopPane desktop) {
 			super("Modalidades e Graduações", 450, 335, desktop);
 			setFrameIcon(iconJanela);
 			

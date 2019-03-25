@@ -45,7 +45,7 @@ import br.com.nocaute.view.comboModel.GenericComboModel;
 public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPostProcessor {
 	private static final long serialVersionUID = 1631880171317467520L;
 
-	private StudentDAO dao;
+	private StudentDAO studentDao;
 	private StudentModel model = new StudentModel();
 	private ListStudentsFormWindow searchStudentWindow;
 	private ListCitiesFormWindow searchCityWindow;
@@ -90,12 +90,12 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		this.desktop = desktop;
 
 		try {
-			dao = new StudentDAO(CONNECTION);
+			studentDao = new StudentDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
 
-		criarComponentes();
+		createComponents();
 
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
@@ -136,7 +136,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (isEditing()) {
-						boolean result = dao.delete(model);
+						boolean result = studentDao.delete(model);
 
 						if (result) {
 							bubbleSuccess("Aluno excluído com sucesso");
@@ -171,12 +171,12 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (validateFields()) {
+				if (!validateFields()) {
 					return;
 				}
 				/*
-				 * SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy"); String
-				 * birthDate = formatador.format(jDateNascimento.getDate());
+				 * SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); String
+				 * birthDate = formatter.format(jDateNascimento.getDate());
 				 */
 				Date birthDate = jDateNascimento.getDate();
 
@@ -198,7 +198,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 				try {
 					// EDIÇÃO CADASTRO
 					if (isEditing()) {
-						boolean result = dao.update(model);
+						boolean result = studentDao.update(model);
 
 						if (result) {
 							bubbleSuccess("Aluno editado com sucesso");
@@ -207,7 +207,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 						}
 						// NOVO CADASTRO
 					} else {
-						StudentModel insertedModel = dao.insert(model);
+						StudentModel insertedModel = studentDao.insert(model);
 
 						if (insertedModel != null) {
 							bubbleSuccess("Aluno cadastrado com sucesso");
@@ -340,7 +340,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		}
 	}
 
-	private void criarComponentes() {
+	private void createComponents() {
 
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setBounds(15, 5, 95, 40);
@@ -572,47 +572,47 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 		if (txfAluno.getText().isEmpty() || txfAluno.getText() == null) {
 			bubbleWarning("Informe o nome do aluno!");
-			return true;
+			return false;
 		}
 
 		// Se a data de nascimento for igual a atual
 		if (formatador.format(jDateNascimento.getDate())
 				.equals(formatador.format(new Date(System.currentTimeMillis())))) {
 			bubbleWarning("Data de nascimento inválida!");
-			return true;
+			return false;
 		}
 
 		if (cbxSexo.getSelectedIndex() == 0) {
 			bubbleWarning("Informe o sexo do aluno!");
-			return true;
+			return false;
 		}
 
 		if (txfTelefone.getText().isEmpty() || txfTelefone.getText() == null || txfCelular.getText().isEmpty()
 				|| txfCelular.getText() == null) {
 			bubbleWarning("Informe ao menos um telefone para contato!");
-			return true;
+			return false;
 		}
 
 		if (txfEndereco.getText().isEmpty() || txfEndereco.getText() == null) {
 			bubbleWarning("Informe o endereço do aluno!");
-			return true;
+			return false;
 		}
 
 		if (txfBairro.getText().isEmpty() || txfBairro.getText() == null) {
 			bubbleWarning("Informe o bairro do aluno!");
-			return true;
+			return false;
 		}
 
 		if (txfCidade.getText().isEmpty() || txfCidade.getText() == null) {
 			bubbleWarning("Cidade não informada!");
-			return true;
+			return false;
 		}
 
 		if (txfCEP.getText().isEmpty() || txfCEP.getText() == null) {
 			bubbleWarning("Digite o CEP do aluno!");
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 }

@@ -28,8 +28,8 @@ public class Window extends JFrame {
 	//Janelas do Menu
 	private UserFormWindow frameUserForm;
 	private StudentFormWindow frameStudentForm;
-	private ModalitiesFormWindow frameModalitiesForm;
-	private PlansFormWindow framePlansForm;
+	private ModalityFormWindow frameModalitiesForm;
+	private PlanFormWindow framePlansForm;
 	private StudentRegistrationWindow frameStudentRegistrationForm;
 	private GeneratePaymentsFormWindow frameGeneratePaymentsForm;
 	private ListPaymentsFormWindow frameListPaymentsForm;
@@ -183,7 +183,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameModalitiesForm = new ModalitiesFormWindow(desktop);
+				frameModalitiesForm = new ModalityFormWindow(desktop);
 				abrirFrame(frameModalitiesForm);
 			}
 		});
@@ -198,7 +198,7 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				framePlansForm = new PlansFormWindow(desktop);
+				framePlansForm = new PlanFormWindow(desktop);
 				abrirFrame(framePlansForm);
 			}
 		});

@@ -1,11 +1,13 @@
 package br.com.nocaute.model;
 
+import java.math.BigDecimal;
+
 public class PlanModel extends AbstractModel {
 
 	private Integer id_plano;
 	private Integer id_modalidade;
 	private String nome_plano;
-	private float valor_mensal;
+	private BigDecimal valor_mensal;
 
 	/**
 	 * id_plano
@@ -58,7 +60,7 @@ public class PlanModel extends AbstractModel {
 	/**
 	 * valor_mensal
 	 */
-	public float getMonthlyValue() {
+	public BigDecimal getMonthlyValue() {
 		return valor_mensal;
 	}
 
@@ -67,7 +69,7 @@ public class PlanModel extends AbstractModel {
 	 * 
 	 * @param monthlyValue
 	 */
-	public void setMonthlyValue(float monthlyValue) {
+	public void setMonthlyValue(BigDecimal monthlyValue) {
 		this.valor_mensal = monthlyValue;
 	}
 
