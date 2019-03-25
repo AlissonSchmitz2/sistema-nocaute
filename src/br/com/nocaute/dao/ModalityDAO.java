@@ -34,6 +34,8 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 	
 	public ModalityDAO(Connection connection) throws SQLException{
 		this.connection = connection;
+		
+		this.connection.setAutoCommit(false);
 	}
 	
 	@Override
@@ -120,7 +122,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			//connection.commit();
+			connection.commit();
 
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
@@ -149,7 +151,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			//connection.commit();
+			connection.commit();
 
 			return true;
 		}
@@ -171,7 +173,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		
 		int result = pst.executeUpdate();
         if (result > 0) {
-        	//connection.commit();
+        	connection.commit();
         	
         	return true;
         }

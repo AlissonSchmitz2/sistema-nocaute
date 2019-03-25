@@ -40,6 +40,8 @@ private static final String TABLE_NAME = "matriculas";
 	
 	public RegistrationDAO(Connection connection) throws SQLException {
 		this.connection = connection;
+		
+		this.connection.setAutoCommit(false);
 	}
 
 	@Override

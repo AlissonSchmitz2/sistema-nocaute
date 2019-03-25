@@ -35,6 +35,8 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 	
 	public GraduationDAO(Connection connection) throws SQLException{
 		this.connection = connection;
+		
+		this.connection.setAutoCommit(false);
 	}
 	
 	@Override
@@ -104,7 +106,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			//connection.commit();
+			connection.commit();
 
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
@@ -133,7 +135,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			//connection.commit();
+			connection.commit();
 
 			return true;
 		}
@@ -155,7 +157,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
-			//connection.commit();
+			connection.commit();
 
 			return true;
 		}

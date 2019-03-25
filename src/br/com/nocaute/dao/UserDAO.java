@@ -29,7 +29,7 @@ public class UserDAO extends AbstractDAO<UserModel> {
 	public UserDAO(Connection connection) throws Exception {
 		this.connection = connection;
 		
-		connection.setAutoCommit(false);
+		this.connection.setAutoCommit(false);
 	}
 
 	@Override
