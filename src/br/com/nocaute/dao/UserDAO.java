@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.model.CityModel;
+import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 
 public class UserDAO extends AbstractDAO<UserModel> {
@@ -28,7 +30,7 @@ public class UserDAO extends AbstractDAO<UserModel> {
 
 	public UserDAO(Connection connection) throws Exception {
 		this.connection = connection;
-		
+
 		connection.setAutoCommit(false);
 	}
 
@@ -46,6 +48,28 @@ public class UserDAO extends AbstractDAO<UserModel> {
 			UserModel user = createModelFromResultSet(rst);
 
 			userList.add(user);
+		}
+
+		return userList;
+	}
+
+	public List<UserModel> search(String word) throws SQLException {
+		String query = "";
+		PreparedStatement pst = null;
+
+		query = "SELECT * FROM " + TABLE_NAME + " WHERE usuario ILIKE ? ORDER BY " + defaultOrderBy;
+		pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, "%" + word + "%");
+
+		List<UserModel> userList = new ArrayList<UserModel>();
+
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			UserModel model = createModelFromResultSet(rst);
+
+			userList.add(model);
 		}
 
 		return userList;

@@ -16,11 +16,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import br.com.nocaute.dao.UserDAO;
+import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 
 public class UserFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = -2537423200954897351L;
 	
+	private UserModel model = new UserModel(); 
 	private UserDAO userDao;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
@@ -68,8 +70,22 @@ public class UserFormWindow extends AbstractWindowFrame{
 		// Ações de botões
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setFormMode(CREATE_MODE);
+				
 				// Ativa campos
 				enableComponents(formFields);
+				
+				// Limpar dados dos campos
+				clearFormFields(formFields);
+
+				// Cria nova entidade model
+				model = new UserModel();
+
+				// Ativa botão salvar
+				btnSalvar.setEnabled(true);
+
+				// Desativa botão Remover
+				btnRemover.setEnabled(false);
 			}
 		});
 		
