@@ -136,6 +136,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -184,6 +185,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}

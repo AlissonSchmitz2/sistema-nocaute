@@ -161,6 +161,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -252,6 +253,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}

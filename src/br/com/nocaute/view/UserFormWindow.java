@@ -101,8 +101,9 @@ public class UserFormWindow extends AbstractWindowFrame{
 				
 				try {
 					userDao.insert(model);
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+				} catch (SQLException error) {
+					bubbleError(error.getMessage());
+					error.printStackTrace();
 				}
 			}
 		});
