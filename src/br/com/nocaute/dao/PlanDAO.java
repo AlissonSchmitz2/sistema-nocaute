@@ -37,6 +37,8 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 	
 	public PlanDAO(Connection connection) throws SQLException {
 		this.connection = connection;
+		
+		this.connection.setAutoCommit(false);
 	}
 
 	@Override

@@ -21,6 +21,8 @@ private static final String TABLE_NAME = "cidades";
 	
 	public CityDAO(Connection connection) throws SQLException{
 		this.connection = connection;
+		
+		this.connection.setAutoCommit(false);
 	}
 
 	@Override
