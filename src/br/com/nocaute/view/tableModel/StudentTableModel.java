@@ -6,7 +6,7 @@ public class StudentTableModel extends AbstractTableModel<StudentModel> {
 	private static final long serialVersionUID = 1242843030000425873L;
 	
 	public StudentTableModel() {
-		super(new String[] { "ID", "Aluno" });
+		super(new String[] { "Código", "Aluno" });
 	}
 
 	@Override

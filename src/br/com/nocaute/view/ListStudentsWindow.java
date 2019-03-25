@@ -24,7 +24,7 @@ import br.com.nocaute.view.tableModel.StudentTableModel;
 public class ListStudentsWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -8074030868088770858L;
 	
-	private StudentDAO dao;
+	private StudentDAO studentDao;
 	private StudentModel selectedModel;
 
 	private JButton btnSearch;
@@ -32,6 +32,7 @@ public class ListStudentsWindow extends AbstractGridWindow {
 
 	private StudentTableModel tableModel;
 	private JTable jTableModels;
+	
 	//Utilizado para alterar o layout da grid
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
@@ -39,7 +40,7 @@ public class ListStudentsWindow extends AbstractGridWindow {
 		super("Alunos", 445, 310, desktop);
 		
 		try {
-			dao = new StudentDAO(CONNECTION);
+			studentDao = new StudentDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
@@ -128,10 +129,16 @@ public class ListStudentsWindow extends AbstractGridWindow {
 	}
 	
 	private void loadGrid(String word) {
+		if (word.length() < 3) {
+			bubbleWarning("Você precisa inserir ao menos 3 caracteres para iniciar a busca");
+			
+			return;
+		}
+		
 		tableModel.clear();
 		
 		try {
-			tableModel.addModelsList(dao.search(word));
+			tableModel.addModelsList(studentDao.search(word));
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

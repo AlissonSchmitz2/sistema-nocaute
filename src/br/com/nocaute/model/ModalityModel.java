@@ -8,7 +8,7 @@ public class ModalityModel extends AbstractModel {
 	/**
 	 * nome_modalidade
 	 */
-	public String getModalityName() {
+	public String getName() {
 		return nome_modalidade;
 	}
 
@@ -17,8 +17,8 @@ public class ModalityModel extends AbstractModel {
 	 * 
 	 * @param modalityName
 	 */
-	public void setModalityName(String modalityName) {
-		this.nome_modalidade = modalityName;
+	public void setName(String name) {
+		this.nome_modalidade = name;
 	}
 
 	/**
