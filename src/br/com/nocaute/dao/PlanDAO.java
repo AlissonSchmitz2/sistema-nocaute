@@ -29,6 +29,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 	};
 	
 	private String[] columnsToUpdate = new String[] {
+			"id_modalidade",
 			"plano",
 			"valor_mensal"
 	};
@@ -95,10 +96,10 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
-				int lastInsertedCode = rs.getInt(columnId);
+				int lastInsertedId = rs.getInt(columnId);
 
-				// Antes de retornar, seta o id ao objeto plano.
-				model.setModalityId(lastInsertedCode);
+				// Antes de retornar, seta o código ao objeto aluno
+				model.setPlanId(lastInsertedId);
 
 				return model;
 			}
@@ -113,11 +114,12 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		setParam(pst, 1, model.getPlanName());
-		setParam(pst, 2, model.getMonthlyValue());
+		setParam(pst, 1, model.getModalityId());
+		setParam(pst, 2, model.getPlanName());
+		setParam(pst, 3, model.getMonthlyValue());
 
 		// Identificador WHERE
-		setParam(pst, 3, model.getPlanId());
+		setParam(pst, 4, model.getPlanId());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -164,7 +166,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 		model.setPlanId(rst.getInt("id_plano"));
 		model.setModalityId(rst.getInt("id_modalidade"));
 		model.setPlanName(rst.getString("plano"));
-		model.setMonthlyValue(rst.getFloat("valor_mensal"));
+		model.setMonthlyValue(rst.getBigDecimal("valor_mensal"));
 
 		return model;
 	}

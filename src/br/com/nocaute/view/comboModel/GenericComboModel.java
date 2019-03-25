@@ -26,7 +26,7 @@ public class GenericComboModel<E> extends AbstractListModel<E> implements ComboB
     }
 
     @Override
-    public Object getSelectedItem() {
+    public E getSelectedItem() {
         return (E) this.selection;
     }
 
