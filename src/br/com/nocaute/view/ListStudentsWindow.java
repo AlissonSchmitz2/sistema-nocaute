@@ -119,6 +119,27 @@ public class ListStudentsWindow extends AbstractGridWindow {
 		//Add ayout na grid
 		jTableModels.setDefaultRenderer(Object.class, renderer);
 		jTableModels.getColumnModel().getColumn(0).setMaxWidth(60);
+		jTableModels.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent ke) {
+				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+					//Atribui o model da linha selecionada
+	            	selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
+	            	
+	            	//Fecha a janela
+	            	try {
+						setClosed(true);
+					} catch (PropertyVetoException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			public void keyReleased(KeyEvent keyEvent) {
+			}
+			
+			public void keyTyped(KeyEvent keyEvent) {
+			}
+	    });
 		
 		grid = new JScrollPane(jTableModels);
 		setLayout(null);
