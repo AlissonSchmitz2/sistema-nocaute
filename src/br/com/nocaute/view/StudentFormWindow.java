@@ -103,8 +103,21 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 
-		// Register a key event post processor.
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(this);
+		registerKeyEvent();
+	}
+	
+	private void registerKeyEvent() {
+		//Register key event post processor.
+		StudentFormWindow windowInstance = this;
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(windowInstance);
+		
+		//Unregister key event
+		addInternalFrameListener(new InternalFrameListener() {
+			@Override
+			public void internalFrameClosed(InternalFrameEvent e) {
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventPostProcessor(windowInstance);
+			}
+		});
 	}
 
 	private void setButtonsActions() {
@@ -328,6 +341,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 					if (selectedModel != null) {
 						// Atribui cidade para o model
 						model.setCity(selectedModel);
+						model.setCityId(selectedModel.getId());
 
 						// Seta valores da cidade para o campo
 						txfCidade.setText(selectedModel.getName());
