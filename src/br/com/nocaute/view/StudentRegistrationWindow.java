@@ -42,7 +42,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	
 	private RegistrationDAO registrationDao;
 	private RegistrationModel model = new RegistrationModel();
-	private ListModalitiesWindow searchRegistrationWindow;
+	private ListRegistrationsWindow searchRegistrationWindow;
 	private ListStudentsWindow searchStudentWindow;
 
 	// Guarda os fields em uma lista para facilitar manipulação em massa
@@ -217,6 +217,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 							// Atribui o model recém criado ao model
 							model = insertedModel;
+							
+							//Atualiza o campo código da matrícula
+							txfMatricula.setText(model.getRegistrationCode().toString());
 
 							// Seta form para edição
 							setFormMode(UPDATE_MODE);
@@ -239,7 +242,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchRegistrationWindow == null) {
-					/*searchRegistrationWindow = new ListRegistrationsWindow(desktop);
+					searchRegistrationWindow = new ListRegistrationsWindow(desktop);
 
 					searchRegistrationWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
@@ -252,7 +255,17 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 								model = selectedModel;
 
 								// Seta dados do model para os campos
-								//TODO: seta dados do model para campos
+								txfMatricula.setText(model.getRegistrationCode().toString());
+								txfVencFatura.setText(model.getExpirationDay().toString());
+								
+								if (model.getRegistrationDate() != null) {
+									jDataMatricula.setDate(model.getRegistrationDate());
+								}
+								
+								if (model.getStudent() != null) {
+									txfAluno.setText(model.getStudent().getCode().toString());
+									txfAlunoDescricao.setText(model.getStudent().getName());
+								}
 
 								// Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
@@ -270,7 +283,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 							// Reseta janela
 							searchRegistrationWindow = null;
 						}
-					});*/
+					});
 				}
 			}
 		});
@@ -386,6 +399,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		txfMatricula.setEditable(false);
 		txfMatricula.setFocusable(false);
 		getContentPane().add(txfMatricula);
+		formFields.add(txfMatricula);
 
 		label = new JLabel("Aluno: ");
 		label.setBounds(5, 80, 150, 25);
@@ -419,6 +433,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		txfAlunoDescricao.setFocusable(false);
 		txfAlunoDescricao.setToolTipText("Nome do aluno");
 		getContentPane().add(txfAlunoDescricao);
+		formFields.add(txfAlunoDescricao);
 
 		label = new JLabel("Data Matrícula: ");
 		label.setBounds(5, 105, 150, 25);

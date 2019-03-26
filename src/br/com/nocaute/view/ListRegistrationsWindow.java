@@ -19,8 +19,7 @@ import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.model.RegistrationModel;
-import br.com.nocaute.view.AbstractGridWindow.EvenOddRenderer;
-import br.com.nocaute.view.tableModel.StudentsTableModel;
+import br.com.nocaute.view.tableModel.RegistrationsTableModel;
 
 public class ListRegistrationsWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = 8054610341494017437L;
@@ -31,7 +30,7 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 	private JButton btnSearch;
 	private JTextField txfSearch;
 
-	private StudentsTableModel tableModel;
+	private RegistrationsTableModel tableModel;
 	private JTable jTableModels;
 	
 	//Utilizado para alterar o layout da grid
@@ -95,7 +94,7 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 	}
 
 	private void createGrid() {
-		/*tableModel = new StudentsTableModel();
+		tableModel = new RegistrationsTableModel();
 		jTableModels = new JTable(tableModel);
 		
 		jTableModels.addMouseListener(new MouseAdapter() {
@@ -147,12 +146,12 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 		resizeGrid(grid, 5, 40, 420, 230);
 		grid.setVisible(true);
 		
-		add(grid);*/
+		add(grid);
 	}
 	
 	private void loadGrid(String word) {
-		if (word.length() < 3) {
-			bubbleWarning("Você precisa inserir ao menos 3 caracteres para iniciar a busca");
+		if (word.length() < 1) {
+			bubbleWarning("Você precisa inserir ao menos 1 caracter para iniciar a busca");
 			
 			return;
 		}
@@ -160,7 +159,7 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 		tableModel.clear();
 		
 		try {
-			//tableModel.addModelsList(registrationDao.search(word));
+			tableModel.addModelsList(registrationDao.search(word));
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

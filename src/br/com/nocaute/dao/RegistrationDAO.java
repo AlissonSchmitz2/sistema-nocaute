@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.nocaute.model.RegistrationModel;
+import br.com.nocaute.model.StudentModel;
 
 public class RegistrationDAO extends AbstractDAO<RegistrationModel> {
 
@@ -56,6 +57,50 @@ private static final String TABLE_NAME = "matriculas";
 
 		while (rst.next()) {
 			RegistrationModel model = createModelFromResultSet(rst);
+
+			registrationsList.add(model);
+		}
+
+		return registrationsList;
+	}
+	
+	public List<RegistrationModel> search(String word) throws SQLException {
+		String query = "";
+		PreparedStatement pst = null;
+
+		try {
+			int code = Integer.parseInt(word);
+
+			query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
+					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE a.aluno ILIKE ? OR r.codigo_matricula=? ORDER BY a.aluno"
+	;
+			pst = connection.prepareStatement(query);
+
+			setParam(pst, 2, code);
+
+		} catch (NumberFormatException e) {
+			query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
+					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE a.aluno ILIKE ? ORDER BY a.aluno";
+			pst = connection.prepareStatement(query);
+		}
+
+		setParam(pst, 1, "%" + word + "%");
+
+		List<RegistrationModel> registrationsList = new ArrayList<RegistrationModel>();
+
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			RegistrationModel model = createModelFromResultSet(rst);
+			
+			if (Integer.valueOf(rst.getInt("codigo_aluno")) != null) {
+				StudentModel student = new StudentModel();
+				//Para o propósito de listagem, somente código e nome do aluno são suficientes
+				student.setCode(Integer.valueOf(rst.getInt("codigo_aluno")));
+				student.setName(rst.getString("aluno"));
+				
+				model.setStudent(student);
+			}
 
 			registrationsList.add(model);
 		}
