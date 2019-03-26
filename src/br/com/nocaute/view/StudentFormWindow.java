@@ -103,6 +103,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 
+		//Key events
 		registerKeyEvent();
 	}
 	

@@ -397,8 +397,6 @@ public class Window extends JFrame {
 
 		// Percorre todos os frames adicionados
 		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
-			System.out.println(addedFrame.getTitle() + " ---  " + frame.getTitle());
-			
 			if (addedFrame.getTitle().equals(frame.getTitle())) {
 				//Remove janelas duplicadas
 				desktop.remove(addedFrame);

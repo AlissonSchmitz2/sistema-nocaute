@@ -2,8 +2,14 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.KeyEventPostProcessor;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +23,21 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import javax.swing.text.MaskFormatter;
-
+import br.com.nocaute.util.InternalFrameListener;
+import br.com.nocaute.util.PlaceholderTextField;
 import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
 
-public class StudentRegistrationWindow extends AbstractGridWindow {
+import javax.swing.text.MaskFormatter;
+
+import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.model.RegistrationModel;
+
+public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
 	private static final long serialVersionUID = -4201960150625152379L;
+	
+	private RegistrationDAO registrationDao;
+	private RegistrationModel model = new RegistrationModel();
+	private ListModalitiesWindow searchRegistrationWindow;
 
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -31,10 +45,10 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 	// Componentes
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar, btnAddModalidade;
 	private JLabel label;
-	private JTextField txfMatricula, txfAluno, txfAlunoDescricao;
+	private JTextField txfMatricula, txfAlunoDescricao;
 	private JFormattedTextField txfDtMatricula, txfVencFatura;
+	private PlaceholderTextField txfAluno;
 
-	private StudentRegistrationTableModel model;
 	private JTable jTableRegistration;
 	private StudentRegistrationAddModalitiesWindow studentRegistrationAddModalitiesWindow;
 	
@@ -58,6 +72,12 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 
 		this.desktop = desktop;
 		
+		try {
+			this.registrationDao = new RegistrationDAO(CONNECTION);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		criarComponentes();
 
 		// Por padrão campos são desabilitados ao iniciar
@@ -65,25 +85,184 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
+		
+		//Key events
+		registerKeyEvent();
+	}
+	
+	private void registerKeyEvent() {
+		//Register key event post processor.
+		StudentRegistrationWindow windowInstance = this;
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(windowInstance);
+		
+		//Unregister key event
+		addInternalFrameListener(new InternalFrameListener() {
+			@Override
+			public void internalFrameClosed(InternalFrameEvent e) {
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventPostProcessor(windowInstance);
+			}
+		});
+	}
+	
+	@Override
+	public boolean postProcessKeyEvent(KeyEvent ke) {
+		// Abre tela seleção cidade ao clicar F9
+		if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_F9) {
+			if (btnSalvar.isEnabled()) {
+				//openSearchStudentWindow();
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void setButtonsActions() {
 		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Seta form para modo Cadastro
+				setFormMode(CREATE_MODE);
+
 				// Ativa campos
 				enableComponents(formFields);
 
+				// Limpar dados dos campos
+				clearFormFields(formFields);
+
+				// Cria nova entidade model
+				model = new RegistrationModel();
+
 				// Ativa botão salvar
 				btnSalvar.setEnabled(true);
+
+				// Desativa botão Remover
+				btnRemover.setEnabled(false);
+			}
+		});
+		
+		// Ação Remover
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (isEditing()) {
+						boolean result = registrationDao.delete(model);
+
+						if (result) {
+							bubbleSuccess("Matrícula excluída com sucesso");
+
+							// Seta form para modo Cadastro
+							setFormMode(CREATE_MODE);
+
+							// Desativa campos
+							disableComponents(formFields);
+
+							// Limpar dados dos campos
+							clearFormFields(formFields);
+
+							// Cria nova entidade model
+							model = new RegistrationModel();
+
+							// Desativa botão salvar
+							btnSalvar.setEnabled(false);
+
+							// Desativa botão remover
+							btnRemover.setEnabled(false);
+						} else {
+							bubbleError("Houve um erro ao excluir matrícula");
+						}
+					}
+				} catch (SQLException error) {
+					bubbleError(error.getMessage());
+					error.printStackTrace();
+				}
 			}
 		});
 
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: validar campos obrigatórios
-				// TODO: Salvar
+				if (!validateFields()) {
+					return;
+				}
+				
+				//TODO: set input field data to model
+
+				try {
+					// EDIÇÃO CADASTRO
+					if (isEditing()) {
+						boolean result = registrationDao.update(model);
+
+						if (result) {
+							bubbleSuccess("Matrícula editada com sucesso");
+						} else {
+							bubbleError("Houve um erro ao editar matrícula");
+						}
+					// NOVO CADASTRO
+					} else {
+						RegistrationModel insertedModel = registrationDao.insert(model);
+
+						if (insertedModel != null) {
+							bubbleSuccess("Aluno matriculado com sucesso");
+
+							// Atribui o model recém criado ao model
+							model = insertedModel;
+
+							// Seta form para edição
+							setFormMode(UPDATE_MODE);
+
+							// Ativa botão Remover
+							btnRemover.setEnabled(true);
+						} else {
+							bubbleError("Houve um erro ao matricular aluno");
+						}
+					}
+				} catch (SQLException error) {
+					bubbleError(error.getMessage());
+					error.printStackTrace();
+				}
+			}
+		});
+		
+		// Ação Buscar
+		btnBuscar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (searchRegistrationWindow == null) {
+					/*searchRegistrationWindow = new ListRegistrationsWindow(desktop);
+
+					searchRegistrationWindow.addInternalFrameListener(new InternalFrameListener() {
+						@Override
+						public void internalFrameClosed(InternalFrameEvent e) {
+							RegistrationModel selectedModel = ((ListRegistrationsWindow) e.getInternalFrame())
+									.getSelectedModel();
+
+							if (selectedModel != null) {
+								// Atribui o model selecionado
+								model = selectedModel;
+
+								// Seta dados do model para os campos
+								//TODO: seta dados do model para campos
+
+								// Seta form para modo Edição
+								setFormMode(UPDATE_MODE);
+
+								// Ativa campos
+								enableComponents(formFields);
+
+								// Ativa botão salvar
+								btnSalvar.setEnabled(true);
+
+								// Ativa botão remover
+								btnRemover.setEnabled(true);
+							}
+
+							// Reseta janela
+							searchRegistrationWindow = null;
+						}
+					});*/
+				}
 			}
 		});
 
@@ -130,6 +309,10 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 			}
 		});
 	}
+	
+	private boolean validateFields() {
+		return true;
+	}
 
 	private void criarComponentes() {
 
@@ -172,12 +355,25 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 		label.setBounds(5, 80, 150, 25);
 		getContentPane().add(label);
 
-		txfAluno = new JTextField();
+		txfAluno = new PlaceholderTextField();
 		txfAluno.setBounds(90, 80, 70, 20);
 		txfAluno.setBackground(Color.yellow);
-		txfAluno.setText("Teclar F9");
-		txfAluno.setEnabled(false);
-		txfAluno.setToolTipText("Pressione F9 para buscar o aluno");
+		txfAluno.setToolTipText("Tecle F9 para selecionar um aluno");
+		txfAluno.setEditable(false);
+		txfAluno.setPlaceholder("Teclar F9");
+		txfAluno.addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				// Retira o foco do campo após abrir a tela de busca
+				txfAlunoDescricao.requestFocusInWindow();
+
+				//openSearchStudentWindow();
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+		});
 		getContentPane().add(txfAluno);
 		formFields.add(txfAluno);
 
@@ -191,6 +387,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 		label = new JLabel("Data Matrícula: ");
 		label.setBounds(5, 105, 150, 25);
 		getContentPane().add(label);
+		
 		/*
 		 * JDateChooser jDateChooser = new JDateChooser(new Date());
 		 * jDateChooser.setBounds(90, 105, 90, 20);
@@ -232,12 +429,12 @@ public class StudentRegistrationWindow extends AbstractGridWindow {
 		getContentPane().add(btnAddModalidade);
 		formFields.add(btnAddModalidade);
 
-		carregarGrid();
+		createGrid();
 	}
 
-	private void carregarGrid() {
-		model = new StudentRegistrationTableModel();
-		jTableRegistration = new JTable(model);
+	private void createGrid() {
+		StudentRegistrationTableModel tableModel = new StudentRegistrationTableModel();
+		jTableRegistration = new JTable(tableModel);
 
 		// Habilita a seleção por linha
 		jTableRegistration.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
