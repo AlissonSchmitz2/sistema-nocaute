@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.event.InternalFrameEvent;
 
 import br.com.nocaute.dao.UserDAO;
+import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.util.InternalFrameListener;
 
@@ -153,6 +154,45 @@ public class UserFormWindow extends AbstractWindowFrame {
 				}
 			}
 		});
+		
+		// Ação Remover
+				btnRemover.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							if (isEditing()) {
+								boolean result = userDao.delete(model);
+
+								if (result) {
+									bubbleSuccess("Usuario excluído com sucesso");
+
+									// Seta form para modo Cadastro
+									setFormMode(CREATE_MODE);
+
+									// Desativa campos
+									disableComponents(formFields);
+
+									// Limpar dados dos campos
+									clearFormFields(formFields);
+
+									// Cria nova entidade model
+									model = new UserModel();
+
+									// Desativa botão salvar
+									btnSalvar.setEnabled(false);
+
+									// Desativa botão remover
+									btnRemover.setEnabled(false);
+								} else {
+									bubbleError("Houve um erro ao excluir usuario");
+								}
+							}
+						} catch (SQLException error) {
+							bubbleError(error.getMessage());
+							error.printStackTrace();
+						}
+					}
+				});
+		
 	}
 
 	private void criarComponentes() {
