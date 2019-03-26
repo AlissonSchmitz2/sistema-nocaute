@@ -176,7 +176,7 @@ public class UserDAO extends AbstractDAO<UserModel> {
 	private UserModel createModelFromResultSet(ResultSet rst) throws SQLException {
 		UserModel model = new UserModel();
 
-		model.setCode(rst.getInt("id"));
+		model.setCode(rst.getInt("id_usuario"));
 		model.setUser(rst.getString("usuario"));
 		model.setProfile(rst.getString("perfil"));
 
