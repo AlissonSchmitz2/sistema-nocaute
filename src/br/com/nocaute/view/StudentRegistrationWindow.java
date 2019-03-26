@@ -30,7 +30,9 @@ import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
 import javax.swing.text.MaskFormatter;
 
 import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.RegistrationModel;
+import br.com.nocaute.model.StudentModel;
 
 public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
 	private static final long serialVersionUID = -4201960150625152379L;
@@ -38,6 +40,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	private RegistrationDAO registrationDao;
 	private RegistrationModel model = new RegistrationModel();
 	private ListModalitiesWindow searchRegistrationWindow;
+	private ListStudentsWindow searchStudentWindow;
 
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -109,7 +112,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		// Abre tela seleção cidade ao clicar F9
 		if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_F9) {
 			if (btnSalvar.isEnabled()) {
-				//openSearchStudentWindow();
+				openSearchStudentWindow();
 			}
 
 			return true;
@@ -313,6 +316,32 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	private boolean validateFields() {
 		return true;
 	}
+	
+	private void openSearchStudentWindow() {
+		if (searchStudentWindow == null) {
+			searchStudentWindow = new ListStudentsWindow(desktop);
+
+			searchStudentWindow.addInternalFrameListener(new InternalFrameListener() {
+				@Override
+				public void internalFrameClosed(InternalFrameEvent e) {
+					StudentModel selectedModel = ((ListStudentsWindow) e.getInternalFrame()).getSelectedModel();
+
+					if (selectedModel != null) {
+						// Atribui cidade para o model
+						model.setStudent(selectedModel);
+						model.setStudentCode(selectedModel.getCode());
+
+						// Seta valores da cidade para o campo
+						txfAluno.setText(selectedModel.getCode().toString());
+						txfAlunoDescricao.setText(selectedModel.getName());
+					}
+
+					// Reseta janela
+					searchStudentWindow = null;
+				}
+			});
+		}
+	}
 
 	private void criarComponentes() {
 
@@ -348,8 +377,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 		txfMatricula = new JTextField();
 		txfMatricula.setBounds(90, 55, 70, 20);
+		txfMatricula.setEditable(false);
+		txfMatricula.setFocusable(false);
 		getContentPane().add(txfMatricula);
-		formFields.add(txfMatricula);
 
 		label = new JLabel("Aluno: ");
 		label.setBounds(5, 80, 150, 25);
@@ -365,9 +395,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 			@Override
 			public void focusGained(FocusEvent e) {
 				// Retira o foco do campo após abrir a tela de busca
-				txfAlunoDescricao.requestFocusInWindow();
+				txfDtMatricula.requestFocusInWindow();
 
-				//openSearchStudentWindow();
+				openSearchStudentWindow();
 			}
 
 			@Override
@@ -379,10 +409,10 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 		txfAlunoDescricao = new JTextField();
 		txfAlunoDescricao.setBounds(165, 80, 258, 20);
-		txfAlunoDescricao.setEnabled(false);
+		txfAlunoDescricao.setEditable(false);
+		txfAlunoDescricao.setFocusable(false);
 		txfAlunoDescricao.setToolTipText("Nome do aluno");
 		getContentPane().add(txfAlunoDescricao);
-		formFields.add(txfAlunoDescricao);
 
 		label = new JLabel("Data Matrícula: ");
 		label.setBounds(5, 105, 150, 25);

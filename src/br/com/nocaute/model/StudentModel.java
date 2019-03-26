@@ -20,7 +20,7 @@ public class StudentModel extends AbstractModel {
 	
 	
 	/**
-	 * Relacionamento
+	 * Relacionamentos
 	 */
 	private CityModel city;
 	

@@ -11,6 +11,27 @@ public class RegistrationModel extends AbstractModel {
 	private Date data_encerramento;
 
 	/**
+	 * Relacionamentos
+	 */
+	private StudentModel student;
+	
+	/**
+	 * @return StudentModel
+	 */
+	public StudentModel getStudent() {
+		return student;
+	}
+	/**
+	 * @param StudentModel student
+	 */
+	public void setStudent(StudentModel student) {
+		this.student = student;
+	}
+
+	/**
+	 * Outros atributos
+	 */
+	/**
 	 * codigo_matricula
 	 */
 	public Integer getRegistrationCode() {
