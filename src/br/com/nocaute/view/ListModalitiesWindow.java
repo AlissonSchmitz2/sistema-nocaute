@@ -68,7 +68,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 		
 		if(selectedModel != null) {
 			try {
-				graduationList = graduationDAO.findAllByModalityId(selectedModel.getModalityId());
+				graduationList = graduationDAO.findByModalityId(selectedModel.getModalityId());
 			} catch (SQLException error) {
 				error.printStackTrace();
 			}

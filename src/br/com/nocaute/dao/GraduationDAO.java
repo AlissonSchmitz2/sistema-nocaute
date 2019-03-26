@@ -75,7 +75,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 		return model;
 	}
 	
-	public List<GraduationModel> findAllByModalityId(Integer id) throws SQLException {
+	public List<GraduationModel> findByModalityId(Integer id) throws SQLException {
 		GraduationModel model = null;
 		List<GraduationModel> graduationsList = new ArrayList<>();
 		
@@ -102,7 +102,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 		pst.clearParameters();
 
 		setParam(pst, 1, model.getModalityId());
-		setParam(pst, 2, model.getGraduationName());
+		setParam(pst, 2, model.getName());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -128,7 +128,7 @@ public class GraduationDAO extends AbstractDAO<GraduationModel> {
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		setParam(pst, 1, model.getGraduationName());
+		setParam(pst, 1, model.getName());
 
 		// Identificador WHERE
 		setParam(pst, 2, model.getGraduationId());

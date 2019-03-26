@@ -184,8 +184,8 @@ public class ModalityFormWindow extends AbstractGridWindow{
 						if (!graduationDeleteList.isEmpty()) {
 							for (int i = 0; i < graduationList.size(); i++) {
 								for (int j = 0; j < graduationDeleteList.size(); j++) {
-									if (graduationDeleteList.get(j).getGraduationName()
-											.equals(graduationList.get(i).getGraduationName())) {
+									if (graduationDeleteList.get(j).getName()
+											.equals(graduationList.get(i).getName())) {
 										graduationDeleteList.get(j)
 												.setGraduationId(graduationList.get(i).getGraduationId());
 										

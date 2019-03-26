@@ -13,7 +13,7 @@ public class UsersTableModel extends AbstractTableModel<UserModel>{
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void setModelValueAt(int columnIndex, UserModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, UserModel model, Object aValue) {
 		switch (columnIndex) {
 		case 0:
 			model.setCode(Integer.parseInt(aValue.toString()));
@@ -25,7 +25,7 @@ public class UsersTableModel extends AbstractTableModel<UserModel>{
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, UserModel model) {
+	protected Object getObjectValueAt(int columnIndex, UserModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {

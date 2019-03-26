@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.PlanModel;
+import br.com.nocaute.model.ModalityModel;
 
 public class PlanDAO extends AbstractDAO<PlanModel> {
 	private static final String TABLE_NAME = "planos";
@@ -107,6 +107,24 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 		}
 
 		return model;
+	}
+	
+	public List<PlanModel> findByModalityId(Integer id) throws SQLException {
+		PlanModel model = null;
+		List<PlanModel> plansList = new ArrayList<>();
+		
+		String query = getFindByQuery(TABLE_NAME, "id_modalidade", "*", defaultOrderBy);
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, id);
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			model = createModelFromResultSet(rst);
+			plansList.add(model);
+		}
+
+		return plansList;
 	}
 
 	@Override

@@ -1,8 +1,14 @@
 package br.com.nocaute.view.tableModel;
 
-import br.com.nocaute.model.RegistrationModel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class StudentRegistrationModalitiesTableModel extends AbstractTableModel<RegistrationModel> {
+import br.com.nocaute.pojos.Graduation;
+import br.com.nocaute.pojos.Modality;
+import br.com.nocaute.pojos.Plan;
+import br.com.nocaute.pojos.RegistrationModality;
+
+public class StudentRegistrationModalitiesTableModel extends AbstractTableModel<RegistrationModality> {
 	private static final long serialVersionUID = 5204634462348292204L;
 	
 	public StudentRegistrationModalitiesTableModel() {
@@ -10,24 +16,50 @@ public class StudentRegistrationModalitiesTableModel extends AbstractTableModel<
 	}
 	
 	@Override
-	protected void setModelValueAt(int columnIndex, RegistrationModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, RegistrationModality object, Object aValue) {
 		switch (columnIndex) {
 			case 0:
-				model.setRegistrationCode(Integer.parseInt(aValue.toString()));
+				object.setModality((Modality) aValue);
+				break;
 			case 1:
-				model.setStudentCode(Integer.parseInt(aValue.toString()));
+				object.setGraduation((Graduation) aValue);
+				break;
+			case 2:
+				object.setPlan((Plan) aValue);
+				break;
+			case 3:
+				object.setStartDate((Date) aValue);
+				break;
+			case 4:
+				object.setFinishDate((Date) aValue);
+				break;
 			default:
 				System.err.println("Índice da coluna inválido");
 		}
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, RegistrationModel model) {
+	protected Object getObjectValueAt(int columnIndex, RegistrationModality object) {
 		String valueObject = null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		
 		switch (columnIndex) {
 		case 0:
-			valueObject = model.getRegistrationCode().toString();
+			valueObject = object.getModality().getName();
+			break;
+		case 1:
+			valueObject = object.getGraduation().getName();
+			break;
+		case 2:
+			valueObject = object.getPlan().getName();
+			break;
+		case 3:
+			valueObject = dateFormat.format(object.getStartDate());
+			break;
+		case 4:
+			if (object.getFinishDate() != null) {
+				valueObject = dateFormat.format(object.getFinishDate());
+			}
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");

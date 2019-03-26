@@ -10,6 +10,10 @@ import java.util.List;
 
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.pojos.Graduation;
+import br.com.nocaute.pojos.Modality;
+import br.com.nocaute.pojos.Plan;
+import br.com.nocaute.pojos.RegistrationModality;
 
 public class RegistrationDAO extends AbstractDAO<RegistrationModel> {
 
@@ -125,6 +129,62 @@ private static final String TABLE_NAME = "matriculas";
 		return model;
 	}
 	
+	public RegistrationModel findByIdWithRelationships(Integer id) throws SQLException {
+		RegistrationModel model = null;
+
+		String query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
+				+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE r." + columnId + "=?";
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, id);
+		ResultSet rst = pst.executeQuery();
+
+		if (rst.next()) {
+			model = createModelFromResultSet(rst);
+			
+			//Adiciona relacionamento Aluno
+			if (Integer.valueOf(rst.getInt("codigo_aluno")) != null) {
+				StudentModel student = new StudentModel();
+				//Para o propósito de listagem, somente código e nome do aluno são suficientes
+				student.setCode(Integer.valueOf(rst.getInt("codigo_aluno")));
+				student.setName(rst.getString("aluno"));
+				
+				model.setStudent(student);
+			}
+			
+			//Adiciona relacionamento Modalidades
+			String relationshipQuery = "SELECT mm.*, m.modalidade, g.graduacao, p.plano" +
+			" FROM matriculas_modalidades AS mm LEFT JOIN modalidades AS m ON mm.id_modalidade=m.id_modalidade" +
+			" LEFT JOIN graduacoes AS g ON mm.id_graduacao=g.id_graduacao" +
+			" LEFT JOIN planos AS p ON mm.id_plano=p.id_plano" +
+			" WHERE mm.codigo_matricula=?";
+			
+			PreparedStatement relationshipPst = connection.prepareStatement(relationshipQuery);
+			
+			setParam(relationshipPst, 1, id);
+
+			List<RegistrationModality> modalitiesList = new ArrayList<RegistrationModality>();
+
+			ResultSet relationshipRst = relationshipPst.executeQuery();
+
+			while (relationshipRst.next()) {
+				RegistrationModality modality = new RegistrationModality();
+				modality.setRegistration_code(model.getRegistrationCode());
+				modality.setModality(new Modality(relationshipRst.getInt("id_modalidade"), relationshipRst.getString("modalidade")));
+				modality.setGraduation(new Graduation(relationshipRst.getInt("id_graduacao"), relationshipRst.getString("graduacao")));
+				modality.setPlan(new Plan(relationshipRst.getInt("id_plano"), relationshipRst.getString("plano")));
+				modality.setStartDate(relationshipRst.getDate("data_inicio"));
+				modality.setFinishDate(relationshipRst.getDate("data_fim"));
+
+				modalitiesList.add(modality);
+			}
+			
+			model.setModalities(modalitiesList);
+		}
+
+		return model;
+	}
+	
 	@Override
 	public RegistrationModel insert(RegistrationModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
@@ -145,15 +205,53 @@ private static final String TABLE_NAME = "matriculas";
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
 				int lastInsertedCode = rs.getInt(columnId);
-
-				// Antes de retornar, seta o código ao objeto matrícula
+				
+				// Seta o código ao objeto matrícula
 				model.setRegistrationCode(lastInsertedCode);
+				
+				//Insere as modalidades
+				insertRegistrationModalities(lastInsertedCode, model.getModalities());
 
 				return model;
 			}
 		}
 
 		return null;
+	}
+	
+	private List<RegistrationModality> insertRegistrationModalities(Integer registrationCode, List<RegistrationModality> registrationModalities) throws SQLException {
+		String query = getInsertQuery("matriculas_modalidades", new String[] {
+			"codigo_matricula",
+			"id_graduacao",
+			"id_modalidade",
+			"id_plano",
+			"data_inicio",
+			"data_fim"
+		}, new String[]{});
+		
+		PreparedStatement pst = connection.prepareStatement(query);
+		
+		registrationModalities.forEach(modality -> {
+			try {
+				pst.clearParameters();
+				
+				setParam(pst, 1, registrationCode);
+				setParam(pst, 2, modality.getGraduation().getId());
+				setParam(pst, 3, modality.getModality().getId());
+				setParam(pst, 4, modality.getPlan().getId());
+				setParam(pst, 5, modality.getStartDate());
+				setParam(pst, 6, modality.getFinishDate());
+				
+				int result = pst.executeUpdate();
+				if (result > 0) {
+					connection.commit();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
+		
+		return registrationModalities;
 	}
 	
 	@Override
@@ -172,6 +270,8 @@ private static final String TABLE_NAME = "matriculas";
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
+			
+			
 
 			return true;
 		}
@@ -181,7 +281,32 @@ private static final String TABLE_NAME = "matriculas";
 	
 	@Override
 	public boolean delete(RegistrationModel model) throws SQLException {
+		//Remove modalidades antes de remover a matrícula
+		deleteRegistrationModalities(model.getRegistrationCode(), model.getModalities());
+		
+		//Remove a matrícula
 		return deleteById(model.getRegistrationCode());
+	}
+	
+	private boolean deleteRegistrationModalities(Integer registrationCode, List<RegistrationModality> registrationModalities) throws SQLException {
+		String query = getDeleteQuery("matriculas_modalidades", "codigo_matricula");
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, registrationCode);
+		
+		registrationModalities.forEach(modality -> {
+			int result;
+			try {
+				result = pst.executeUpdate();
+				if (result > 0) {
+					connection.commit();
+				}
+			} catch (SQLException error) {
+				error.printStackTrace();
+			}
+		});
+		
+		return true;
 	}
 
 	@Override

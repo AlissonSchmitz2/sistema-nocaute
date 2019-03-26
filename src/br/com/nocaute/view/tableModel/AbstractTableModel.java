@@ -19,9 +19,9 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 		this.columns = columns;
 	}
 	
-	protected abstract void setModelValueAt(int columnIndex, T model, Object aValue);
+	protected abstract void setObjectValueAt(int columnIndex, T model, Object aValue);
 	
-	protected abstract Object getModelValueAt(int columnIndex, T model);
+	protected abstract Object getObjectValueAt(int columnIndex, T model);
 
 	public int getRowCount() {
 		return modelsList.size();
@@ -43,7 +43,7 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		T model = modelsList.get(rowIndex);
 
-		setModelValueAt(columnIndex, model, aValue);
+		setObjectValueAt(columnIndex, model, aValue);
 		
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
@@ -52,7 +52,7 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		T selectedModel = modelsList.get(rowIndex);
 		
-		return getModelValueAt(columnIndex, selectedModel);
+		return getObjectValueAt(columnIndex, selectedModel);
 	}
 
 	@Override

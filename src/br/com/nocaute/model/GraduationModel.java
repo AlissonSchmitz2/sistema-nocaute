@@ -41,7 +41,7 @@ public class GraduationModel extends AbstractModel {
 	/**
 	 * nome_graduacao
 	 */
-	public String getGraduationName() {
+	public String getName() {
 		return nome_graduacao;
 	}
 

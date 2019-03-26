@@ -1,6 +1,9 @@
 package br.com.nocaute.model;
 
 import java.util.Date;
+import java.util.List;
+
+import br.com.nocaute.pojos.RegistrationModality;
 
 public class RegistrationModel extends AbstractModel {
 
@@ -27,7 +30,22 @@ public class RegistrationModel extends AbstractModel {
 	public void setStudent(StudentModel student) {
 		this.student = student;
 	}
+	
+	private List<RegistrationModality> modalities;
 
+	/**
+	 * @return List<RegistrationModality>
+	 */
+	public List<RegistrationModality> getModalities() {
+		return modalities;
+	}
+	/**
+	 * @param List<RegistrationModality> modalities
+	 */
+	public void setModalities(List<RegistrationModality> modalities) {
+		this.modalities = modalities;
+	}
+	
 	/**
 	 * Outros atributos
 	 */

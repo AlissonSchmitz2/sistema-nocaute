@@ -10,7 +10,7 @@ public class CitiesTableModel extends AbstractTableModel<CityModel> {
 	}
 
 	@Override
-	protected void setModelValueAt(int columnIndex, CityModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, CityModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
 				model.setName(aValue.toString());
@@ -22,7 +22,7 @@ public class CitiesTableModel extends AbstractTableModel<CityModel> {
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, CityModel model) {
+	protected Object getObjectValueAt(int columnIndex, CityModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {

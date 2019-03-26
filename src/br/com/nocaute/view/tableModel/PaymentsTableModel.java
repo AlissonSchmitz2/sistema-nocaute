@@ -10,7 +10,7 @@ public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
 	}
 	
 	@Override
-	protected void setModelValueAt(int columnIndex, RegistrationModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, RegistrationModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
 				model.setRegistrationCode(Integer.parseInt(aValue.toString()));
@@ -36,7 +36,7 @@ public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, RegistrationModel model) {
+	protected Object getObjectValueAt(int columnIndex, RegistrationModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {

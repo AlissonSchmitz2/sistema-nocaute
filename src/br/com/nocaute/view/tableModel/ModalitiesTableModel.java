@@ -10,7 +10,7 @@ public class ModalitiesTableModel extends AbstractTableModel<ModalityModel> {
 	}
 	
 	@Override
-	protected void setModelValueAt(int columnIndex, ModalityModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, ModalityModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
 				model.setName(aValue.toString());
@@ -20,7 +20,7 @@ public class ModalitiesTableModel extends AbstractTableModel<ModalityModel> {
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, ModalityModel model) {
+	protected Object getObjectValueAt(int columnIndex, ModalityModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {

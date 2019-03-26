@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import com.toedter.calendar.JDateChooser;
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.pojos.RegistrationModality;
 
 public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
 	private static final long serialVersionUID = -4201960150625152379L;
@@ -57,6 +60,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	private PlaceholderTextField txfAluno;
 
 	private JTable jTableRegistration;
+	StudentRegistrationModalitiesTableModel studentRegistrationModalitiesTableModel;
 	private StudentRegistrationAddModalitiesWindow studentRegistrationAddModalitiesWindow;
 	
 	private JDesktopPane desktop;
@@ -140,6 +144,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 				// Cria nova entidade model
 				model = new RegistrationModel();
+				
+				//Limpa grid
+				studentRegistrationModalitiesTableModel.clear();
 
 				// Ativa botão salvar
 				btnSalvar.setEnabled(true);
@@ -170,6 +177,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 							// Cria nova entidade model
 							model = new RegistrationModel();
+							
+							//Limpa grid
+							studentRegistrationModalitiesTableModel.clear();
 
 							// Desativa botão salvar
 							btnSalvar.setEnabled(false);
@@ -196,7 +206,10 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 				
 				Date registrationDate = jDataMatricula.getDate();
 				model.setRegistrationDate(registrationDate);
-				model.setExpirationDay(Integer.parseInt(txfVencFatura.getText()));
+				model.setExpirationDay(Integer.parseInt(txfVencFatura.getText().isEmpty() ? "" : txfVencFatura.getText()));
+				
+				//Set modalidades ao model
+				model.setModalities(studentRegistrationModalitiesTableModel.getModelsList());
 
 				try {
 					// EDIÇÃO CADASTRO
@@ -249,37 +262,46 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 						public void internalFrameClosed(InternalFrameEvent e) {
 							RegistrationModel selectedModel = ((ListRegistrationsWindow) e.getInternalFrame())
 									.getSelectedModel();
-
-							if (selectedModel != null) {
-								// Atribui o model selecionado
-								model = selectedModel;
-
-								// Seta dados do model para os campos
-								txfMatricula.setText(model.getRegistrationCode().toString());
-								txfVencFatura.setText(model.getExpirationDay().toString());
-								
-								if (model.getRegistrationDate() != null) {
-									jDataMatricula.setDate(model.getRegistrationDate());
+							try {
+								if (selectedModel != null) {
+									//Recupera todos os relacionamentos do banco e atribui ao model selecionado
+									model = registrationDao.findByIdWithRelationships(selectedModel.getRegistrationCode());
+	
+									//Seta dados do model para os campos
+									txfMatricula.setText(model.getRegistrationCode().toString());
+									txfVencFatura.setText(model.getExpirationDay().toString());
+									
+									if (model.getRegistrationDate() != null) {
+										jDataMatricula.setDate(model.getRegistrationDate());
+									}
+									
+									//Seta dados do aluno
+									if (model.getStudent() != null) {
+										txfAluno.setText(model.getStudent().getCode().toString());
+										txfAlunoDescricao.setText(model.getStudent().getName());
+									}
+									
+									//Seta dados na grid
+									studentRegistrationModalitiesTableModel.clear();
+									studentRegistrationModalitiesTableModel.addModelsList(model.getModalities());
+	
+									// Seta form para modo Edição
+									setFormMode(UPDATE_MODE);
+	
+									// Ativa campos
+									enableComponents(formFields);
+	
+									// Ativa botão salvar
+									btnSalvar.setEnabled(true);
+	
+									// Ativa botão remover
+									btnRemover.setEnabled(true);
 								}
-								
-								if (model.getStudent() != null) {
-									txfAluno.setText(model.getStudent().getCode().toString());
-									txfAlunoDescricao.setText(model.getStudent().getName());
-								}
-
-								// Seta form para modo Edição
-								setFormMode(UPDATE_MODE);
-
-								// Ativa campos
-								enableComponents(formFields);
-
-								// Ativa botão salvar
-								btnSalvar.setEnabled(true);
-
-								// Ativa botão remover
-								btnRemover.setEnabled(true);
+							} catch (SQLException error) {
+								bubbleError("Erro ao recuperar matrícula");
+								error.printStackTrace();
 							}
-
+							
 							// Reseta janela
 							searchRegistrationWindow = null;
 						}
@@ -298,33 +320,15 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 					studentRegistrationAddModalitiesWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
+							RegistrationModality registrationModality = ((StudentRegistrationAddModalitiesWindow) e.getInternalFrame())
+									.getSelectedRegistrationModality();
+
+							if (registrationModality != null) {
+								studentRegistrationModalitiesTableModel.addModel(registrationModality);
+							}
 							
 							// Reseta janela
 							studentRegistrationAddModalitiesWindow = null;
-						}
-
-						@Override
-						public void internalFrameOpened(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameIconified(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameDeiconified(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameDeactivated(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameClosing(InternalFrameEvent e) {
-						}
-
-						@Override
-						public void internalFrameActivated(InternalFrameEvent e) {
 						}
 					});
 				}
@@ -473,8 +477,22 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	}
 
 	private void createGrid() {
-		StudentRegistrationModalitiesTableModel tableModel = new StudentRegistrationModalitiesTableModel();
-		jTableRegistration = new JTable(tableModel);
+		studentRegistrationModalitiesTableModel = new StudentRegistrationModalitiesTableModel();
+		jTableRegistration = new JTable(studentRegistrationModalitiesTableModel);
+		
+		jTableRegistration.addMouseListener(new MouseAdapter() {
+	        public void mouseClicked (MouseEvent me) {
+	            if (me.getClickCount() == 2) {
+	            	//Caso esteja em modo de edição, adiciona para remoção.
+					if (isEditing()) {
+						
+					}
+	            	
+	            	//Clique duplo na linha para removê-la.     	
+	            	studentRegistrationModalitiesTableModel.removeModel(jTableRegistration.getSelectedRow());
+	            }
+	        }
+	    });
 
 		// Habilita a seleção por linha
 		jTableRegistration.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

@@ -10,7 +10,7 @@ public class GraduationsTableModel extends AbstractTableModel<GraduationModel> {
 	}
 	
 	@Override
-	protected void setModelValueAt(int columnIndex, GraduationModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, GraduationModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
 				model.setGraduationName(aValue.toString());
@@ -20,12 +20,12 @@ public class GraduationsTableModel extends AbstractTableModel<GraduationModel> {
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, GraduationModel model) {
+	protected Object getObjectValueAt(int columnIndex, GraduationModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {
 			case 0:
-				valueObject = model.getGraduationName();				
+				valueObject = model.getName();				
 				break;
 			default:
 				System.err.println("Índice da coluna inválido");

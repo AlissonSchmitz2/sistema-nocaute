@@ -10,7 +10,7 @@ public class StudentsTableModel extends AbstractTableModel<StudentModel> {
 	}
 
 	@Override
-	protected void setModelValueAt(int columnIndex, StudentModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, StudentModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
 				model.setCode(Integer.parseInt(aValue.toString()));
@@ -22,7 +22,7 @@ public class StudentsTableModel extends AbstractTableModel<StudentModel> {
 	}
 
 	@Override
-	protected Object getModelValueAt(int columnIndex, StudentModel model) {
+	protected Object getObjectValueAt(int columnIndex, StudentModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {
