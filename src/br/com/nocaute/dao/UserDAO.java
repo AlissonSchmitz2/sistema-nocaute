@@ -112,7 +112,7 @@ public class UserDAO extends AbstractDAO<UserModel> {
 
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
-				int lastInsertedCode = rs.getInt(1);
+				int lastInsertedCode = rs.getInt(columnId);
 
 				// Antes de retornar, seta o código ao objeto usuario
 				model.setCode(lastInsertedCode);

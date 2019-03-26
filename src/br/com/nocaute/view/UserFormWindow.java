@@ -14,16 +14,20 @@ import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.event.InternalFrameEvent;
 
 import br.com.nocaute.dao.UserDAO;
+import br.com.nocaute.enums.Genres;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
+import br.com.nocaute.util.InternalFrameListener;
 
 public class UserFormWindow extends AbstractWindowFrame{
 	private static final long serialVersionUID = -2537423200954897351L;
 	
 	private UserModel model = new UserModel(); 
 	private UserDAO userDao;
+	private ListUsersWindow searchUsersWindow;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	List<Component> formFields = new ArrayList<Component>();
@@ -48,9 +52,13 @@ public class UserFormWindow extends AbstractWindowFrame{
 	private JPasswordField txfSenha, txfConfirmarSenha;
 	private JComboBox<String> cbxPerfil;
 	
+	JDesktopPane desktop;
+	
 	public UserFormWindow(JDesktopPane desktop) {
 		super("Usuários", 455, 200, desktop);
 		setFrameIcon(iconJanela);
+		
+		this.desktop = desktop;
 		
 		try {
 			userDao = new UserDAO(CONNECTION);
@@ -106,6 +114,47 @@ public class UserFormWindow extends AbstractWindowFrame{
 				}
 			}
 		});
+		
+		// Ação Buscar
+				btnBuscar.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (searchUsersWindow == null) {
+							searchUsersWindow = new ListUsersWindow(desktop);
+
+							searchUsersWindow.addInternalFrameListener(new InternalFrameListener() {
+								@Override
+								public void internalFrameClosed(InternalFrameEvent e) {
+									UserModel selectedModel = ((ListUsersWindow) e.getInternalFrame())
+											.getSelectedModel();
+
+									if (selectedModel != null) {
+										// Atribui o model selecionado
+										model = selectedModel;
+
+										txfUsuario.setText(model.getUser());
+										//TODO:Adicionar os restantes para inserir na tabela
+
+										// Seta form para modo Edição
+										setFormMode(UPDATE_MODE);
+
+										// Ativa campos
+										enableComponents(formFields);
+
+										// Ativa botão salvar
+										btnSalvar.setEnabled(true);
+
+										// Ativa botão remover
+										btnRemover.setEnabled(true);
+									}
+
+									// Reseta janela
+									searchUsersWindow = null;
+								}
+							});
+						}
+					}
+				});
 	}
 	
 	private void criarComponentes() {
