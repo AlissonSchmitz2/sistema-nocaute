@@ -17,29 +17,31 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 
-import br.com.nocaute.dao.PlanDAO;
-import br.com.nocaute.model.PlanModel;
-import br.com.nocaute.view.tableModel.PlansTableModel;
+import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.model.RegistrationModel;
+import br.com.nocaute.view.AbstractGridWindow.EvenOddRenderer;
+import br.com.nocaute.view.tableModel.StudentsTableModel;
 
-public class ListPlansWindow extends AbstractGridWindow {
-	private static final long serialVersionUID = 1159602466982526861L;
+public class ListRegistrationsWindow extends AbstractGridWindow {
+	private static final long serialVersionUID = 8054610341494017437L;
 	
-	private PlanDAO planDao;
-	private PlanModel selectedModel;
-	
+	private RegistrationDAO registrationDao;
+	private RegistrationModel selectedModel;
+
 	private JButton btnSearch;
 	private JTextField txfSearch;
-	
-	private PlansTableModel tableModel;
+
+	private StudentsTableModel tableModel;
 	private JTable jTableModels;
-
+	
+	//Utilizado para alterar o layout da grid
 	private TableCellRenderer renderer = new EvenOddRenderer();
-
-	public ListPlansWindow(JDesktopPane desktop) {
-		super("Planos", 445, 310, desktop);
+	
+	public ListRegistrationsWindow(JDesktopPane desktop) {
+		super("Matrículas", 445, 310, desktop);
 		
 		try {
-			planDao = new PlanDAO(CONNECTION);
+			registrationDao = new RegistrationDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
@@ -51,7 +53,7 @@ public class ListPlansWindow extends AbstractGridWindow {
 		setButtonsActions();
 	}
 	
-	public PlanModel getSelectedModel() {
+	public RegistrationModel getSelectedModel() {
 		return selectedModel;
 	}
 	
@@ -93,7 +95,7 @@ public class ListPlansWindow extends AbstractGridWindow {
 	}
 
 	private void createGrid() {
-		tableModel = new PlansTableModel();
+		/*tableModel = new StudentsTableModel();
 		jTableModels = new JTable(tableModel);
 		
 		jTableModels.addMouseListener(new MouseAdapter() {
@@ -117,6 +119,7 @@ public class ListPlansWindow extends AbstractGridWindow {
 		jTableModels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		//Add ayout na grid
 		jTableModels.setDefaultRenderer(Object.class, renderer);
+		jTableModels.getColumnModel().getColumn(0).setMaxWidth(60);
 		jTableModels.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
 				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -144,14 +147,20 @@ public class ListPlansWindow extends AbstractGridWindow {
 		resizeGrid(grid, 5, 40, 420, 230);
 		grid.setVisible(true);
 		
-		add(grid);
+		add(grid);*/
 	}
 	
 	private void loadGrid(String word) {
+		if (word.length() < 3) {
+			bubbleWarning("Você precisa inserir ao menos 3 caracteres para iniciar a busca");
+			
+			return;
+		}
+		
 		tableModel.clear();
 		
 		try {
-			tableModel.addModelsList(planDao.search(word));
+			//tableModel.addModelsList(registrationDao.search(word));
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

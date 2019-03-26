@@ -189,10 +189,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 				if (!validateFields()) {
 					return;
 				}
-				/*
-				 * SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); String
-				 * birthDate = formatter.format(jDateNascimento.getDate());
-				 */
+
 				Date birthDate = jDateNascimento.getDate();
 
 				Genre selectedGenre = (Genre) cbxSexo.getSelectedItem();

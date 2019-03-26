@@ -2,10 +2,10 @@ package br.com.nocaute.view.tableModel;
 
 import br.com.nocaute.model.ModalityModel;
 
-public class ModalityTableModel extends AbstractTableModel<ModalityModel> {
+public class ModalitiesTableModel extends AbstractTableModel<ModalityModel> {
 	private static final long serialVersionUID = -669085648646330786L;
 
-	public ModalityTableModel() {
+	public ModalitiesTableModel() {
 		super(new String[] { "Modalidade" });
 	}
 	

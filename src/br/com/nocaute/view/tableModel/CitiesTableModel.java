@@ -2,10 +2,10 @@ package br.com.nocaute.view.tableModel;
 
 import br.com.nocaute.model.CityModel;
 
-public class CityTableModel extends AbstractTableModel<CityModel> {
+public class CitiesTableModel extends AbstractTableModel<CityModel> {
 	private static final long serialVersionUID = 1242843030000425873L;
 	
-	public CityTableModel() {
+	public CitiesTableModel() {
 		super(new String[] { "Nome", "Estado" });
 	}
 

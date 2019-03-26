@@ -2,10 +2,10 @@ package br.com.nocaute.view.tableModel;
 
 import br.com.nocaute.model.RegistrationModel;
 
-public class StudentRegistrationTableModel extends AbstractTableModel<RegistrationModel> {
+public class StudentRegistrationModalitiesTableModel extends AbstractTableModel<RegistrationModel> {
 	private static final long serialVersionUID = 5204634462348292204L;
 	
-	public StudentRegistrationTableModel() {
+	public StudentRegistrationModalitiesTableModel() {
 		super(new String[] { "Modalidade", "Graduação", "Plano", "Data Início", "Data Fim" });
 	}
 	

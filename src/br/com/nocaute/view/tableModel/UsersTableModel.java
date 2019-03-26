@@ -4,9 +4,9 @@ import java.util.List;
 
 import br.com.nocaute.model.UserModel;
 
-public class UserTableModel extends AbstractTableModel<UserModel>{
+public class UsersTableModel extends AbstractTableModel<UserModel>{
 
-	public UserTableModel() {
+	public UsersTableModel() {
 		super(new String[] {"ID","Usuario"});
 	}
 

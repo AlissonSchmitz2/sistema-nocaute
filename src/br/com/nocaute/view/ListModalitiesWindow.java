@@ -23,7 +23,7 @@ import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.model.GraduationModel;
 import br.com.nocaute.model.ModalityModel;
-import br.com.nocaute.view.tableModel.ModalityTableModel;
+import br.com.nocaute.view.tableModel.ModalitiesTableModel;
 
 public class ListModalitiesWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -8394745067091734288L;
@@ -37,7 +37,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 	private JButton btnSearch;
 	private JTextField txfSearch;
 	
-	private ModalityTableModel tableModel;
+	private ModalitiesTableModel tableModel;
 	private JTable jTableModels;
 	
 	private TableCellRenderer renderer = new EvenOddRenderer();
@@ -115,7 +115,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 	}
 	
 	private void createGrid() {
-		tableModel = new ModalityTableModel();
+		tableModel = new ModalitiesTableModel();
 		jTableModels = new JTable(tableModel);
 		
 		jTableModels.addMouseListener(new MouseAdapter() {

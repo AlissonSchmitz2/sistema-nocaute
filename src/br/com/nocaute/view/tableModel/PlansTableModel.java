@@ -2,10 +2,10 @@ package br.com.nocaute.view.tableModel;
 
 import br.com.nocaute.model.PlanModel;
 
-public class PlanTableModel extends AbstractTableModel<PlanModel> {
+public class PlansTableModel extends AbstractTableModel<PlanModel> {
 	private static final long serialVersionUID = 2972565006783519352L;
 
-	public PlanTableModel() {
+	public PlansTableModel() {
 		super(new String[] { "Plano", "Modalidade" });
 	}
 

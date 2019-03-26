@@ -10,7 +10,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -25,12 +27,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.InternalFrameEvent;
 import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.util.PlaceholderTextField;
-import br.com.nocaute.view.tableModel.StudentRegistrationTableModel;
+import br.com.nocaute.view.tableModel.StudentRegistrationModalitiesTableModel;
 
-import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
+
+import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.dao.RegistrationDAO;
-import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
 
@@ -49,7 +52,8 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar, btnAddModalidade;
 	private JLabel label;
 	private JTextField txfMatricula, txfAlunoDescricao;
-	private JFormattedTextField txfDtMatricula, txfVencFatura;
+	private JFormattedTextField txfVencFatura;
+	private JDateChooser jDataMatricula;
 	private PlaceholderTextField txfAluno;
 
 	private JTable jTableRegistration;
@@ -190,7 +194,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 					return;
 				}
 				
-				//TODO: set input field data to model
+				Date registrationDate = jDataMatricula.getDate();
+				model.setRegistrationDate(registrationDate);
+				model.setExpirationDay(Integer.parseInt(txfVencFatura.getText()));
 
 				try {
 					// EDIÇÃO CADASTRO
@@ -395,7 +401,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 			@Override
 			public void focusGained(FocusEvent e) {
 				// Retira o foco do campo após abrir a tela de busca
-				txfDtMatricula.requestFocusInWindow();
+				jDataMatricula.requestFocusInWindow();
 
 				openSearchStudentWindow();
 			}
@@ -418,34 +424,23 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		label.setBounds(5, 105, 150, 25);
 		getContentPane().add(label);
 		
-		/*
-		 * JDateChooser jDateChooser = new JDateChooser(new Date());
-		 * jDateChooser.setBounds(90, 105, 90, 20);
-		 * jDateChooser.setDateFormatString("dd/MM/yyyy");
-		 * getContentPane().add(jDateChooser);
-		 * jDateChooser.addPropertyChangeListener(new PropertyChangeListener() {
-		 * 
-		 * @Override public void propertyChange(PropertyChangeEvent evt) { // Recuperar
-		 * data do campo. Esse método é chamado // na primeira vez que executa o sistema
-		 * //SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy"); //String
-		 * novaData = formatador.format(jDateChooser.getDate());
-		 * //System.out.println(novaData); } });
-		 * 
-		 */
 		label = new JLabel("Dia do vencimento da fatura: ");
 		label.setBounds(223, 105, 150, 25);
 		getContentPane().add(label);
 
 		try {
-			txfDtMatricula = new JFormattedTextField(new MaskFormatter("##/##/####"));
-			txfDtMatricula.setFocusLostBehavior(JFormattedTextField.COMMIT);
-			txfDtMatricula.setBounds(90, 105, 90, 20);
-			txfDtMatricula.setToolTipText("Data da matrícula");
-			getContentPane().add(txfDtMatricula);
-			formFields.add(txfDtMatricula);
+			jDataMatricula = new JDateChooser(new Date());
+			jDataMatricula.setBounds(90, 105, 90, 20);
+			jDataMatricula.setDateFormatString("dd/MM/yyyy");
+			jDataMatricula.setToolTipText("Data da matrícula");
+			getContentPane().add(jDataMatricula);
+			formFields.add(jDataMatricula);
 
-			txfVencFatura = new JFormattedTextField(new MaskFormatter("#######"));
-			txfVencFatura.setFocusLostBehavior(JFormattedTextField.COMMIT);
+			NumberFormat customFormat = NumberFormat.getIntegerInstance();
+	        customFormat.setMinimumIntegerDigits(2);
+	        
+			txfVencFatura = new JFormattedTextField(new NumberFormatter(customFormat));
+			txfVencFatura.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
 			txfVencFatura.setBounds(373, 105, 50, 20);
 			getContentPane().add(txfVencFatura);
 			formFields.add(txfVencFatura);
@@ -463,7 +458,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	}
 
 	private void createGrid() {
-		StudentRegistrationTableModel tableModel = new StudentRegistrationTableModel();
+		StudentRegistrationModalitiesTableModel tableModel = new StudentRegistrationModalitiesTableModel();
 		jTableRegistration = new JTable(tableModel);
 
 		// Habilita a seleção por linha

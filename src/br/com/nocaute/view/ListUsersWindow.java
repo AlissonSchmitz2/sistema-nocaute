@@ -19,7 +19,7 @@ import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.UserDAO;
 import br.com.nocaute.model.UserModel;
-import br.com.nocaute.view.tableModel.UserTableModel;
+import br.com.nocaute.view.tableModel.UsersTableModel;
 
 public class ListUsersWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class ListUsersWindow extends AbstractGridWindow {
 	private JButton btnSearch;
 	private JTextField txfSearch;
 
-	private UserTableModel tableModel;
+	private UsersTableModel tableModel;
 	private JTable jTableModels;
 	
 	// Utilizado para alterar o layout da grid
@@ -103,7 +103,7 @@ public class ListUsersWindow extends AbstractGridWindow {
 	}
 
 	public void createGrid() {
-		tableModel = new UserTableModel();
+		tableModel = new UsersTableModel();
 		jTableModels = new JTable(tableModel);
 
 		jTableModels.addMouseListener(new MouseAdapter() {

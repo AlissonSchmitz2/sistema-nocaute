@@ -27,7 +27,7 @@ import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.model.GraduationModel;
 import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.util.InternalFrameListener;
-import br.com.nocaute.view.tableModel.GraduationTableModel;
+import br.com.nocaute.view.tableModel.GraduationsTableModel;
 
 public class ModalityFormWindow extends AbstractGridWindow{
 	private static final long serialVersionUID = 7836235315411293572L;
@@ -48,7 +48,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	private JLabel label;
 	private JTextField txfModalidade, txfGraduacao;
 	
-	private GraduationTableModel tableModel;
+	private GraduationsTableModel tableModel;
 	private JTable jTableGraduacoes;
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
@@ -389,7 +389,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	}
 	
 	private void createGrid() {
-		tableModel = new GraduationTableModel();
+		tableModel = new GraduationsTableModel();
 		jTableGraduacoes = new JTable(tableModel);
 
 		jTableGraduacoes.addMouseListener(new MouseAdapter() {

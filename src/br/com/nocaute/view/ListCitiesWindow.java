@@ -19,7 +19,7 @@ import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.CityDAO;
 import br.com.nocaute.model.CityModel;
-import br.com.nocaute.view.tableModel.CityTableModel;
+import br.com.nocaute.view.tableModel.CitiesTableModel;
 
 public class ListCitiesWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class ListCitiesWindow extends AbstractGridWindow {
 	private JButton btnSearch;
 	private JTextField txfSearch;
 
-	private CityTableModel tableModel;
+	private CitiesTableModel tableModel;
 	private JTable jTableModels;
 	private TableCellRenderer renderer = new EvenOddRenderer();
 
@@ -91,7 +91,7 @@ public class ListCitiesWindow extends AbstractGridWindow {
 	}
 
 	private void createGrid() {
-		tableModel = new CityTableModel();
+		tableModel = new CitiesTableModel();
 		jTableModels = new JTable(tableModel);
 
 		jTableModels.addMouseListener(new MouseAdapter() {
