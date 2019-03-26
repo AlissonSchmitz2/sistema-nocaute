@@ -163,6 +163,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -225,6 +226,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}

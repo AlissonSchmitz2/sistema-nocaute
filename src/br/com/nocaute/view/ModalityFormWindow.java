@@ -161,6 +161,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -171,7 +172,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 			public void actionPerformed(ActionEvent e) {
 				//TODO: validar campos obrigatórios e verificar modalidades e graduações duplicadas.
 				
-				modalityModel.setModalityName(txfModalidade.getText());
+				modalityModel.setName(txfModalidade.getText());
 				
 				try {
 					//EDIÇÃO CADASTRO
@@ -252,6 +253,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -280,7 +282,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 								tableModel.addModelsList(graduationList);
 																
 								//Seta dados do model para os campos
-								txfModalidade.setText(selectedModalityModel.getModalityName());
+								txfModalidade.setText(selectedModalityModel.getName());
 								
 								//Seta form para modo Edição
 								setFormMode(UPDATE_MODE);

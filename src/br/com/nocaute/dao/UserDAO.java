@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.nocaute.model.CityModel;
-import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 
 public class UserDAO extends AbstractDAO<UserModel> {

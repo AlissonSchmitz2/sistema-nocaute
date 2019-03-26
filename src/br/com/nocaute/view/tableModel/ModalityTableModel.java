@@ -13,7 +13,7 @@ public class ModalityTableModel extends AbstractTableModel<ModalityModel> {
 	protected void setModelValueAt(int columnIndex, ModalityModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
-				model.setModalityName(aValue.toString());
+				model.setName(aValue.toString());
 			default:
 				System.err.println("Índice da coluna inválido");
 		}
@@ -25,7 +25,7 @@ public class ModalityTableModel extends AbstractTableModel<ModalityModel> {
 		
 		switch (columnIndex) {
 		case 0:
-			valueObject = model.getModalityName();
+			valueObject = model.getName();
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");

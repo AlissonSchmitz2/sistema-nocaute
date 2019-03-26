@@ -8,8 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
@@ -19,35 +17,29 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellRenderer;
 
-import br.com.nocaute.dao.GraduationDAO;
-import br.com.nocaute.dao.ModalityDAO;
-import br.com.nocaute.model.GraduationModel;
-import br.com.nocaute.model.ModalityModel;
-import br.com.nocaute.view.tableModel.ModalityTableModel;
+import br.com.nocaute.dao.PlanDAO;
+import br.com.nocaute.model.PlanModel;
+import br.com.nocaute.view.tableModel.PlanTableModel;
 
-public class ListModalitiesWindow extends AbstractGridWindow {
-	private static final long serialVersionUID = -8394745067091734288L;
+public class ListPlansWindow extends AbstractGridWindow {
+	private static final long serialVersionUID = 1159602466982526861L;
 	
-	private ModalityDAO modalityDAO;
-	private ModalityModel selectedModel;
-	
-	private GraduationDAO graduationDAO;
-	private List<GraduationModel> graduationList;
+	private PlanDAO planDao;
+	private PlanModel selectedModel;
 	
 	private JButton btnSearch;
 	private JTextField txfSearch;
 	
-	private ModalityTableModel tableModel;
+	private PlanTableModel tableModel;
 	private JTable jTableModels;
-	
+
 	private TableCellRenderer renderer = new EvenOddRenderer();
-	
-	public ListModalitiesWindow(JDesktopPane desktop) {
-		super("Modalidades", 445, 310, desktop);
+
+	public ListPlansWindow(JDesktopPane desktop) {
+		super("Planos", 445, 310, desktop);
 		
 		try {
-			modalityDAO = new ModalityDAO(CONNECTION);
-			graduationDAO = new GraduationDAO(CONNECTION);
+			planDao = new PlanDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
@@ -59,22 +51,8 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 		setButtonsActions();
 	}
 	
-	public ModalityModel getSelectedModel() {
+	public PlanModel getSelectedModel() {
 		return selectedModel;
-	}
-	
-	public List<GraduationModel> getGraduationList(){
-		graduationList = new ArrayList<>();
-		
-		if(selectedModel != null) {
-			try {
-				graduationList = graduationDAO.findAllByModalityId(selectedModel.getModalityId());
-			} catch (SQLException error) {
-				error.printStackTrace();
-			}
-		}
-		
-		return graduationList;
 	}
 	
 	private void setButtonsActions() {
@@ -85,7 +63,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 			}
 		});
 	}
-	
+
 	private void createComponents() {
 
 		txfSearch = new JTextField();
@@ -113,9 +91,9 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 
 		createGrid();
 	}
-	
+
 	private void createGrid() {
-		tableModel = new ModalityTableModel();
+		tableModel = new PlanTableModel();
 		jTableModels = new JTable(tableModel);
 		
 		jTableModels.addMouseListener(new MouseAdapter() {
@@ -137,6 +115,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 
 		// Habilita a seleção por linha
 		jTableModels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		//Add ayout na grid
 		jTableModels.setDefaultRenderer(Object.class, renderer);
 		
 		grid = new JScrollPane(jTableModels);
@@ -151,7 +130,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 		tableModel.clear();
 		
 		try {
-			tableModel.addModelsList(modalityDAO.search(word));
+			tableModel.addModelsList(planDao.search(word));
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}

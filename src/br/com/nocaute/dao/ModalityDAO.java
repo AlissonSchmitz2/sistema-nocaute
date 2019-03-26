@@ -118,7 +118,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		
 		pst.clearParameters();
 		
-		setParam(pst, 1, model.getModalityName());
+		setParam(pst, 1, model.getName());
 		
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -144,7 +144,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		setParam(pst, 1, model.getModalityName());
+		setParam(pst, 1, model.getName());
 
 		// Identificador WHERE
 		setParam(pst, 2, model.getModalityId());
@@ -191,7 +191,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		ModalityModel model = new ModalityModel();
 		
 		model.setModalityId(rst.getInt("id_modalidade"));
-		model.setModalityName(rst.getString("modalidade"));
+		model.setName(rst.getString("modalidade"));
 		
 		return model;
 	}

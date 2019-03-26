@@ -37,7 +37,9 @@ public class StudentModel extends AbstractModel {
 		this.city = city;
 	}
 	
-	/* Outros atributos */
+	/**
+	 * Outros atributos
+	 */
 	
 	/**
 	 * codigo_aluno

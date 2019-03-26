@@ -10,6 +10,28 @@ public class PlanModel extends AbstractModel {
 	private BigDecimal valor_mensal;
 
 	/**
+	 * Relacionamento
+	 */
+	private ModalityModel modality;
+	
+	/**
+	 * @return ModalityModel
+	 */
+	public ModalityModel getModality() {
+		return modality;
+	}
+
+	/**
+	 * @param ModalityModel modality
+	 */
+	public void setModality(ModalityModel modality) {
+		this.modality = modality;
+	}
+
+	/**
+	 * Outros atributos
+	 */
+	/**
 	 * id_plano
 	 */
 	public Integer getPlanId() {
@@ -44,17 +66,17 @@ public class PlanModel extends AbstractModel {
 	/**
 	 * nome_plano
 	 */
-	public String getPlanName() {
+	public String getName() {
 		return nome_plano;
 	}
 
 	/**
 	 * nome_plano
 	 * 
-	 * @param planName
+	 * @param name
 	 */
-	public void setPlanName(String planName) {
-		this.nome_plano = planName;
+	public void setName(String name) {
+		this.nome_plano = name;
 	}
 
 	/**

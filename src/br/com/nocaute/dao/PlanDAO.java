@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.PlanModel;
 
 public class PlanDAO extends AbstractDAO<PlanModel> {
@@ -60,6 +61,36 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		return plansList;
 	}
+	
+	public List<PlanModel> search(String word) throws SQLException {
+		String query = "SELECT p.*, m.modalidade FROM " + TABLE_NAME
+				+ " AS p LEFT JOIN modalidades AS m ON p.id_modalidade=m.id_modalidade WHERE p.plano ILIKE ? OR m.modalidade ILIKE ? ORDER BY p."
+				+ defaultOrderBy;
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, "%" + word + "%");
+		setParam(pst, 2, "%" + word + "%");
+
+		List<PlanModel> plansList = new ArrayList<PlanModel>();
+
+		ResultSet rst = pst.executeQuery();
+
+		while (rst.next()) {
+			PlanModel model = createModelFromResultSet(rst);
+			
+			if (Integer.valueOf(rst.getInt("id_modalidade")) != null) {
+				ModalityModel modality = new ModalityModel();
+				modality.setModalityId(rst.getInt("id_modalidade"));
+				modality.setName(rst.getString("modalidade"));
+				
+				model.setModality(modality);
+			}
+
+			plansList.add(model);
+		}
+
+		return plansList;
+	}
 
 	@Override
 	public PlanModel findById(Integer id) throws SQLException {
@@ -87,7 +118,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 		pst.clearParameters();
 
 		setParam(pst, 1, model.getModalityId());
-		setParam(pst, 2, model.getPlanName());
+		setParam(pst, 2, model.getName());
 		setParam(pst, 3, model.getMonthlyValue());
 
 		int result = pst.executeUpdate();
@@ -115,7 +146,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 		PreparedStatement pst = connection.prepareStatement(query);
 
 		setParam(pst, 1, model.getModalityId());
-		setParam(pst, 2, model.getPlanName());
+		setParam(pst, 2, model.getName());
 		setParam(pst, 3, model.getMonthlyValue());
 
 		// Identificador WHERE
@@ -165,7 +196,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 
 		model.setPlanId(rst.getInt("id_plano"));
 		model.setModalityId(rst.getInt("id_modalidade"));
-		model.setPlanName(rst.getString("plano"));
+		model.setName(rst.getString("plano"));
 		model.setMonthlyValue(rst.getBigDecimal("valor_mensal"));
 
 		return model;

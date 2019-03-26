@@ -14,11 +14,14 @@ import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.event.InternalFrameEvent;
 
 import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.dao.PlanDAO;
+import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.PlanModel;
 import br.com.nocaute.pojos.Modality;
+import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.util.JNumberFormatField;
 import br.com.nocaute.view.comboModel.GenericComboModel;
 
@@ -28,6 +31,8 @@ public class PlanFormWindow extends AbstractWindowFrame {
 	private PlanDAO planDao;
 	private ModalityDAO modalityDao;
 	private PlanModel model = new PlanModel();
+	
+	private ListPlansWindow searchPlanWindow;
 	
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
@@ -131,6 +136,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -146,7 +152,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 				Modality selectedModality = (Modality) cbxModalidade.getSelectedItem();
 				
 				model.setModalityId(selectedModality.getId());
-				model.setPlanName(txfPlano.getText());
+				model.setName(txfPlano.getText());
 				model.setMonthlyValue(new BigDecimal(txfValor.getValue().doubleValue()));
 				
 				try {
@@ -179,6 +185,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 						}
 					}
 				} catch (SQLException error) {
+					bubbleError(error.getMessage());
 					error.printStackTrace();
 				}
 			}
@@ -188,6 +195,56 @@ public class PlanFormWindow extends AbstractWindowFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (searchPlanWindow == null) {
+					searchPlanWindow = new ListPlansWindow(desktop);
+
+					searchPlanWindow.addInternalFrameListener(new InternalFrameListener() {
+						@Override
+						public void internalFrameClosed(InternalFrameEvent e) {
+							PlanModel selectedModel = ((ListPlansWindow) e.getInternalFrame())
+									.getSelectedModel();
+
+							if (selectedModel != null) {
+								// Atribui o model selecionado
+								model = selectedModel;
+
+								// Seta dados do model para os campos
+								txfPlano.setText(model.getName());
+								txfValor.setValue(model.getMonthlyValue());
+
+								if (model.getModality() != null) {
+									int modalityCounter = 0;
+									try {
+										for (ModalityModel modality  : modalityDao.selectAll()) {
+											modalityCounter++;
+
+											if (model.getModalityId() == modality.getModalityId()) {
+												cbxModalidade.setSelectedIndex(modalityCounter);
+											}
+										}
+									} catch (SQLException e1) {
+										e1.printStackTrace();
+									}
+								}
+
+								// Seta form para modo Edição
+								setFormMode(UPDATE_MODE);
+
+								// Ativa campos
+								enableComponents(formFields);
+
+								// Ativa botão salvar
+								btnSalvar.setEnabled(true);
+
+								// Ativa botão remover
+								btnRemover.setEnabled(true);
+							}
+
+							// Reseta janela
+							searchPlanWindow = null;
+						}
+					});
+				}
 			}
 		});
 	}
@@ -234,7 +291,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 		modalitiesList.add(new Modality(null, "-- Selecione --"));
 		
 		try {
-			modalityDao.selectAll().forEach(modality -> modalitiesList.add(new Modality(modality.getModalityId(), modality.getModalityName())));
+			modalityDao.selectAll().forEach(modality -> modalitiesList.add(new Modality(modality.getModalityId(), modality.getName())));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
