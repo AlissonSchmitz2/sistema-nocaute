@@ -1,6 +1,5 @@
 package br.com.nocaute.view;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.GraduationDAO;
@@ -172,7 +170,10 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		//Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: validar campos obrigatórios e verificar modalidades e graduações duplicadas.
+				//TODO: Verificar modalidades e graduações duplicadas.
+				if(validateFields()) {
+					return;
+				}
 				
 				modalityModel.setName(txfModalidade.getText());
 				
@@ -374,6 +375,19 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		txfGraduacao = new JTextField();
 		txfGraduacao.setBounds(70, 80, 280, 20);
 		txfGraduacao.setToolTipText("Digite a graduação");
+		txfGraduacao.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent ke) {
+	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+	    		  btnOk.doClick();
+	    	  }
+	        }
+
+	        public void keyReleased(KeyEvent keyEvent) {
+	        }
+
+	        public void keyTyped(KeyEvent keyEvent) {
+	        }
+		});
 		getContentPane().add(txfGraduacao);
 		formFields.add(txfGraduacao);
 		txfGraduacao.addKeyListener(new KeyListener() {
@@ -434,28 +448,17 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		add(grid);
 	}
 	
-	// TODO: Refatorar para utilizar e todas as grids
-	class EvenOddRenderer implements TableCellRenderer {
-		public DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
-
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-					column);
-			((JLabel) renderer).setOpaque(true);
-			Color background;
-			if (isSelected) {
-				background = new Color(65, 105, 225);
-			} else {
-				if (row % 2 == 0) {
-					background = new Color(220, 220, 220);
-				} else {
-					background = Color.WHITE;
-				}
-			}
-
-			renderer.setBackground(background);
-			return renderer;
+	private boolean validateFields() {
+		if(txfModalidade.getText().isEmpty() || txfModalidade.getText() == null) {
+			bubbleWarning("Informe o nome da modalidade!");
+			return true;
 		}
+		
+		if(tableModel.isEmpty() || tableModel.getRowCount() == 0) {
+			bubbleWarning("Você deve informar ao menos uma graduação para a modalidade.");
+			return true;
+		}
+		
+		return false;
 	}
 }
