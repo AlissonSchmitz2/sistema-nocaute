@@ -145,7 +145,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!validateFields()) {
+				if (validateFields()) {
 					return;
 				}
 				
@@ -250,8 +250,23 @@ public class PlanFormWindow extends AbstractWindowFrame {
 	}
 	
 	private boolean validateFields() {
-		//TODO
-		return true;
+		System.out.println(txfValor.getText());
+		if(cbxModalidade.getSelectedIndex() == 0) {
+			bubbleWarning("Selecione a modalidade!");
+			return true;
+		}
+		
+		if(txfPlano.getText().isEmpty() || txfPlano.getText() == null) {
+			bubbleWarning("Informe o nome do plano!");
+			return true;
+		}
+		
+		if(txfValor.getText().equals("R$ 0,00")) {
+			bubbleWarning("Digite um valor para o plano!");
+			return true;
+		}
+		
+		return false;
 	}
 
 	private void createComponents() {
@@ -325,4 +340,5 @@ public class PlanFormWindow extends AbstractWindowFrame {
 		getContentPane().add(txfValor);
 		formFields.add(txfValor);
 	}
+	
 }

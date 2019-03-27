@@ -186,7 +186,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!validateFields()) {
+				if (validateFields()) {
 					return;
 				}
 
@@ -586,47 +586,47 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 		if (txfAluno.getText().isEmpty() || txfAluno.getText() == null) {
 			bubbleWarning("Informe o nome do aluno!");
-			return false;
+			return true;
 		}
 
 		// Se a data de nascimento for igual a atual
 		if (formatador.format(jDateNascimento.getDate())
 				.equals(formatador.format(new Date(System.currentTimeMillis())))) {
 			bubbleWarning("Data de nascimento inválida!");
-			return false;
+			return true;
 		}
 
 		if (cbxSexo.getSelectedIndex() == 0) {
 			bubbleWarning("Informe o sexo do aluno!");
-			return false;
+			return true;
 		}
 
 		if (txfTelefone.getText().isEmpty() || txfTelefone.getText() == null || txfCelular.getText().isEmpty()
 				|| txfCelular.getText() == null) {
 			bubbleWarning("Informe ao menos um telefone para contato!");
-			return false;
+			return true;
 		}
 
 		if (txfEndereco.getText().isEmpty() || txfEndereco.getText() == null) {
 			bubbleWarning("Informe o endereço do aluno!");
-			return false;
+			return true;
 		}
 
 		if (txfBairro.getText().isEmpty() || txfBairro.getText() == null) {
 			bubbleWarning("Informe o bairro do aluno!");
-			return false;
+			return true;
 		}
 
 		if (txfCidade.getText().isEmpty() || txfCidade.getText() == null) {
 			bubbleWarning("Cidade não informada!");
-			return false;
+			return true;
 		}
 
 		if (txfCEP.getText().isEmpty() || txfCEP.getText() == null) {
 			bubbleWarning("Digite o CEP do aluno!");
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 }
