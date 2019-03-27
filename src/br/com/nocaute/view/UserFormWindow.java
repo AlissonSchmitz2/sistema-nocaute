@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import javax.swing.event.InternalFrameEvent;
 
 import br.com.nocaute.dao.UserDAO;
-import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.util.InternalFrameListener;
 

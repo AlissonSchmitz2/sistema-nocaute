@@ -250,7 +250,6 @@ public class PlanFormWindow extends AbstractWindowFrame {
 	}
 	
 	private boolean validateFields() {
-		System.out.println(txfValor.getText());
 		if(cbxModalidade.getSelectedIndex() == 0) {
 			bubbleWarning("Selecione a modalidade!");
 			return true;
