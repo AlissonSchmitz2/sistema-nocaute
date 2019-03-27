@@ -16,6 +16,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,6 +37,7 @@ import javax.swing.text.NumberFormatter;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.model.RegistrationModalityModel;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.pojos.RegistrationModality;
@@ -209,7 +211,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 				model.setExpirationDay(Integer.parseInt(txfVencFatura.getText().isEmpty() ? "" : txfVencFatura.getText()));
 				
 				//Set modalidades ao model
-				model.setModalities(studentRegistrationModalitiesTableModel.getModelsList());
+				model.setModalities(mapRegistrationModalitiesPojoToRegistrationModalitiesModel(studentRegistrationModalitiesTableModel.getModelsList()));
 
 				try {
 					// EDIÇÃO CADASTRO
@@ -264,8 +266,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 									.getSelectedModel();
 							try {
 								if (selectedModel != null) {
-									//Recupera todos os relacionamentos do banco e atribui ao model selecionado
-									model = registrationDao.findByIdWithRelationships(selectedModel.getRegistrationCode());
+									//Faz uma nova consulta para busca o model selecionado
+									//para forçar o carregamento do relacionamentos do model
+									model = registrationDao.findById(selectedModel.getRegistrationCode(), true);
 	
 									//Seta dados do model para os campos
 									txfMatricula.setText(model.getRegistrationCode().toString());
@@ -283,7 +286,8 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 									
 									//Seta dados na grid
 									studentRegistrationModalitiesTableModel.clear();
-									studentRegistrationModalitiesTableModel.addModelsList(model.getModalities());
+									//TODO: Converte model modalities para o tableModel
+									//studentRegistrationModalitiesTableModel.addModelsList(model.getModalities());
 	
 									// Seta form para modo Edição
 									setFormMode(UPDATE_MODE);
@@ -334,6 +338,37 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 				}
 			}
 		});
+	}
+	
+	private List<RegistrationModalityModel> mapRegistrationModalitiesPojoToRegistrationModalitiesModel(List<RegistrationModality> registrationModalityList) {
+		 return registrationModalityList.stream()
+				.map(pojo -> { 
+					RegistrationModalityModel model = new RegistrationModalityModel();
+					model.setRegistrationCode(pojo.getRegistration_code());
+					model.setModalityId(pojo.getModality().getId());
+					model.setGraduationId(pojo.getGraduation().getId());
+					model.setPlanId(pojo.getPlan().getId());
+					model.setStartDate(pojo.getStartDate());
+					model.setFinishDate(pojo.getFinishDate());
+					
+					return model;
+				}).collect(Collectors.toList());
+	}
+	
+	private List<RegistrationModality> mapRegistrationModalitiesModelToRegistrationModalitiesPojo(List<RegistrationModalityModel> registrationModalityList) {
+		 return registrationModalityList.stream()
+				.map(model -> { 
+					RegistrationModality pojo = new RegistrationModality();
+					//pojo.setGraduation(graduation);
+					/*model.setRegistrationCode(modality.getRegistration_code());
+					model.setModalityId(modality.getModality().getId());
+					model.setGraduationId(modality.getGraduation().getId());
+					model.setPlanId(modality.getPlan().getId());
+					model.setStartDate(modality.getStartDate());
+					model.setFinishDate(modality.getFinishDate());*/
+					
+					return pojo;
+				}).collect(Collectors.toList());
 	}
 	
 	private boolean validateFields() {

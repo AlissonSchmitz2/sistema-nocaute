@@ -4,25 +4,46 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 import java.util.List;
 
+import br.com.nocaute.dao.contracts.Crud;
 import br.com.nocaute.model.RegistrationModalityModel;
 
-public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityModel> {
+public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityModel> implements Crud<RegistrationModalityModel> {
 private static final String TABLE_NAME = "matriculas_modalidades";
 	
 	private String defaultOrderBy = "data_inicio";
+
+	private String[] columnsToInsert = new String[] {
+		"codigo_matricula",
+		"id_graduacao",
+		"id_modalidade",
+		"id_plano",
+		"data_inicio",
+		"data_fim"
+	};
+	
+	private String[] defaultValuesToInsert = new String[] {};
+	
+	private String[] columnsToUpdate = new String[] {
+		"codigo_matricula",
+		"id_graduacao",
+		"id_modalidade",
+		"id_plano",
+		"data_inicio",
+		"data_fim"	
+	};
 	
 	Connection connection;
 	
-	public RegistrationModalityDAO(Connection connection) throws SQLException{
+	public RegistrationModalityDAO(Connection connection) throws SQLException {
 		this.connection = connection;
 		
 		this.connection.setAutoCommit(false);
 	}
 
-	public RegistrationModalityModel findByRegistrationCode(Integer id) throws SQLException {
+	public List<RegistrationModalityModel> getByRegistrationCode(Integer id) throws SQLException {
 		/*RegistrationModalityModel model = null;
 		
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
@@ -39,7 +60,112 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 			return model;
 		}*/
 		
+		/*//Adiciona relacionamento Modalidades
+		String relationshipQuery = "SELECT mm.*, m.modalidade, g.graduacao, p.plano" +
+		" FROM matriculas_modalidades AS mm LEFT JOIN modalidades AS m ON mm.id_modalidade=m.id_modalidade" +
+		" LEFT JOIN graduacoes AS g ON mm.id_graduacao=g.id_graduacao" +
+		" LEFT JOIN planos AS p ON mm.id_plano=p.id_plano" +
+		" WHERE mm.codigo_matricula=?";
+		
+		PreparedStatement relationshipPst = connection.prepareStatement(relationshipQuery);
+		
+		setParam(relationshipPst, 1, id);
+
+		List<RegistrationModalityModel> modalitiesList = new ArrayList<RegistrationModalityModel>();
+
+		ResultSet relationshipRst = relationshipPst.executeQuery();
+
+		while (relationshipRst.next()) {
+			RegistrationModalityModel registrationModality = new RegistrationModalityModel();
+			registrationModality.setRegistrationCode(model.getRegistrationCode());
+			registrationModality.setModalityId(relationshipRst.getInt("id_modalidade"));
+			registrationModality.setGraduationId(relationshipRst.getInt("id_graduacao"));
+			registrationModality.setPlanId(relationshipRst.getInt("id_plano"));
+			registrationModality.setStartDate(relationshipRst.getDate("data_inicio"));
+			registrationModality.setFinishDate(relationshipRst.getDate("data_fim"));
+			
+			ModalityModel modality = new ModalityModel();
+			modality.setModalityId(registrationModality.getModalityId());
+			modality.setName(relationshipRst.getString("modalidade"));
+			registrationModality.setModality(modality);
+			
+			GraduationModel graduation = new GraduationModel();
+			graduation.setGraduationId(registrationModality.getGraduationId());
+			graduation.setGraduationName(relationshipRst.getString("graduacao"));
+			graduation.setModalityId(registrationModality.getModalityId());
+			registrationModality.setGraduation(graduation);
+			
+			PlanModel plan = new PlanModel();
+			plan.setPlanId(relationshipRst.getInt("id_plano"));
+			plan.setName(relationshipRst.getString("plano"));
+			//Não existe necessidade de setar todos os atributos
+			registrationModality.setPlan(plan);
+
+			modalitiesList.add(registrationModality);
+		}
+		
+		model.setModalities(modalitiesList);*/
+		
 		return null;
+	}
+	
+	@Override
+	public RegistrationModalityModel insert(RegistrationModalityModel model) throws SQLException {
+		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
+		
+		PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+		
+		pst.clearParameters();
+		
+		setParam(pst, 1, model.getRegistrationCode());
+		setParam(pst, 2, model.getGraduationId());
+		setParam(pst, 3, model.getModalityId());
+		setParam(pst, 4, model.getPlanId());
+		setParam(pst, 5, model.getStartDate());
+		setParam(pst, 6, model.getFinishDate());
+		
+		int result = pst.executeUpdate();
+		if (result > 0) {
+			connection.commit();
+
+			ResultSet rs = pst.getGeneratedKeys();
+			if (rs.next()) {
+				return model;
+			}
+		}
+
+		return null;
+	}
+	
+	@Override
+	public boolean update(RegistrationModalityModel model) throws SQLException {
+		/*String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
+
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, model.getName());
+
+		// Identificador WHERE
+		setParam(pst, 2, model.getModalityId());
+
+		int result = pst.executeUpdate();
+		if (result > 0) {
+			connection.commit();
+
+			return true;
+		}*/
+
+		return false;
+	}
+		
+	@Override
+	public boolean delete(RegistrationModalityModel model) throws SQLException {
+		return false;
+	}
+
+	@Override
+	public boolean deleteById(Integer id) throws SQLException {
+		throw new SQLException("Não implementado");
 	}
 
 	/**

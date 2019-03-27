@@ -2,10 +2,6 @@ package br.com.nocaute.model;
 
 import java.util.Date;
 
-import br.com.nocaute.pojos.Graduation;
-import br.com.nocaute.pojos.Modality;
-import br.com.nocaute.pojos.Plan;
-
 public class RegistrationModalityModel extends AbstractModel {
 	private Integer codigo_matricula;
 	private Integer id_modalidade;
@@ -17,38 +13,38 @@ public class RegistrationModalityModel extends AbstractModel {
 	/**
 	 * Relacionamentos
 	 */
-	private Modality modality;
-	private Graduation graduation;
-	private Plan plan;
+	private ModalityModel modality;
+	private GraduationModel graduation;
+	private PlanModel plan;
 	
-	public Modality getModality() {
+	public ModalityModel getModality() {
 		return modality;
 	}
-	public void setModality(Modality modality) {
+	public void setModality(ModalityModel modality) {
 		this.modality = modality;
 	}
 	
-	public Graduation getGraduation() {
+	public GraduationModel getGraduation() {
 		return graduation;
 	}
-	public void setGraduation(Graduation graduation) {
+	public void setGraduation(GraduationModel graduation) {
 		this.graduation = graduation;
 	}
 	
-	public Plan getPlan() {
+	public PlanModel getPlan() {
 		return plan;
 	}
-	public void setPlan(Plan plan) {
+	public void setPlan(PlanModel plan) {
 		this.plan = plan;
 	}
 	
 	/**
 	 * Outros atributos
 	 */
-	public Integer getRegistration_code() {
+	public Integer getRegistrationCode() {
 		return codigo_matricula;
 	}
-	public void setRegistration_code(Integer registration_code) {
+	public void setRegistrationCode(Integer registration_code) {
 		this.codigo_matricula = registration_code;
 	}
 	
@@ -56,42 +52,42 @@ public class RegistrationModalityModel extends AbstractModel {
 	/**
 	 * @return id_modalidade
 	 */
-	public Integer getId_modalidade() {
+	public Integer getModalityId() {
 		return id_modalidade;
 	}
 	/**
 	 * id_modalidade
 	 * @param modalityId
 	 */
-	public void setId_modalidade(Integer modalityId) {
+	public void setModalityId(Integer modalityId) {
 		this.id_modalidade = modalityId;
 	}
 	
 	/**
 	 * @return id_graduacao
 	 */
-	public Integer getId_graduacao() {
+	public Integer getGraduationId() {
 		return id_graduacao;
 	}
 	/**
 	 * id_graduacao
 	 * @param graduationId
 	 */
-	public void setId_graduacao(Integer graduationId) {
+	public void setGraduationId(Integer graduationId) {
 		this.id_graduacao = graduationId;
 	}
 	
 	/**
 	 * @return id_plano
 	 */
-	public Integer getId_plano() {
+	public Integer getPlanId() {
 		return id_plano;
 	}
 	/**
 	 * id_plano
 	 * @param graduationId
 	 */
-	public void setId_plano(Integer planId) {
+	public void setPlanId(Integer planId) {
 		this.id_plano = planId;
 	}
 	
