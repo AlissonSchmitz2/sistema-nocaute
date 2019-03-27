@@ -390,6 +390,19 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		});
 		getContentPane().add(txfGraduacao);
 		formFields.add(txfGraduacao);
+		txfGraduacao.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent ke) {
+	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+	    		  btnOk.doClick();
+	    	  }
+	        }
+
+	        public void keyReleased(KeyEvent keyEvent) {
+	        }
+
+	        public void keyTyped(KeyEvent keyEvent) {
+	        }
+	    });
 		
 		btnOk = new JButton("OK");
 		btnOk.setBounds(355, 77, 70, 25);

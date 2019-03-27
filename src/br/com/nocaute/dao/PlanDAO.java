@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.nocaute.model.PlanModel;
+import br.com.nocaute.dao.contracts.Searchable;
 import br.com.nocaute.model.ModalityModel;
 
-public class PlanDAO extends AbstractDAO<PlanModel> {
+public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<PlanModel> {
 	private static final String TABLE_NAME = "planos";
 	
 	private String columnId = "id_plano";
@@ -62,6 +63,7 @@ public class PlanDAO extends AbstractDAO<PlanModel> {
 		return plansList;
 	}
 	
+	@Override
 	public List<PlanModel> search(String word) throws SQLException {
 		String query = "SELECT p.*, m.modalidade FROM " + TABLE_NAME
 				+ " AS p LEFT JOIN modalidades AS m ON p.id_modalidade=m.id_modalidade WHERE p.plano ILIKE ? OR m.modalidade ILIKE ? ORDER BY p."

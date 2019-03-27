@@ -7,11 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.dao.contracts.Searchable;
+import br.com.nocaute.dao.contracts.Selectable;
 import br.com.nocaute.model.CityModel;
 
-public class CityDAO extends AbstractDAO<CityModel>{
-
-private static final String TABLE_NAME = "cidades";
+public class CityDAO extends AbstractDAO<CityModel> implements Selectable<CityModel>, Searchable<CityModel> {
+	private static final String TABLE_NAME = "cidades";
 	
 	private String columnId = "id_cidade";
 	
@@ -48,6 +49,7 @@ private static final String TABLE_NAME = "cidades";
 		return cityList;
 	}
 	
+	@Override
 	public List<CityModel> search(String word) throws SQLException {
 		String query = "SELECT * FROM " + TABLE_NAME
 				+ " WHERE cidade ILIKE ? OR estado ILIKE ?  OR pais ILIKE ? ORDER BY "
@@ -91,18 +93,6 @@ private static final String TABLE_NAME = "cidades";
 		
 		return null;
 	}
-
-	@Override
-	public CityModel insert(CityModel model) throws SQLException { return null; }
-
-	@Override
-	public boolean update(CityModel model) throws SQLException   { return false;}
-
-	@Override
-	public boolean delete(CityModel model) throws SQLException   { return false;}
-
-	@Override
-	public boolean deleteById(Integer id) throws SQLException    { return false;}
 		
 	/**
 	 * Cria um objeto Model a partir do resultado obtido no banco de dados
