@@ -5,9 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.nocaute.dao.contracts.Crud;
+import br.com.nocaute.model.GraduationModel;
+import br.com.nocaute.model.ModalityModel;
+import br.com.nocaute.model.PlanModel;
 import br.com.nocaute.model.RegistrationModalityModel;
 
 public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityModel> implements Crud<RegistrationModalityModel> {
@@ -44,40 +48,23 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 	}
 
 	public List<RegistrationModalityModel> getByRegistrationCode(Integer id) throws SQLException {
-		/*RegistrationModalityModel model = null;
-		
-		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
+		String query = "SELECT mm.*, m.modalidade, g.graduacao, p.plano" +
+				" FROM matriculas_modalidades AS mm LEFT JOIN modalidades AS m ON mm.id_modalidade=m.id_modalidade" +
+				" LEFT JOIN graduacoes AS g ON mm.id_graduacao=g.id_graduacao" +
+				" LEFT JOIN planos AS p ON mm.id_plano=p.id_plano" +
+				" WHERE mm.codigo_matricula=?";
 		
 		PreparedStatement pst = connection.prepareStatement(query);
 		
 		setParam(pst, 1, id);
 		
-		ResultSet rst = pst.executeQuery();
-		
-		if(rst.next()) {
-			model = createModelFromResultSet(rst);
-			
-			return model;
-		}*/
-		
-		/*//Adiciona relacionamento Modalidades
-		String relationshipQuery = "SELECT mm.*, m.modalidade, g.graduacao, p.plano" +
-		" FROM matriculas_modalidades AS mm LEFT JOIN modalidades AS m ON mm.id_modalidade=m.id_modalidade" +
-		" LEFT JOIN graduacoes AS g ON mm.id_graduacao=g.id_graduacao" +
-		" LEFT JOIN planos AS p ON mm.id_plano=p.id_plano" +
-		" WHERE mm.codigo_matricula=?";
-		
-		PreparedStatement relationshipPst = connection.prepareStatement(relationshipQuery);
-		
-		setParam(relationshipPst, 1, id);
-
 		List<RegistrationModalityModel> modalitiesList = new ArrayList<RegistrationModalityModel>();
 
-		ResultSet relationshipRst = relationshipPst.executeQuery();
+		ResultSet relationshipRst = pst.executeQuery();
 
 		while (relationshipRst.next()) {
 			RegistrationModalityModel registrationModality = new RegistrationModalityModel();
-			registrationModality.setRegistrationCode(model.getRegistrationCode());
+			registrationModality.setRegistrationCode(id);
 			registrationModality.setModalityId(relationshipRst.getInt("id_modalidade"));
 			registrationModality.setGraduationId(relationshipRst.getInt("id_graduacao"));
 			registrationModality.setPlanId(relationshipRst.getInt("id_plano"));
@@ -98,15 +85,13 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 			PlanModel plan = new PlanModel();
 			plan.setPlanId(relationshipRst.getInt("id_plano"));
 			plan.setName(relationshipRst.getString("plano"));
-			//Não existe necessidade de setar todos os atributos
+			//Por hora, não existe necessidade de setar todos os atributos
 			registrationModality.setPlan(plan);
 
 			modalitiesList.add(registrationModality);
 		}
 		
-		model.setModalities(modalitiesList);*/
-		
-		return null;
+		return modalitiesList;
 	}
 	
 	@Override

@@ -10,10 +10,10 @@ public class RegistrationModality {
 	private Date startDate;
 	private Date finishDate;
 	
-	public Integer getRegistration_code() {
+	public Integer getRegistrationCode() {
 		return registration_code;
 	}
-	public void setRegistration_code(Integer registration_code) {
+	public void setRegistrationCode(Integer registration_code) {
 		this.registration_code = registration_code;
 	}
 	

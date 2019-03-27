@@ -40,6 +40,9 @@ import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.model.RegistrationModalityModel;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.pojos.Graduation;
+import br.com.nocaute.pojos.Modality;
+import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
 
 public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
@@ -286,8 +289,9 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 									
 									//Seta dados na grid
 									studentRegistrationModalitiesTableModel.clear();
-									//TODO: Converte model modalities para o tableModel
-									//studentRegistrationModalitiesTableModel.addModelsList(model.getModalities());
+									studentRegistrationModalitiesTableModel.addModelsList(
+										mapRegistrationModalitiesModelToRegistrationModalitiesPojo(model.getModalities())
+									);
 	
 									// Seta form para modo Edição
 									setFormMode(UPDATE_MODE);
@@ -344,7 +348,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		 return registrationModalityList.stream()
 				.map(pojo -> { 
 					RegistrationModalityModel model = new RegistrationModalityModel();
-					model.setRegistrationCode(pojo.getRegistration_code());
+					model.setRegistrationCode(pojo.getRegistrationCode());
 					model.setModalityId(pojo.getModality().getId());
 					model.setGraduationId(pojo.getGraduation().getId());
 					model.setPlanId(pojo.getPlan().getId());
@@ -359,13 +363,12 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		 return registrationModalityList.stream()
 				.map(model -> { 
 					RegistrationModality pojo = new RegistrationModality();
-					//pojo.setGraduation(graduation);
-					/*model.setRegistrationCode(modality.getRegistration_code());
-					model.setModalityId(modality.getModality().getId());
-					model.setGraduationId(modality.getGraduation().getId());
-					model.setPlanId(modality.getPlan().getId());
-					model.setStartDate(modality.getStartDate());
-					model.setFinishDate(modality.getFinishDate());*/
+					pojo.setRegistrationCode(model.getRegistrationCode());
+					pojo.setModality(new Modality(model.getModalityId(), model.getModality().getName()));
+					pojo.setGraduation(new Graduation(model.getGraduationId(), model.getGraduation().getName()));
+					pojo.setPlan(new Plan(model.getPlanId(), model.getPlan().getName()));
+					pojo.setStartDate(model.getStartDate());
+					pojo.setFinishDate(model.getFinishDate());
 					
 					return pojo;
 				}).collect(Collectors.toList());
