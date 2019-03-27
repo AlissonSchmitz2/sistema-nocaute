@@ -8,9 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.dao.contracts.Searchable;
 import br.com.nocaute.model.ModalityModel;
 
-public class ModalityDAO extends AbstractDAO<ModalityModel> {	
+public class ModalityDAO extends AbstractCrudDAO<ModalityModel> implements Searchable<ModalityModel> {	
 	private static final String TABLE_NAME = "modalidades";
 	
 	private String columnId = "id_modalidade";
@@ -57,6 +58,7 @@ public class ModalityDAO extends AbstractDAO<ModalityModel> {
 		return modalitysList;
 	}
 	
+	@Override
 	public List<ModalityModel> search(String word) throws SQLException {
 		String query = "";
 		PreparedStatement pst = null;

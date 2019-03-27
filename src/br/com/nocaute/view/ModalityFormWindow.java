@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -374,6 +376,19 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		txfGraduacao.setToolTipText("Digite a graduação");
 		getContentPane().add(txfGraduacao);
 		formFields.add(txfGraduacao);
+		txfGraduacao.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent ke) {
+	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+	    		  btnOk.doClick();
+	    	  }
+	        }
+
+	        public void keyReleased(KeyEvent keyEvent) {
+	        }
+
+	        public void keyTyped(KeyEvent keyEvent) {
+	        }
+	    });
 		
 		btnOk = new JButton("OK");
 		btnOk.setBounds(355, 77, 70, 25);

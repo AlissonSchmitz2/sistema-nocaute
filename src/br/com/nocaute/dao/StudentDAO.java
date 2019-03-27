@@ -8,10 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.dao.contracts.Searchable;
 import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.StudentModel;
 
-public class StudentDAO extends AbstractDAO<StudentModel> {
+public class StudentDAO extends AbstractCrudDAO<StudentModel> implements Searchable<StudentModel> {
 	private static final String TABLE_NAME = "alunos";
 
 	private String columnId = "codigo_aluno";
@@ -52,7 +53,8 @@ public class StudentDAO extends AbstractDAO<StudentModel> {
 
 		return studentsList;
 	}
-
+	
+	@Override
 	public List<StudentModel> search(String word) throws SQLException {
 		String query = "";
 		PreparedStatement pst = null;

@@ -17,6 +17,7 @@ public class RegistrationModel extends AbstractModel {
 	 * Relacionamentos
 	 */
 	private StudentModel student;
+	private List<RegistrationModality> modalities;
 	
 	/**
 	 * @return StudentModel
@@ -30,8 +31,6 @@ public class RegistrationModel extends AbstractModel {
 	public void setStudent(StudentModel student) {
 		this.student = student;
 	}
-	
-	private List<RegistrationModality> modalities;
 
 	/**
 	 * @return List<RegistrationModality>

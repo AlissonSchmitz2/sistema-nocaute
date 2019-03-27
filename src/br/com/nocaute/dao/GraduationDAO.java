@@ -10,7 +10,7 @@ import java.util.List;
 
 import br.com.nocaute.model.GraduationModel;
 
-public class GraduationDAO extends AbstractDAO<GraduationModel> {
+public class GraduationDAO extends AbstractCrudDAO<GraduationModel> {
 	private static final String TABLE_NAME = "graduacoes";
 	
 	private String columnId = "id_graduacao";

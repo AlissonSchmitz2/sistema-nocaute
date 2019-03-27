@@ -5,21 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
-import java.util.List;
 
 public abstract class AbstractDAO<T> {
-	public abstract List<T> selectAll() throws SQLException;
-	
-	public abstract T findById(Integer id) throws SQLException;
-	
-	public abstract T insert(T model) throws SQLException;
-	
-	public abstract boolean update(T model) throws SQLException;
-	
-	public abstract boolean delete(T model) throws SQLException;
-	
-	public abstract boolean deleteById(Integer id) throws SQLException;
-	
 	public void setParam(PreparedStatement pst, int position, Object value) throws SQLException {
 		if (value == null) {
 			pst.setNull(position, Types.NULL);

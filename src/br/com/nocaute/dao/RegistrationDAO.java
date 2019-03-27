@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.nocaute.dao.contracts.Searchable;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.pojos.Graduation;
@@ -15,7 +16,7 @@ import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
 
-public class RegistrationDAO extends AbstractDAO<RegistrationModel> {
+public class RegistrationDAO extends AbstractCrudDAO<RegistrationModel> implements Searchable<RegistrationModel> {
 
 private static final String TABLE_NAME = "matriculas";
 	
@@ -68,6 +69,7 @@ private static final String TABLE_NAME = "matriculas";
 		return registrationsList;
 	}
 	
+	@Override
 	public List<RegistrationModel> search(String word) throws SQLException {
 		String query = "";
 		PreparedStatement pst = null;
@@ -270,8 +272,6 @@ private static final String TABLE_NAME = "matriculas";
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
-			
-			
 
 			return true;
 		}
