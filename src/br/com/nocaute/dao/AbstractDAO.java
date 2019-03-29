@@ -23,6 +23,8 @@ public abstract class AbstractDAO<T> {
 			pst.setString(position,((Boolean) value).booleanValue() ? "S" : "N");
 		} else if (value	instanceof	BigDecimal) {
 			pst.setBigDecimal(position,(BigDecimal) value);
+		} else if(value instanceof Float) {
+			pst.setFloat(position, (float) value);
 		}
 	}
 	
