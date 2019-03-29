@@ -3,6 +3,7 @@ package br.com.nocaute.model;
 import java.util.Date;
 
 public class RegistrationModalityModel extends AbstractModel {
+	private Integer id_matricula_modalidade;
 	private Integer codigo_matricula;
 	private Integer id_modalidade;
 	private Integer id_graduacao;
@@ -41,11 +42,32 @@ public class RegistrationModalityModel extends AbstractModel {
 	/**
 	 * Outros atributos
 	 */
+	/**
+	 * @return id_matricula_modalidade
+	 */
+	public Integer getId() {
+		return id_matricula_modalidade;
+	}
+	/**
+	 * id_matricula_modalidade
+	 * @param id
+	 */
+	public void setId(Integer id) {
+		this.id_matricula_modalidade = id;
+	}
+	
+	/**
+	 * @return codigo_matricula
+	 */
 	public Integer getRegistrationCode() {
 		return codigo_matricula;
 	}
-	public void setRegistrationCode(Integer registration_code) {
-		this.codigo_matricula = registration_code;
+	/**
+	 * codigo_matricula
+	 * @param registrationCode
+	 */
+	public void setRegistrationCode(Integer registrationCode) {
+		this.codigo_matricula = registrationCode;
 	}
 	
 	

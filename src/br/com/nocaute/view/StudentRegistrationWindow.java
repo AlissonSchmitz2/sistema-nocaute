@@ -348,6 +348,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		 return registrationModalityList.stream()
 				.map(pojo -> { 
 					RegistrationModalityModel model = new RegistrationModalityModel();
+					model.setId(pojo.getId());
 					model.setRegistrationCode(pojo.getRegistrationCode());
 					model.setModalityId(pojo.getModality().getId());
 					model.setGraduationId(pojo.getGraduation().getId());
@@ -363,6 +364,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		 return registrationModalityList.stream()
 				.map(model -> { 
 					RegistrationModality pojo = new RegistrationModality();
+					pojo.setId(model.getId());
 					pojo.setRegistrationCode(model.getRegistrationCode());
 					pojo.setModality(new Modality(model.getModalityId(), model.getModality().getName()));
 					pojo.setGraduation(new Graduation(model.getGraduationId(), model.getGraduation().getName()));

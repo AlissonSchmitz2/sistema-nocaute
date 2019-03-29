@@ -15,11 +15,14 @@ import br.com.nocaute.model.PlanModel;
 import br.com.nocaute.model.RegistrationModalityModel;
 
 public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityModel> implements Crud<RegistrationModalityModel> {
-private static final String TABLE_NAME = "matriculas_modalidades";
+	private static final String TABLE_NAME = "matriculas_modalidades";
+	
+	private String columnId = "id_matricula_modalidade";
 	
 	private String defaultOrderBy = "data_inicio";
 
 	private String[] columnsToInsert = new String[] {
+		"id_matricula_modalidade",
 		"codigo_matricula",
 		"id_graduacao",
 		"id_modalidade",
@@ -28,7 +31,9 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 		"data_fim"
 	};
 	
-	private String[] defaultValuesToInsert = new String[] {};
+	private String[] defaultValuesToInsert = new String[] {
+		"DEFAULT"
+	};
 	
 	private String[] columnsToUpdate = new String[] {
 		"codigo_matricula",
@@ -47,7 +52,7 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 		this.connection.setAutoCommit(false);
 	}
 
-	public List<RegistrationModalityModel> getByRegistrationCode(Integer id) throws SQLException {
+	public List<RegistrationModalityModel> getByRegistrationCode(Integer registrationCode) throws SQLException {
 		String query = "SELECT mm.*, m.modalidade, g.graduacao, p.plano" +
 				" FROM matriculas_modalidades AS mm LEFT JOIN modalidades AS m ON mm.id_modalidade=m.id_modalidade" +
 				" LEFT JOIN graduacoes AS g ON mm.id_graduacao=g.id_graduacao" +
@@ -56,7 +61,7 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 		
 		PreparedStatement pst = connection.prepareStatement(query);
 		
-		setParam(pst, 1, id);
+		setParam(pst, 1, registrationCode);
 		
 		List<RegistrationModalityModel> modalitiesList = new ArrayList<RegistrationModalityModel>();
 
@@ -64,7 +69,8 @@ private static final String TABLE_NAME = "matriculas_modalidades";
 
 		while (relationshipRst.next()) {
 			RegistrationModalityModel registrationModality = new RegistrationModalityModel();
-			registrationModality.setRegistrationCode(id);
+			registrationModality.setId(relationshipRst.getInt(columnId));
+			registrationModality.setRegistrationCode(registrationCode);
 			registrationModality.setModalityId(relationshipRst.getInt("id_modalidade"));
 			registrationModality.setGraduationId(relationshipRst.getInt("id_graduacao"));
 			registrationModality.setPlanId(relationshipRst.getInt("id_plano"));

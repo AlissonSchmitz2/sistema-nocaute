@@ -3,12 +3,21 @@ package br.com.nocaute.pojos;
 import java.util.Date;
 
 public class RegistrationModality {
+	private Integer id;
 	private Integer registration_code;
 	private Modality modality;
 	private Graduation graduation;
 	private Plan plan;
 	private Date startDate;
 	private Date finishDate;
+	
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	
 	public Integer getRegistrationCode() {
 		return registration_code;
