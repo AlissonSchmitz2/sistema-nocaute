@@ -25,6 +25,7 @@ public class Main {
 	        java.awt.EventQueue.invokeLater(new Runnable() {
 
 	            public void run() {
+	            	
 	            	new LoginWindow().setVisible(true);
 	            	//Para testes
 	                //new Window().setVisible(true);

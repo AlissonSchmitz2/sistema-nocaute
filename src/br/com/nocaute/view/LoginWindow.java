@@ -1,5 +1,6 @@
 package br.com.nocaute.view;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -58,7 +59,7 @@ public class LoginWindow extends JDialog {
 		btnAcess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: Validar login e senha
-				new Window().setVisible(true);
+				startSystem();
 			}
 		});	
 		btnAcess.addKeyListener(new KeyAdapter() {
@@ -66,10 +67,15 @@ public class LoginWindow extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
 					//TODO: Validar login e senha
-					new Window().setVisible(true);
+					startSystem();
 				}
 			}
 		});
+	}
+	
+	private void startSystem() {
+		new Window().setVisible(true);
+		dispose();
 	}
 
 }
