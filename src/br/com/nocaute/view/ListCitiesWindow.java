@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.CityDAO;
 import br.com.nocaute.model.CityModel;
@@ -32,7 +31,6 @@ public class ListCitiesWindow extends AbstractGridWindow {
 
 	private CitiesTableModel tableModel;
 	private JTable jTableModels;
-	private TableCellRenderer renderer = new EvenOddRenderer();
 
 	public ListCitiesWindow(JDesktopPane desktop) {
 		super("Cidades", 445, 310, desktop);

@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.model.StudentModel;
@@ -32,9 +31,6 @@ public class ListStudentsWindow extends AbstractGridWindow {
 
 	private StudentsTableModel tableModel;
 	private JTable jTableModels;
-	
-	//Utilizado para alterar o layout da grid
-	private TableCellRenderer renderer = new EvenOddRenderer();
 
 	public ListStudentsWindow(JDesktopPane desktop) {
 		super("Alunos", 445, 310, desktop);

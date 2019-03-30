@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.model.RegistrationModel;
@@ -32,9 +31,6 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 
 	private RegistrationsTableModel tableModel;
 	private JTable jTableModels;
-	
-	//Utilizado para alterar o layout da grid
-	private TableCellRenderer renderer = new EvenOddRenderer();
 	
 	public ListRegistrationsWindow(JDesktopPane desktop) {
 		super("Matrículas", 445, 310, desktop);

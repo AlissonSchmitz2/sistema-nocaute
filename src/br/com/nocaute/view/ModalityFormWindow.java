@@ -20,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
@@ -50,7 +49,6 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	
 	private GraduationsTableModel tableModel;
 	private JTable jTableGraduacoes;
-	private TableCellRenderer renderer = new EvenOddRenderer();
 
 	// Icones
 	private ImageIcon iconBuscar = new ImageIcon(

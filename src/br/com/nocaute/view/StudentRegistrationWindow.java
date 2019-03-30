@@ -65,7 +65,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	private PlaceholderTextField txfAluno;
 
 	private JTable jTableRegistration;
-	StudentRegistrationModalitiesTableModel studentRegistrationModalitiesTableModel;
+	private StudentRegistrationModalitiesTableModel studentRegistrationModalitiesTableModel;
 	private StudentRegistrationAddModalitiesWindow studentRegistrationAddModalitiesWindow;
 	
 	private JDesktopPane desktop;

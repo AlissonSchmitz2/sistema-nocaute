@@ -15,7 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.PlanDAO;
 import br.com.nocaute.model.PlanModel;
@@ -32,8 +31,6 @@ public class ListPlansWindow extends AbstractGridWindow {
 	
 	private PlansTableModel tableModel;
 	private JTable jTableModels;
-
-	private TableCellRenderer renderer = new EvenOddRenderer();
 
 	public ListPlansWindow(JDesktopPane desktop) {
 		super("Planos", 445, 310, desktop);

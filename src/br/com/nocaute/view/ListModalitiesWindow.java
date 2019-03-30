@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableCellRenderer;
 
 import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
@@ -39,8 +38,6 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 	
 	private ModalitiesTableModel tableModel;
 	private JTable jTableModels;
-	
-	private TableCellRenderer renderer = new EvenOddRenderer();
 	
 	public ListModalitiesWindow(JDesktopPane desktop) {
 		super("Modalidades", 445, 310, desktop);

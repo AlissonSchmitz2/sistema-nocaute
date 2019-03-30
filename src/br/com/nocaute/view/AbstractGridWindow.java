@@ -2,18 +2,25 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+
+import br.com.nocaute.view.AbstractGridWindow.EvenOddRenderer;
 
 public abstract class AbstractGridWindow extends AbstractWindowFrame  {
 	private static final long serialVersionUID = -8203026366064920547L;
 	
 	protected JScrollPane grid = null;
+	protected TableCellRenderer renderer = new EvenOddRenderer();
 	
 	public AbstractGridWindow(String nomeTela, int width, int height, JDesktopPane desktop) {
 		super(nomeTela, width, height, desktop);
@@ -25,7 +32,6 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame  {
 	
 	public void resizeGrid(JScrollPane grid, int x, int y, int width, int height) {
 		grid.setBounds(x, y, width, height);
-		
 	}
 	
 	public JScrollPane getGridContent() {
