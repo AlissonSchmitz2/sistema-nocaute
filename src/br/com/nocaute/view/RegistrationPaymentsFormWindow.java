@@ -17,10 +17,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.model.RegistrationModel;
+import br.com.nocaute.view.AbstractGridWindow.EvenOddRenderer;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 
 public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
@@ -34,6 +36,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 
 	private PaymentsTableModel model;
 	private JTable jTablePayments;
+	private TableCellRenderer renderer = new EvenOddRenderer();
 
 	// Icones
 	private ImageIcon iconPesquisar = new ImageIcon(
@@ -105,6 +108,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 
 		// Habilita a seleção por linha
 		jTablePayments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jTablePayments.setDefaultRenderer(Object.class, renderer);
 		jTablePayments.getColumnModel().getColumn(0).setMaxWidth(55);
 		jTablePayments.getColumnModel().getColumn(1).setPreferredWidth(155);
 		jTablePayments.getColumnModel().getColumn(3).setPreferredWidth(40);

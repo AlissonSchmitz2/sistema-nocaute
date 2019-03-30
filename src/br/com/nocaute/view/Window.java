@@ -25,7 +25,8 @@ import javax.swing.WindowConstants;
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
-	//Janelas do Menu
+	// Janelas do Menu
+	private ControlStudentFormWindow frameControlStudentForm;
 	private UserFormWindow frameUserForm;
 	private StudentFormWindow frameStudentForm;
 	private ModalityFormWindow frameModalitiesForm;
@@ -55,7 +56,6 @@ public class Window extends JFrame {
 	private ImageIcon iconInfo = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/32x32/informacao.png"));
 
-	
 	private JSeparator separador;
 
 	private JDesktopPane desktop;
@@ -68,10 +68,12 @@ public class Window extends JFrame {
 		desktop.setVisible(true);
 		setContentPane(desktop);
 
-		inicializar();
+		startingWindow();
 
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
+
+		//startingControlStudent();
 	}
 
 	private String getDateTime() {
@@ -80,7 +82,7 @@ public class Window extends JFrame {
 		return dateFormat.format(date);
 	}
 
-	private void inicializar() {
+	private void startingWindow() {
 		String dataLogin = getDateTime();
 		this.setTitle("Sistema Nocaute v1.0.0-betha   " + dataLogin);
 		this.setJMenuBar(getWindowMenuBar());
@@ -88,7 +90,6 @@ public class Window extends JFrame {
 		this.setBounds(new Rectangle(0, 0, 796, 713));
 		this.setFocusableWindowState(true);
 		getContentPane().setBackground(new Color(247, 247, 247));
-
 	}
 
 	/*
@@ -115,7 +116,7 @@ public class Window extends JFrame {
 		menuSistema.add(getMenuItemUsuarios());
 		menuSistema.add(separador);
 		menuSistema.add(getMenuItemSair());
-
+		
 		return menuSistema;
 	}
 
@@ -389,6 +390,11 @@ public class Window extends JFrame {
 		});
 
 		return menuItem;
+	}
+	
+	private void startingControlStudent() {
+		frameControlStudentForm = new ControlStudentFormWindow(desktop);
+		abrirFrame(frameControlStudentForm);
 	}
 
 	// HELPERS
