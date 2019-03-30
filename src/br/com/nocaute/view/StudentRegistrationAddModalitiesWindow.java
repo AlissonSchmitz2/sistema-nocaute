@@ -28,27 +28,48 @@ import br.com.nocaute.view.comboModel.GenericComboModel;
 public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = -4201960150625152379L;
 	
-	ModalityDAO modalityDao;
-	GraduationDAO graduationDao;
-	PlanDAO planDao;
+	private ModalityDAO modalityDao;
+	private GraduationDAO graduationDao;
+	private PlanDAO planDao;
 	
-	RegistrationModality selectedRegistrationModality;
-
+	private RegistrationModality selectedRegistrationModality;
+	private RegistrationModality registrationModalityToEdition;
+	
+	private List<Modality> modalitiesList;
+	private List<Graduation> graduationsList;
+	private List<Plan> plansList;
+	
 	// Componentes
-	private JButton btnOk;
+	private JButton btnOk, btnExcluir;
 	private JLabel label;
 	private JDateChooser jDtInicio, jDtFim;
-	private JComboBox<Modality> cbxModalidade;
-	private JComboBox<Graduation> cbxGraduacao;
-	private JComboBox<Plan> cbxPlano;
+	private JComboBox<Modality> cbxModalidade = new JComboBox<Modality>();
+	private JComboBox<Graduation> cbxGraduacao = new JComboBox<Graduation>();
+	private JComboBox<Plan> cbxPlano = new JComboBox<Plan>();
 	
 	private ImageIcon iconJanela = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 	private ImageIcon iconOK = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/13x13/ok.png"));
+	private ImageIcon iconDelete = new ImageIcon(
+			this.getClass().getResource("/br/com/nocaute/image/16x16/excluir.png"));
 
 	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop) {
 		super("Adicionar Modalidades", 300, 225, desktop);
+		
+		constructor(desktop);
+	}
+	
+	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop, RegistrationModality modality) {
+		super("Adicionar Modalidades", 300, 225, desktop);
+		
+		//Atribui a modalidade vinda pelo construtor a modalidade selecionda
+		registrationModalityToEdition = modality;
+		
+		constructor(desktop);
+	}
+	
+	private void constructor(JDesktopPane desktop) {
 		setFrameIcon(iconJanela);
 		
 		try {
@@ -71,15 +92,15 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	
 	private void criarComponentes() {
 		//Lista de modalidades
-		List<Modality> modalitiesList = new ArrayList<>();
+		modalitiesList = new ArrayList<>();
 		modalitiesList.add(new Modality(0, "-- Selecione --"));
 		
 		//Lista de Graduações
-		List<Graduation> graduationsList = new ArrayList<>();
+		graduationsList = new ArrayList<>();
 		graduationsList.add(new Graduation(0, "-- Selecione --"));
 		
 		//Lista de Planos
-		List<Plan> plansList = new ArrayList<>();
+		plansList = new ArrayList<>();
 		plansList.add(new Plan(0, "-- Selecione --"));
 		
 		try {
@@ -87,54 +108,31 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-				
-		//Instancia Combos
-		cbxModalidade = new JComboBox<Modality>();
-		cbxGraduacao = new JComboBox<Graduation>();
-		cbxPlano = new JComboBox<Plan>();
 		
 		label = new JLabel("Modalidade: ");
 		label.setBounds(5, 10, 100, 25);
 		getContentPane().add(label);
 		
 		cbxModalidade.setModel(new GenericComboModel<Modality>(modalitiesList));
-		cbxModalidade.setSelectedIndex(0);
+		if (registrationModalityToEdition != null) {
+			Modality selectedModality = modalitiesList
+				.stream()
+				.filter(item -> { return item.getId() == registrationModalityToEdition.getModality().getId(); })
+				.findFirst().orElse(null);
+			
+			cbxModalidade.setSelectedItem(selectedModality);
+			cbxModalidade.setEnabled(false);
+			
+			updateComboboxes();
+		} else {
+			cbxModalidade.setSelectedIndex(0);
+		}
+		
 		cbxModalidade.setBounds(70, 10, 205, 20);
 		cbxModalidade.setToolTipText("Selecione uma modalidade");
 		cbxModalidade.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Modality selectedModality = (Modality) cbxModalidade.getSelectedItem();
-				
-				//Reseta combos
-				graduationsList.clear();
-
-				plansList.clear();
-				
-				if (selectedModality != null) {
-					cbxGraduacao.setEnabled(true);
-					cbxPlano.setEnabled(true);
-					
-					try {
-						//Carrega combo de graduações
-						graduationDao.findByModalityId(selectedModality.getId())
-							.forEach(graduation -> graduationsList.add(new Graduation(graduation.getGraduationId(), graduation.getName())));
-						cbxGraduacao.setModel(new GenericComboModel<Graduation>(graduationsList));
-						
-						//Carrega combo de planos
-						planDao.findByModalityId(selectedModality.getId())
-							.forEach(plan -> plansList.add(new Plan(plan.getPlanId(), plan.getName())));
-						cbxPlano.setModel(new GenericComboModel<Plan>(plansList));
-					} catch (SQLException error) {
-						bubbleError(error.getMessage());
-						error.printStackTrace();
-					}
-				} else {
-					cbxGraduacao.setEnabled(false);
-					cbxPlano.setEnabled(false);
-					
-					graduationsList.add(new Graduation(0, "-- Selecione --"));
-					plansList.add(new Plan(0, "-- Selecione --"));
-				}
+				updateComboboxes();
 			}
 		});
 		getContentPane().add(cbxModalidade);
@@ -146,7 +144,6 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 		//Graduação
 		cbxGraduacao.setBounds(70, 40, 205, 20);
 		cbxGraduacao.setToolTipText("Selecione uma graduação");
-		cbxGraduacao.setEnabled(false);
 		getContentPane().add(cbxGraduacao);
 		
 		label = new JLabel("Plano: ");
@@ -156,7 +153,6 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 		//Planos
 		cbxPlano.setBounds(70, 70, 205, 20);
 		cbxPlano.setToolTipText("Selecione um plano");
-		cbxPlano.setEnabled(false);
 		getContentPane().add(cbxPlano);
 		
 		label = new JLabel("Data Início: ");
@@ -168,13 +164,14 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 		getContentPane().add(label);
 		
 		try {
-			jDtInicio = new JDateChooser(new Date());
+			
+			jDtInicio = new JDateChooser((registrationModalityToEdition != null) ? registrationModalityToEdition.getStartDate() : new Date());
 			jDtInicio.setDateFormatString("dd/MM/yyyy");
 			jDtInicio.setBounds(70, 100, 100, 20);
 			jDtInicio.setToolTipText("Data de início");
 			getContentPane().add(jDtInicio);
 			
-			jDtFim = new JDateChooser();
+			jDtFim = new JDateChooser((registrationModalityToEdition != null) ? registrationModalityToEdition.getFinishDate() : null);
 			jDtFim.setDateFormatString("dd/MM/yyyy");
 			jDtFim.setBounds(70, 130, 100, 20);
 			jDtFim.setToolTipText("Data do fim da matrícula");
@@ -185,7 +182,7 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 		}
 		
 		btnOk = new JButton("OK");
-		btnOk.setBounds(100, 160, 100, 25);
+		btnOk.setBounds(175, 160, 100, 25);
 		btnOk.setIcon(iconOK);
 		btnOk.setToolTipText("Clique aqui para confirmar");
 		btnOk.addActionListener(new ActionListener() {
@@ -195,6 +192,11 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 				}
 				
 				selectedRegistrationModality = new RegistrationModality();
+				
+				//Se existir uma instância da modalidade para edição, usa o id
+				if (registrationModalityToEdition != null) {
+					selectedRegistrationModality.setId(registrationModalityToEdition.getId());
+				}
 				
 				selectedRegistrationModality.setModality((Modality) cbxModalidade.getSelectedItem());
 				selectedRegistrationModality.setGraduation((Graduation) cbxGraduacao.getSelectedItem());
@@ -211,6 +213,74 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 			}
 		});
 		getContentPane().add(btnOk);
+		
+		btnExcluir = new JButton("Excluir");
+		btnExcluir.setBounds(10, 160, 100, 25);
+		btnExcluir.setIcon(iconDelete);
+		btnExcluir.setToolTipText("Clique aqui para excluir");
+		btnExcluir.setEnabled(registrationModalityToEdition != null);
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//Seta o atributo que define a modalidade como excluida
+				selectedRegistrationModality = new RegistrationModality();
+				selectedRegistrationModality.setDeleted(true);
+				
+				//Fecha a janela
+            	try {
+					setClosed(true);
+				} catch (PropertyVetoException error) {
+					error.printStackTrace();
+				}
+			}
+		});
+		getContentPane().add(btnExcluir);
+	}
+	
+	private void updateComboboxes() {
+		Modality selectedModality = (Modality) cbxModalidade.getSelectedItem();
+		
+		//Reseta combos
+		graduationsList.clear();
+
+		plansList.clear();
+		
+		if (selectedModality != null) {
+			try {
+				//Carrega combo de graduações
+				graduationDao.findByModalityId(selectedModality.getId())
+					.forEach(graduation -> graduationsList.add(new Graduation(graduation.getGraduationId(), graduation.getName())));
+				cbxGraduacao.setModel(new GenericComboModel<Graduation>(graduationsList));
+				
+				if (registrationModalityToEdition != null) {
+					Graduation selectedGraduation = graduationsList
+							.stream()
+							.filter(item -> { return item.getId() == registrationModalityToEdition.getGraduation().getId(); })
+							.findFirst().orElse(null);
+						
+					cbxGraduacao.setSelectedItem(selectedGraduation);
+				}
+				
+				//Carrega combo de planos
+				planDao.findByModalityId(selectedModality.getId())
+					.forEach(plan -> plansList.add(new Plan(plan.getPlanId(), plan.getName())));
+				cbxPlano.setModel(new GenericComboModel<Plan>(plansList));
+				
+				if (registrationModalityToEdition != null) {
+					Plan selectedPlan = plansList
+							.stream()
+							.filter(item -> { return item.getId() == registrationModalityToEdition.getPlan().getId(); })
+							.findFirst().orElse(null);
+						
+					cbxPlano.setSelectedItem(selectedPlan);
+				}
+			} catch (SQLException error) {
+				bubbleError(error.getMessage());
+				error.printStackTrace();
+			}
+		} else {			
+			graduationsList.add(new Graduation(0, "-- Selecione --"));
+			plansList.add(new Plan(0, "-- Selecione --"));
+		}
 	}
 	
 	private boolean validateFields() {

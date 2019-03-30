@@ -75,6 +75,12 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 
 		fireTableRowsInserted(lastIndex, lastIndex);
 	}
+	
+	public void addModel(T model, int index) {
+		modelsList.set(index, model);
+
+		fireTableRowsInserted(index, index);
+	}
 
 	public void removeModel(int rowIndex) {
 		modelsList.remove(rowIndex);

@@ -10,7 +10,7 @@ public class RegistrationModality {
 	private Plan plan;
 	private Date startDate;
 	private Date finishDate;
-	
+	private boolean deleted;
 	
 	public Integer getId() {
 		return id;
@@ -59,5 +59,11 @@ public class RegistrationModality {
 	}
 	public void setFinishDate(Date finishDate) {
 		this.finishDate = finishDate;
+	}
+	public boolean isDeleted() {
+		return deleted;
+	}
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 }

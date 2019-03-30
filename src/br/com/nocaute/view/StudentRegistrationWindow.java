@@ -337,6 +337,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 									registrationModality.setRegistrationCode(model.getRegistrationCode());
 								}
 								studentRegistrationModalitiesTableModel.addModel(registrationModality);
+							
 							}
 							
 							// Reseta janela
@@ -527,13 +528,37 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		jTableRegistration.addMouseListener(new MouseAdapter() {
 	        public void mouseClicked (MouseEvent me) {
 	            if (me.getClickCount() == 2) {
-	            	//Caso esteja em modo de edição, adiciona para remoção.
-					if (isEditing()) {
-						
+	            	if (studentRegistrationAddModalitiesWindow == null) {
+	            		int selectedRow = jTableRegistration.getSelectedRow();
+	            		
+	            		RegistrationModality selectedModel = studentRegistrationModalitiesTableModel.getModel(selectedRow);
+						studentRegistrationAddModalitiesWindow = new StudentRegistrationAddModalitiesWindow(desktop, selectedModel);
+
+						studentRegistrationAddModalitiesWindow.addInternalFrameListener(new InternalFrameListener() {
+							@Override
+							public void internalFrameClosed(InternalFrameEvent e) {
+								RegistrationModality registrationModality = ((StudentRegistrationAddModalitiesWindow) e.getInternalFrame())
+										.getSelectedRegistrationModality();
+
+								if (registrationModality != null) {
+									if (registrationModality.isDeleted()) {
+										studentRegistrationModalitiesTableModel.removeModel(selectedRow);
+									} else {
+										//Se estiver em modo edição, insere o código da matrícula
+										if (isEditing()) {
+											registrationModality.setRegistrationCode(model.getRegistrationCode());
+										}
+										
+										//selectedRow
+										studentRegistrationModalitiesTableModel.addModel(registrationModality, selectedRow);	
+									}
+								}
+
+								// Reseta janela
+								studentRegistrationAddModalitiesWindow = null;
+							}
+						});
 					}
-	            	
-	            	//Clique duplo na linha para removê-la.     	
-	            	studentRegistrationModalitiesTableModel.removeModel(jTableRegistration.getSelectedRow());
 	            }
 	        }
 	    });
