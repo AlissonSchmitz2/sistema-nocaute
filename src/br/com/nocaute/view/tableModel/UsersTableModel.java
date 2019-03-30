@@ -1,7 +1,5 @@
 package br.com.nocaute.view.tableModel;
 
-import java.util.List;
-
 import br.com.nocaute.model.UserModel;
 
 public class UsersTableModel extends AbstractTableModel<UserModel>{

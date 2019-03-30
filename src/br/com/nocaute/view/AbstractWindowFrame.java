@@ -33,8 +33,6 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 
 	public AbstractWindowFrame(String nameWindow, int width, int height, JDesktopPane desktop) {
 		super(nameWindow, false, true, false, false);
-
-		System.out.println(desktop);
 		
 		setLayout(null);
 		setVisible(true);
@@ -44,8 +42,6 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		// Abrir janela centralizada
 		setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
 		
-		//System.out.println((desktop.getWidth() - this.getSize().width) / 2);
-		//System.out.println((desktop.getHeight() - this.getSize().height) / 2);
 		//Bloquear movimento da janela
 		//windowWasMove();
 		
