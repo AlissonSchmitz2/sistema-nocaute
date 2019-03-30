@@ -7,7 +7,7 @@ import br.com.nocaute.model.UserModel;
 public class UsersTableModel extends AbstractTableModel<UserModel>{
 
 	public UsersTableModel() {
-		super(new String[] {"ID","Usuario"});
+		super(new String[] {"ID","Usuario","Perfil"});
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -19,6 +19,8 @@ public class UsersTableModel extends AbstractTableModel<UserModel>{
 			model.setCode(Integer.parseInt(aValue.toString()));
 		case 1:
 			model.setUser(aValue.toString());
+		case 2:
+			model.setProfile(aValue.toString());
 		default:
 			System.err.println("Índice da coluna inválido");
 	  }
@@ -35,6 +37,9 @@ public class UsersTableModel extends AbstractTableModel<UserModel>{
 		case 1:
 			valueObject = model.getUser();
 			break;
+		case 2:
+			valueObject = model.getProfile();
+		    break;
 		default:
 			System.err.println("Índice da coluna inválido");
 		}
