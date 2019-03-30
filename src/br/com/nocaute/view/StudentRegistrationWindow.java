@@ -332,6 +332,10 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 									.getSelectedRegistrationModality();
 
 							if (registrationModality != null) {
+								//Se estiver em modo edição, insere o código da matrícula
+								if (isEditing()) {
+									registrationModality.setRegistrationCode(model.getRegistrationCode());
+								}
 								studentRegistrationModalitiesTableModel.addModel(registrationModality);
 							}
 							

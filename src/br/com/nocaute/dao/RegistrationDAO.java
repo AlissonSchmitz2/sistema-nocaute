@@ -220,8 +220,9 @@ private static final String TABLE_NAME = "matriculas";
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
-
-			return true;
+			
+			//Sincroniza as modalidades
+			return registrationModalityDao.sync(model.getRegistrationCode(), model.getModalities());
 		}
 
 		return false;
@@ -230,10 +231,12 @@ private static final String TABLE_NAME = "matriculas";
 	@Override
 	public boolean delete(RegistrationModel model) throws SQLException {
 		//Remove modalidades antes de remover a matrícula
-		//TODO
+		if (registrationModalityDao.deleteByRegistrationCode(model.getRegistrationCode())) {
+			//Remove a matrícula
+			return deleteById(model.getRegistrationCode());
+		}
 		
-		//Remove a matrícula
-		return deleteById(model.getRegistrationCode());
+		return false;
 	}
 
 	@Override

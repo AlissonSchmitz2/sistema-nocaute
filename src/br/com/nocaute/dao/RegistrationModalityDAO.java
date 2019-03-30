@@ -1,5 +1,6 @@
 package br.com.nocaute.dao;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import br.com.nocaute.dao.contracts.Crud;
 import br.com.nocaute.model.GraduationModel;
@@ -57,7 +59,7 @@ public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityMod
 				" FROM matriculas_modalidades AS mm LEFT JOIN modalidades AS m ON mm.id_modalidade=m.id_modalidade" +
 				" LEFT JOIN graduacoes AS g ON mm.id_graduacao=g.id_graduacao" +
 				" LEFT JOIN planos AS p ON mm.id_plano=p.id_plano" +
-				" WHERE mm.codigo_matricula=?";
+				" WHERE mm.codigo_matricula=? ORDER BY mm." + defaultOrderBy;
 		
 		PreparedStatement pst = connection.prepareStatement(query);
 		
@@ -68,15 +70,10 @@ public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityMod
 		ResultSet relationshipRst = pst.executeQuery();
 
 		while (relationshipRst.next()) {
-			RegistrationModalityModel registrationModality = new RegistrationModalityModel();
-			registrationModality.setId(relationshipRst.getInt(columnId));
-			registrationModality.setRegistrationCode(registrationCode);
-			registrationModality.setModalityId(relationshipRst.getInt("id_modalidade"));
-			registrationModality.setGraduationId(relationshipRst.getInt("id_graduacao"));
-			registrationModality.setPlanId(relationshipRst.getInt("id_plano"));
-			registrationModality.setStartDate(relationshipRst.getDate("data_inicio"));
-			registrationModality.setFinishDate(relationshipRst.getDate("data_fim"));
+			//Atributos do model
+			RegistrationModalityModel registrationModality = createModelFromResultSet(relationshipRst);
 			
+			//Relacionamentos
 			ModalityModel modality = new ModalityModel();
 			modality.setModalityId(registrationModality.getModalityId());
 			modality.setName(relationshipRst.getString("modalidade"));
@@ -91,7 +88,7 @@ public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityMod
 			PlanModel plan = new PlanModel();
 			plan.setPlanId(relationshipRst.getInt("id_plano"));
 			plan.setName(relationshipRst.getString("plano"));
-			//Por hora, não existe necessidade de setar todos os atributos
+			//Por hora, não existe necessidade de setar todos os atributos de planos pois é só um relacionamento
 			registrationModality.setPlan(plan);
 
 			modalitiesList.add(registrationModality);
@@ -130,33 +127,113 @@ public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityMod
 	
 	@Override
 	public boolean update(RegistrationModalityModel model) throws SQLException {
-		/*String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
+		String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
-		setParam(pst, 1, model.getName());
-
+		setParam(pst, 1, model.getRegistrationCode());
+		setParam(pst, 2, model.getGraduationId());
+		setParam(pst, 3, model.getModalityId());
+		setParam(pst, 4, model.getPlanId());
+		setParam(pst, 5, model.getStartDate());
+		setParam(pst, 6, model.getFinishDate());
+		
 		// Identificador WHERE
-		setParam(pst, 2, model.getModalityId());
+		setParam(pst, 7, model.getId());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
 
 			return true;
-		}*/
+		}
 
 		return false;
 	}
 		
 	@Override
 	public boolean delete(RegistrationModalityModel model) throws SQLException {
-		return false;
+		return deleteById(model.getId());
 	}
 
 	@Override
 	public boolean deleteById(Integer id) throws SQLException {
-		throw new SQLException("Não implementado");
+		String query = getDeleteQuery(TABLE_NAME, columnId);
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, id);
+
+		int result = pst.executeUpdate();
+		if (result > 0) {
+			connection.commit();
+
+			return true;
+		}
+
+		return false;
+	}
+	
+	public boolean deleteByRegistrationCode(Integer id) throws SQLException {
+		String query = getDeleteQuery(TABLE_NAME, "codigo_matricula");
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, id);
+
+		int result = pst.executeUpdate();
+		if (result > 0) {
+			connection.commit();
+
+			return true;
+		}
+
+		return false;
+	}
+	
+	public boolean sync(Integer registrationCode, List<RegistrationModalityModel> models) throws SQLException {
+		//REMOVE todas as modalidades que não estão presentes na lista
+		String deleteQuery = "DELETE FROM " + TABLE_NAME + " WHERE NOT (" + columnId + " = ANY (?))" +
+		" AND codigo_matricula = ?";
+		
+		PreparedStatement deletePst = connection.prepareStatement(deleteQuery);
+		
+		List<String> existentIds = models.stream()
+			.filter(model -> model.getId() != null)
+			.map(model -> { return model.getId().toString(); })
+			.collect(Collectors.toList());
+		
+		deletePst.setString(1, String.join(",", existentIds));
+		deletePst.setInt(2, registrationCode);
+		
+		Array parsedIds = connection.createArrayOf("integer", existentIds.toArray());
+		deletePst.setArray(1, parsedIds);
+
+		deletePst.executeUpdate();
+		
+		//UPDATE as modalidades já existentes
+		models.stream()
+			.filter(model -> model.getId() != null)
+			.forEach(model -> {
+				try {
+					update(model);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			});
+		
+		//INSERT as novas modalidades
+		models.stream()
+		.filter(model -> model.getId() == null)
+		.forEach(model -> {
+			try {
+				insert(model);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
+
+		connection.commit();
+		
+		return true;
 	}
 
 	/**
@@ -168,12 +245,14 @@ public class RegistrationModalityDAO extends AbstractDAO<RegistrationModalityMod
 	 */
 	private RegistrationModalityModel createModelFromResultSet(ResultSet rst) throws SQLException {
 		RegistrationModalityModel model = new RegistrationModalityModel();
-
-		//TODO: mapear resultSet para model
-		/*model.setId(rst.getInt("id_cidade"));
-		model.setName(rst.getString("cidade"));
-		model.setState(rst.getString("estado"));
-		model.setCountry(rst.getString("pais"));*/
+		
+		model.setId(rst.getInt(columnId));
+		model.setRegistrationCode(rst.getInt("codigo_matricula"));
+		model.setModalityId(rst.getInt("id_modalidade"));
+		model.setGraduationId(rst.getInt("id_graduacao"));
+		model.setPlanId(rst.getInt("id_plano"));
+		model.setStartDate(rst.getDate("data_inicio"));
+		model.setFinishDate(rst.getDate("data_fim"));
 
 		return model;
 	}
