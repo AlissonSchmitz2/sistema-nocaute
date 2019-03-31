@@ -19,7 +19,7 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame {
 	public AbstractGridWindow(String nameWindow, int width, int height, JDesktopPane desktop) {
 		super(nameWindow, width, height, desktop);
 
-		if(startingFrame(desktop, nameWindow)) {
+		if (startingFrame(desktop, nameWindow)) {
 			// Abre a janela grid automaticamente
 			desktop.add(this);
 			showFrame();
@@ -37,8 +37,10 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame {
 			return true;
 		case "Matrículas":
 			return true;
+		case "Cidades":
+			return true;	
 		}
-		
+
 		return false;
 	}
 
@@ -57,6 +59,7 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame {
 				int row, int column) {
 			Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
 					column);
+
 			((JLabel) renderer).setOpaque(true);
 			Color background;
 			if (isSelected) {

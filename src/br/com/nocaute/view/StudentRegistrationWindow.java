@@ -525,6 +525,8 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		studentRegistrationModalitiesTableModel = new StudentRegistrationModalitiesTableModel();
 		jTableRegistration = new JTable(studentRegistrationModalitiesTableModel);
 		
+		//Add layout na grid
+		jTableRegistration.setDefaultRenderer(Object.class, renderer);
 		jTableRegistration.addMouseListener(new MouseAdapter() {
 	        public void mouseClicked (MouseEvent me) {
 	            if (me.getClickCount() == 2) {

@@ -136,6 +136,9 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 				// Cria nova entidade model
 				model = new StudentModel();
+				
+				// Seta como nulo para deixar em branco 
+				jDateNascimento.setDate(null);
 
 				// Ativa botão salvar
 				btnSalvar.setEnabled(true);
@@ -396,13 +399,13 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		label.setBounds(5, 80, 150, 25);
 		getContentPane().add(label);
 
-		jDateNascimento = new JDateChooser(new Date());
-		jDateNascimento.setBounds(110, 80, 125, 20);
-		jDateNascimento.setDateFormatString("dd/MM/yyyy");
-		getContentPane().add(jDateNascimento);
-		formFields.add(jDateNascimento);
-
 		try {
+			
+			jDateNascimento = new JDateChooser((model.getName() != null) ? model.getBirthDate() : null);
+			jDateNascimento.setDateFormatString("dd/MM/yyyy");
+			jDateNascimento.setBounds(110, 80, 125, 20);
+			getContentPane().add(jDateNascimento);
+			formFields.add(jDateNascimento);
 
 			txfTelefone = new JFormattedTextField(new MaskFormatter("## ####-####"));
 			txfTelefone.setFocusLostBehavior(JFormattedTextField.COMMIT);
@@ -589,9 +592,10 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 			return true;
 		}
 
-		// Se a data de nascimento for igual a atual
+		// Se a data de nascimento for igual a atual ou for nula
 		if (formatador.format(jDateNascimento.getDate())
-				.equals(formatador.format(new Date(System.currentTimeMillis())))) {
+				.equals(formatador.format(new Date(System.currentTimeMillis())))
+				|| jDateNascimento.getDate() == null) {
 			bubbleWarning("Data de nascimento inválida!");
 			return true;
 		}
