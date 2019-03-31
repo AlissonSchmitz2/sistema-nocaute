@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -18,7 +17,6 @@ import javax.swing.JTextField;
 import javax.swing.event.InternalFrameEvent;
 
 import br.com.nocaute.dao.UserDAO;
-import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.util.InternalFrameListener;
 

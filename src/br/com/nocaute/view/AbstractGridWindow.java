@@ -38,7 +38,9 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame {
 		case "Matrículas":
 			return true;
 		case "Cidades":
-			return true;	
+			return true;
+		case "Usuários":
+			return true;
 		}
 
 		return false;

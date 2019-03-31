@@ -205,7 +205,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!validateFields()) {
+				if (validateFields()) {
 					return;
 				}
 				
@@ -379,10 +379,6 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 					
 					return pojo;
 				}).collect(Collectors.toList());
-	}
-	
-	private boolean validateFields() {
-		return true;
 	}
 	
 	private void openSearchStudentWindow() {
@@ -575,4 +571,11 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 		add(grid);
 	}
+	
+	private boolean validateFields() {
+		
+		
+		return false;
+	}
+	
 }
