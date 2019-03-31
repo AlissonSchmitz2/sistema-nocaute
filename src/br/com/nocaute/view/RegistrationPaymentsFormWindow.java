@@ -24,8 +24,8 @@ import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 
 public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
-	private static final long serialVersionUID = -4201960150625152379L;
-
+	private static final long serialVersionUID = 3113169303092452322L;
+	
 	// Componentes
 	private JButton btnPesquisar;
 	private JLabel label;

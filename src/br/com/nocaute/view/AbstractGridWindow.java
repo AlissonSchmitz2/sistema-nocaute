@@ -2,42 +2,56 @@ package br.com.nocaute.view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import br.com.nocaute.view.AbstractGridWindow.EvenOddRenderer;
-
-public abstract class AbstractGridWindow extends AbstractWindowFrame  {
+public abstract class AbstractGridWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = -8203026366064920547L;
-	
+
 	protected JScrollPane grid = null;
 	protected TableCellRenderer renderer = new EvenOddRenderer();
-	
-	public AbstractGridWindow(String nomeTela, int width, int height, JDesktopPane desktop) {
-		super(nomeTela, width, height, desktop);
-		
-		//Abre a janela grid automaticamente
-		desktop.add(this);
-		showFrame();
+
+	public AbstractGridWindow(String nameWindow, int width, int height, JDesktopPane desktop) {
+		super(nameWindow, width, height, desktop);
+
+		if (startingFrame(desktop, nameWindow)) {
+			// Abre a janela grid automaticamente
+			desktop.add(this);
+			showFrame();
+		}
 	}
-	
+
+	protected boolean startingFrame(JDesktopPane desktop, String nameWindow) {
+
+		switch (nameWindow) {
+		case "Alunos":
+			return true;
+		case "Modalidades":
+			return true;
+		case "Planos":
+			return true;
+		case "Matrículas":
+			return true;
+		case "Cidades":
+			return true;	
+		}
+
+		return false;
+	}
+
 	public void resizeGrid(JScrollPane grid, int x, int y, int width, int height) {
 		grid.setBounds(x, y, width, height);
 	}
-	
+
 	public JScrollPane getGridContent() {
 		return grid;
 	}
-	
+
 	class EvenOddRenderer implements TableCellRenderer {
 		public DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
 
@@ -45,6 +59,7 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame  {
 				int row, int column) {
 			Component renderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
 					column);
+
 			((JLabel) renderer).setOpaque(true);
 			Color background;
 			if (isSelected) {

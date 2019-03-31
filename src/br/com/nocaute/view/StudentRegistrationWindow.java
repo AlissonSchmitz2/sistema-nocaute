@@ -46,7 +46,7 @@ import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
 
 public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
-	private static final long serialVersionUID = -4201960150625152379L;
+	private static final long serialVersionUID = -6790083507948009923L;
 	
 	private RegistrationDAO registrationDao;
 	private RegistrationModel model = new RegistrationModel();
@@ -525,6 +525,8 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		studentRegistrationModalitiesTableModel = new StudentRegistrationModalitiesTableModel();
 		jTableRegistration = new JTable(studentRegistrationModalitiesTableModel);
 		
+		//Add layout na grid
+		jTableRegistration.setDefaultRenderer(Object.class, renderer);
 		jTableRegistration.addMouseListener(new MouseAdapter() {
 	        public void mouseClicked (MouseEvent me) {
 	            if (me.getClickCount() == 2) {

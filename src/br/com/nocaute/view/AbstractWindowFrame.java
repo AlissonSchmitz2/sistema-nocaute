@@ -38,6 +38,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		setVisible(true);
 		setBackground(new Color(239, 239, 239));
 		setSize(width, height);
+		setIconifiable(true);
 
 		// Abrir janela centralizada
 		setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
