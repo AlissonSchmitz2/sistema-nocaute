@@ -103,16 +103,16 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 
-		//Key events
+		// Key events
 		registerKeyEvent();
 	}
-	
+
 	private void registerKeyEvent() {
-		//Register key event post processor.
+		// Register key event post processor.
 		StudentFormWindow windowInstance = this;
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(windowInstance);
-		
-		//Unregister key event
+
+		// Unregister key event
 		addInternalFrameListener(new InternalFrameListener() {
 			@Override
 			public void internalFrameClosed(InternalFrameEvent e) {
@@ -136,8 +136,8 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 				// Cria nova entidade model
 				model = new StudentModel();
-				
-				// Seta como nulo para deixar em branco 
+
+				// Seta como nulo para deixar em branco
 				jDateNascimento.setDate(null);
 
 				// Ativa botão salvar
@@ -256,8 +256,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 					searchStudentWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
-							StudentModel selectedModel = ((ListStudentsWindow) e.getInternalFrame())
-									.getSelectedModel();
+							StudentModel selectedModel = ((ListStudentsWindow) e.getInternalFrame()).getSelectedModel();
 
 							if (selectedModel != null) {
 								// Atribui o model selecionado
@@ -400,7 +399,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		getContentPane().add(label);
 
 		try {
-			
+
 			jDateNascimento = new JDateChooser((model.getName() != null) ? model.getBirthDate() : null);
 			jDateNascimento.setDateFormatString("dd/MM/yyyy");
 			jDateNascimento.setBounds(110, 80, 125, 20);
@@ -593,9 +592,14 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		}
 
 		// Se a data de nascimento for igual a atual ou for nula
-		if (formatador.format(jDateNascimento.getDate())
-				.equals(formatador.format(new Date(System.currentTimeMillis())))
-				|| jDateNascimento.getDate() == null) {
+		try {
+			if (formatador.format(jDateNascimento.getDate()).equals(
+					formatador.format(new Date(System.currentTimeMillis())))
+					|| jDateNascimento.getDate() == null) {
+				bubbleWarning("Data de nascimento inválida!");
+				return true;
+			}
+		} catch (Exception e) {
 			bubbleWarning("Data de nascimento inválida!");
 			return true;
 		}
