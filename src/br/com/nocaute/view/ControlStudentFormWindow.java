@@ -66,7 +66,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	}
 
 	private void setButtonsActions() {
+		//TODO: Situações da matrícula do aluno
+		//0 - Aguardando Consulta...
+		//1 - Débitos Pendentes
+		//2 - Situação Regular
 		
+		setSituation(0);
 	}
 
 	private void createComponents() {
@@ -96,10 +101,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		panelSituation.setBounds(220, 160, 538, 50);
 		panelSituation.setLayout(null);
 		panelSituation.setBorder(new LineBorder(Color.GRAY));
-		panelSituation.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(panelSituation);
 
-		label = new JLabel("Aguardando Consulta...");
+		label = new JLabel();
 		label.setHorizontalAlignment(JLabel.CENTER);
 		label.setVerticalAlignment(JLabel.CENTER);
 		label.setBounds(0, 0, panelSituation.getWidth(), panelSituation.getHeight());
@@ -175,6 +179,25 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		grid.setVisible(true);
 
 		add(grid);
+	}
+	
+	private void setSituation(int stateSituation) {
+		switch(stateSituation) {
+			case 0:
+				label.setText("Aguardando Consulta...");
+				panelSituation.setBackground(Color.LIGHT_GRAY);
+				break;
+			case 1:
+				label.setText("Débitos Pendentes");
+				panelSituation.setBackground(Color.RED);
+				break;
+			case 2:
+				label.setText("Situação Regular");
+				panelSituation.setBackground(Color.GREEN);
+				break;
+			default:
+				bubbleError("Situação Inválida!");
+		}
 	}
 
 }
