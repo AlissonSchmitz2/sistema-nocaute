@@ -20,6 +20,7 @@ import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.dao.PlanDAO;
 import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.PlanModel;
+import br.com.nocaute.model.UserModel;
 import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.util.JNumberFormatField;
@@ -30,6 +31,7 @@ public class PlanFormWindow extends AbstractWindowFrame {
 	
 	private PlanDAO planDao;
 	private ModalityDAO modalityDao;
+	private UserModel userLogged = new UserModel();
 	private PlanModel model = new PlanModel();
 	
 	private ListPlansWindow searchPlanWindow;
@@ -58,11 +60,12 @@ public class PlanFormWindow extends AbstractWindowFrame {
 
 	private JDesktopPane desktop;
 	
-	public PlanFormWindow(JDesktopPane desktop) {
+	public PlanFormWindow(JDesktopPane desktop, UserModel userLogged) {
 		super("Planos", 450, 165, desktop);
 		setFrameIcon(iconJanela);
 		
 		this.desktop = desktop;
+		this.userLogged = userLogged;
 
 		try {
 			planDao = new PlanDAO(CONNECTION);
@@ -72,6 +75,9 @@ public class PlanFormWindow extends AbstractWindowFrame {
 		}
 		
 		createComponents();
+		
+		//Caso for usuario cadastral, desabilita ações de buscar e editar.
+		disableButtonForRegisterUser();
 		
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
@@ -338,6 +344,12 @@ public class PlanFormWindow extends AbstractWindowFrame {
 		txfValor.setToolTipText("Informe o valor");
 		getContentPane().add(txfValor);
 		formFields.add(txfValor);
+	}
+	
+	public void disableButtonForRegisterUser() {
+		if(userLogged.hasProfileRegister()) {
+			formFields.add(btnBuscar);
+		}
 	}
 	
 }

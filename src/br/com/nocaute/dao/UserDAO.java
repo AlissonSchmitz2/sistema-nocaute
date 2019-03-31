@@ -77,6 +77,23 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 		return userList;
 	}
+	
+	public UserModel searchByUser(String word) throws SQLException {
+		UserModel model = null;
+		
+		String query = "select * from usuarios where usuario = ?";
+		PreparedStatement pst = connection.prepareStatement(query);
+		
+		setParam(pst, 1, word);
+		
+		ResultSet rst = pst.executeQuery();
+		
+		if(rst.next()) {
+			model = createModelFromResultSet(rst);
+		}
+		
+		return model;
+	}
 
 	@Override
 	public UserModel findById(Integer id) throws SQLException {

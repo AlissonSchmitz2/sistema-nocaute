@@ -38,6 +38,7 @@ import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.enums.Genres;
 import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.model.UserModel;
 import br.com.nocaute.pojos.Genre;
 import br.com.nocaute.util.PlaceholderTextField;
 import br.com.nocaute.view.comboModel.GenericComboModel;
@@ -47,6 +48,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 	private StudentDAO studentDao;
 	private StudentModel model = new StudentModel();
+	private UserModel userLogged = new UserModel();
 	private ListStudentsWindow searchStudentWindow;
 	private ListCitiesWindow searchCityWindow;
 
@@ -83,10 +85,11 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 	private JDesktopPane desktop;
 
-	public StudentFormWindow(JDesktopPane desktop) {
+	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged) {	
 		super("Cadastro de Alunos", 450, 460, desktop);
 		setFrameIcon(iconJanela);
 
+		this.userLogged = userLogged;
 		this.desktop = desktop;
 
 		try {
@@ -96,7 +99,10 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		}
 
 		createComponents();
-
+		
+		//Caso for usuario cadastral, desabilita ações de buscar e editar.
+		disableButtonForRegisterUser();
+		
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
 
@@ -628,5 +634,11 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		}
 
 		return false;
+	}
+	
+	public void disableButtonForRegisterUser() {
+		if(userLogged.hasProfileRegister()) {
+			formFields.add(btnBuscar);
+		}
 	}
 }

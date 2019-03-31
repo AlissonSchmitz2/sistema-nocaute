@@ -1,6 +1,10 @@
 package br.com.nocaute.model;
 
 public class UserModel extends AbstractModel{
+	private static final String REGISTER   = "Cadastral"  ;
+	private static final String ENROLL     = "Matricular" ;
+	private static final String FINANCIAL  = "Financeiro" ;
+	private static final String COMPLETE   = "Completo"   ;
 	
 	private Integer id;
 	private String usuario;
@@ -61,5 +65,21 @@ public class UserModel extends AbstractModel{
 	 */
 	public void setProfile(String profile) {
 		this.perfil = profile;
+	}
+	
+	public boolean hasProfileRegister() {
+		return REGISTER.equals(getProfile());
+	}
+	
+	public boolean hasProfileEnroll() {
+		return ENROLL.equals(getProfile());
+	}
+	
+	public boolean hasProfileFinancial() {
+		return FINANCIAL.equals(getProfile());
+	}
+	
+	public boolean hasProfileComplete() {
+		return COMPLETE.equals(getProfile());
 	}
 }

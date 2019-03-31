@@ -5,8 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.*;
+
+import br.com.nocaute.dao.UserDAO;
+import br.com.nocaute.database.ConnectionFactory;
+import br.com.nocaute.model.UserModel;
 
 public class LoginWindow extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -15,10 +21,10 @@ public class LoginWindow extends JDialog {
 	private JPasswordField txfPassword;
 	private JButton btnAcess;
 	private JLabel label, wallpaper;
-	
-	private ImageIcon logo = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/wallpaper.png"));
 
+	private static Connection CONNECTION = null;
+
+	private ImageIcon logo = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/wallpaper.png"));
 
 	LoginWindow() {
 		setSize(280, 280);
@@ -34,7 +40,7 @@ public class LoginWindow extends JDialog {
 		wallpaper = new JLabel(logo);
 		wallpaper.setBounds(95, 10, 80, 80);
 		getContentPane().add(wallpaper);
-		
+
 		label = new JLabel("Login: ");
 		label.setBounds(35, 90, 200, 25);
 		getContentPane().add(label);
@@ -53,28 +59,56 @@ public class LoginWindow extends JDialog {
 		txfPassword.setToolTipText("Informe sua senha");
 		getContentPane().add(txfPassword);
 
-		btnAcess = new JButton("Acessar"); 
+		btnAcess = new JButton("Acessar");
 		btnAcess.setBounds(85, 200, 100, 25);
 		getContentPane().add(btnAcess);
 		btnAcess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Validar login e senha
-				startSystem();
+				authUser();
 			}
-		});	
+		});
 		btnAcess.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
-					//TODO: Validar login e senha
-					startSystem();
+					authUser();
 				}
 			}
 		});
 	}
-	
-	private void startSystem() {
-		new Window().setVisible(true);
+
+	private void authUser() {
+		CONNECTION = ConnectionFactory.getConnection("master", txfName.getText(),
+				new String(txfPassword.getPassword()));
+
+		UserDAO dao = null;
+		UserModel model = new UserModel();
+
+		try {
+			dao = new UserDAO(CONNECTION);
+			model = dao.searchByUser(txfName.getText());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Usuario ou senha incorreto!", "", JOptionPane.ERROR_MESSAGE);
+		}
+
+		if (model == null) {
+			if (txfName.getText().equals("admin") && new String(txfPassword.getPassword()).equals("admin")) {
+				model = new UserModel();
+				
+				model.setUser(txfName.getText());
+				model.setProfile("Completo");
+
+				startSystem(model);
+			}else {
+				return;
+			}
+		} else {
+			startSystem(model);
+		}
+	}
+
+	private void startSystem(UserModel model) {
+		new Window(model).setVisible(true);
 		dispose();
 	}
 

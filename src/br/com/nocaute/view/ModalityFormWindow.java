@@ -25,6 +25,7 @@ import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.model.GraduationModel;
 import br.com.nocaute.model.ModalityModel;
+import br.com.nocaute.model.UserModel;
 import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.view.tableModel.GraduationsTableModel;
 
@@ -33,6 +34,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	
 	private ModalityDAO modalityDAO;
 	private ModalityModel modalityModel = new ModalityModel();
+	private UserModel userLogged = new UserModel();
 	private GraduationDAO graduationDAO;
 	private List<GraduationModel> graduationList = new ArrayList<>();
 	private List<GraduationModel> graduationDeleteList = new ArrayList<>();
@@ -66,11 +68,12 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	
 	private JDesktopPane desktop;
 	
-	public ModalityFormWindow(JDesktopPane desktop) {
+	public ModalityFormWindow(JDesktopPane desktop, UserModel userLogged) {
 			super("Modalidades e Graduações", 450, 335, desktop);
 			setFrameIcon(iconJanela);
 			
 			this.desktop = desktop;
+			this.userLogged = userLogged;
 			
 			try {
 				modalityDAO = new ModalityDAO(CONNECTION);
@@ -80,6 +83,9 @@ public class ModalityFormWindow extends AbstractGridWindow{
 			}
 			
 			createComponents();
+			
+			//Caso for usuario cadastral, desabilita ações de buscar e editar.
+			disableButtonForRegisterUser();
 			
 			// Por padrão campos são desabilitados ao iniciar
 			disableComponents(formFields);
@@ -458,5 +464,11 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		}
 		
 		return false;
+	}
+	
+	public void disableButtonForRegisterUser() {
+		if(userLogged.hasProfileRegister()) {
+			formFields.add(btnBuscar);
+		}
 	}
 }

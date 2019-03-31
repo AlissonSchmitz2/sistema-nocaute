@@ -22,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
+import br.com.nocaute.model.UserModel;
+
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
@@ -60,8 +62,12 @@ public class Window extends JFrame {
 
 	private JDesktopPane desktop;
 
-	public Window() {
+	private UserModel userLogged;
+	
+	public Window(UserModel userLogged) {
 		super();
+		
+		this.userLogged = userLogged;
 		
 		desktop = new JDesktopPane();
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -125,6 +131,10 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		protectMenuItemBasedFinancialUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameUserForm = new UserFormWindow(desktop);
@@ -167,9 +177,13 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedFinancialUser(menuItem);
+		
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentForm = new StudentFormWindow(desktop);
+				frameStudentForm = new StudentFormWindow(desktop,userLogged);
 				abrirFrame(frameStudentForm);
 			}
 		});
@@ -181,10 +195,13 @@ public class Window extends JFrame {
 		JMenuItem menuItem = new JMenuItem("Modalidades");
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
-
+		
+		protectMenuItemBasedEnrollUser(menuItem);
+		protectMenuItemBasedFinancialUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameModalitiesForm = new ModalityFormWindow(desktop);
+				frameModalitiesForm = new ModalityFormWindow(desktop,userLogged);
 				abrirFrame(frameModalitiesForm);
 			}
 		});
@@ -197,9 +214,12 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedEnrollUser(menuItem);
+		protectMenuItemBasedFinancialUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				framePlansForm = new PlanFormWindow(desktop);
+				framePlansForm = new PlanFormWindow(desktop,userLogged);
 				abrirFrame(framePlansForm);
 			}
 		});
@@ -237,6 +257,9 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedFinancialUser(menuItem);
+		protectMenuItemBasedRegisterUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop);
@@ -252,6 +275,9 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameGeneratePaymentsForm = new GeneratePaymentsWindow(desktop);
@@ -267,6 +293,10 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedFinancialUser(menuItem);
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameListPaymentsForm = new ListPaymentsWindow(desktop);
@@ -282,6 +312,9 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconPadrao);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameRegistrationPaymentsForm = new RegistrationPaymentsFormWindow(desktop);
@@ -315,6 +348,10 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconRelatorio);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedFinancialUser(menuItem);
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameReportRegistrationForm = new ReportRegistrationFormWindow(desktop);
@@ -330,6 +367,10 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconRelatorio);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedFinancialUser(menuItem);
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameReportPaymentsOpenForm = new ReportPaymentsOpenFormWindow(desktop);
@@ -345,6 +386,10 @@ public class Window extends JFrame {
 		menuItem.setIcon(iconRelatorio);
 		menuItem.setFont(getDefaultFont());
 
+		protectMenuItemBasedFinancialUser(menuItem);
+		protectMenuItemBasedRegisterUser(menuItem);
+		protectMenuItemBasedEnrollUser(menuItem);
+		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameReportPaymentsPayForm = new ReportPaymentsPayFormWindow(desktop);
@@ -403,22 +448,23 @@ public class Window extends JFrame {
 
 		// Percorre todos os frames adicionados
 		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
-			if (addedFrame.getTitle().equals(frame.getTitle())) {
+		
+			//Se o frame adiconado ja estiver
+			//if (addedFrame.getTitle().equals(frame.getTitle()) && !addedFrame.getTitle().equals("Controle de Alunos") ) {
+			if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
 				//Remove janelas duplicadas
-				desktop.remove(addedFrame);
-			} else {
-				//Descomente o código abaixo para permitir a abertura de apenas uma tela por vez
-				frame = (AbstractWindowFrame) addedFrame;
+				addedFrame.moveToFront();
 				frameAlreadyExists = true;
+				//desktop.remove(addedFrame);
 			}
 
-			break;
 
 		}
 
 		try {
 			if (!frameAlreadyExists) {
 				desktop.add(frame);
+				frame.moveToFront();
 			}
 
 			frame.setSelected(true);
@@ -427,6 +473,24 @@ public class Window extends JFrame {
 		} catch (PropertyVetoException e) {
 			JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,
 					null);
+		}
+	}
+	
+	private void protectMenuItemBasedRegisterUser(JMenuItem menuItem) {
+		if(userLogged.hasProfileRegister()) {
+			menuItem.setEnabled(false);
+		}
+	}
+	
+	private void protectMenuItemBasedEnrollUser(JMenuItem menuItem) {
+		if(userLogged.hasProfileEnroll()) {
+			menuItem.setEnabled(false);
+		}
+	}
+	
+	private void protectMenuItemBasedFinancialUser(JMenuItem menuItem) {
+		if(userLogged.hasProfileFinancial()) {
+			menuItem.setEnabled(false);
 		}
 	}
 
