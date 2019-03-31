@@ -73,7 +73,7 @@ public class Window extends JFrame {
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 
-		startingControlStudent();
+		//startingControlStudent();
 	}
 
 	private String getDateTime() {
