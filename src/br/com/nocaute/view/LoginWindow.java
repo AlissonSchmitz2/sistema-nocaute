@@ -78,6 +78,7 @@ public class LoginWindow extends JDialog {
 	}
 
 	private void authUser() {
+		//TODO:Mudar modo com que é feito autenticação do usuario
 		CONNECTION = ConnectionFactory.getConnection("master", txfName.getText(),
 				new String(txfPassword.getPassword()));
 
@@ -89,6 +90,7 @@ public class LoginWindow extends JDialog {
 			model = dao.searchByUser(txfName.getText());
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Usuario ou senha incorreto!", "", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		if (model == null) {
@@ -102,7 +104,7 @@ public class LoginWindow extends JDialog {
 			}else {
 				return;
 			}
-		} else {
+		} else if(model instanceof UserModel){
 			startSystem(model);
 		}
 	}
