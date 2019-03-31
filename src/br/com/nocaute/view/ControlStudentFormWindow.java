@@ -1,14 +1,10 @@
 package br.com.nocaute.view;
 
 import java.awt.Color;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
@@ -17,7 +13,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import br.com.nocaute.util.MasterMonthChooser;
@@ -101,15 +96,15 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		panelSituation.setBounds(220, 160, 538, 50);
 		panelSituation.setLayout(null);
 		panelSituation.setBorder(new LineBorder(Color.GRAY));
+		panelSituation.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(panelSituation);
 
 		label = new JLabel("Aguardando Consulta...");
 		label.setHorizontalAlignment(JLabel.CENTER);
 		label.setVerticalAlignment(JLabel.CENTER);
 		label.setBounds(0, 0, panelSituation.getWidth(), panelSituation.getHeight());
-		label.setFont(new Font("Impact", Font.BOLD, 18));
+		label.setFont(new Font("Arial Black", Font.BOLD, 18));
 		label.setForeground(Color.white);
-		//label.setSize(new Dimension(10, 10));
 		panelSituation.add(label);
 
 		btnDataStudent = new JButton("Acessar dados do Aluno");

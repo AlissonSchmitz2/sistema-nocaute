@@ -29,7 +29,7 @@ import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.view.tableModel.GraduationsTableModel;
 
 public class ModalityFormWindow extends AbstractGridWindow{
-	private static final long serialVersionUID = 7836235315411293572L;
+	private static final long serialVersionUID = 2362748482428107329L;
 	
 	private ModalityDAO modalityDAO;
 	private ModalityModel modalityModel = new ModalityModel();

@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
+
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
@@ -73,7 +74,7 @@ public class Window extends JFrame {
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 
-		//startingControlStudent();
+		startingControlStudent();
 	}
 
 	private String getDateTime() {
@@ -403,22 +404,23 @@ public class Window extends JFrame {
 
 		// Percorre todos os frames adicionados
 		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
-			if (addedFrame.getTitle().equals(frame.getTitle())) {
+		
+			//Se o frame adiconado ja estiver
+			//if (addedFrame.getTitle().equals(frame.getTitle()) && !addedFrame.getTitle().equals("Controle de Alunos") ) {
+			if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
 				//Remove janelas duplicadas
-				desktop.remove(addedFrame);
-			} else {
-				//Descomente o código abaixo para permitir a abertura de apenas uma tela por vez
-				frame = (AbstractWindowFrame) addedFrame;
+				addedFrame.moveToFront();
 				frameAlreadyExists = true;
+				//desktop.remove(addedFrame);
 			}
 
-			break;
 
 		}
 
 		try {
 			if (!frameAlreadyExists) {
 				desktop.add(frame);
+				frame.moveToFront();
 			}
 
 			frame.setSelected(true);

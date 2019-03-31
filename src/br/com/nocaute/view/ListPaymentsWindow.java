@@ -17,8 +17,8 @@ import com.toedter.calendar.JDateChooser;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 
 public class ListPaymentsWindow extends AbstractGridWindow {
-	private static final long serialVersionUID = -4201960150625152379L;
-
+	private static final long serialVersionUID = 3905054631992455187L;
+	
 	// Componentes
 	private JButton btnPesquisar;
 	private JLabel label;

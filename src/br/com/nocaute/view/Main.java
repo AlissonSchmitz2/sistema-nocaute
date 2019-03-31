@@ -26,9 +26,9 @@ public class Main {
 
 	            public void run() {
 	            	
-	            	//new LoginWindow().setVisible(true);
+	            	new LoginWindow().setVisible(true);
 	            	//Para testes
-	                new Window().setVisible(true);
+	                //new Window().setVisible(true);
 	            }
 	        });
 	}
