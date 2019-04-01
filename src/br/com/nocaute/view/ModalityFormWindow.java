@@ -69,7 +69,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	private JDesktopPane desktop;
 	
 	public ModalityFormWindow(JDesktopPane desktop, UserModel userLogged) {
-			super("Modalidades e Graduações", 450, 335, desktop);
+			super("Modalidades e Graduações", 450, 335, desktop, false);
 			setFrameIcon(iconJanela);
 			
 			this.desktop = desktop;

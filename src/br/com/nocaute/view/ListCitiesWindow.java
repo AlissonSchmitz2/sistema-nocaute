@@ -33,7 +33,7 @@ public class ListCitiesWindow extends AbstractGridWindow {
 	private JTable jTableModels;
 
 	public ListCitiesWindow(JDesktopPane desktop) {
-		super("Cidades", 445, 310, desktop);
+		super("Cidades", 445, 310, desktop, true);
 
 		try {
 			dao = new CityDAO(CONNECTION);

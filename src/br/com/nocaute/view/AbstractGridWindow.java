@@ -16,34 +16,14 @@ public abstract class AbstractGridWindow extends AbstractWindowFrame {
 	protected JScrollPane grid = null;
 	protected TableCellRenderer renderer = new EvenOddRenderer();
 
-	public AbstractGridWindow(String nameWindow, int width, int height, JDesktopPane desktop) {
+	public AbstractGridWindow(String nameWindow, int width, int height, JDesktopPane desktop, boolean activeFrame) {
 		super(nameWindow, width, height, desktop);
 
-		if (startingFrame(desktop, nameWindow)) {
+		if (activeFrame) {
 			// Abre a janela grid automaticamente
 			desktop.add(this);
 			showFrame();
 		}
-	}
-
-	protected boolean startingFrame(JDesktopPane desktop, String nameWindow) {
-
-		switch (nameWindow) {
-		case "Alunos":
-			return true;
-		case "Modalidades":
-			return true;
-		case "Planos":
-			return true;
-		case "Matrículas":
-			return true;
-		case "Cidades":
-			return true;
-		case "Usuários":
-			return true;
-		}
-
-		return false;
 	}
 
 	public void resizeGrid(JScrollPane grid, int x, int y, int width, int height) {

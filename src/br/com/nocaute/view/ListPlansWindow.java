@@ -33,7 +33,7 @@ public class ListPlansWindow extends AbstractGridWindow {
 	private JTable jTableModels;
 
 	public ListPlansWindow(JDesktopPane desktop) {
-		super("Planos", 445, 310, desktop);
+		super("Planos", 445, 310, desktop, true);
 		
 		try {
 			planDao = new PlanDAO(CONNECTION);

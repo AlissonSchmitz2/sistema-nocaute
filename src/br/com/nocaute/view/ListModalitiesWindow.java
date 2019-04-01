@@ -40,7 +40,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 	private JTable jTableModels;
 	
 	public ListModalitiesWindow(JDesktopPane desktop) {
-		super("Modalidades", 445, 310, desktop);
+		super("Modalidades", 445, 310, desktop, true);
 		
 		try {
 			modalityDAO = new ModalityDAO(CONNECTION);

@@ -42,7 +42,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 			this.getClass().getResource("/br/com/nocaute/image/16x16/financeiro.png"));
 
 	public RegistrationPaymentsFormWindow(JDesktopPane desktop) {
-		super("Pagamentos de Faturas", 610, 380, desktop);
+		super("Pagamentos de Faturas", 610, 380, desktop, false);
 		setFrameIcon(iconJanela);
 
 		criarComponentes();

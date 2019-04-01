@@ -33,7 +33,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 			this.getClass().getResource("/br/com/nocaute/image/16x16/localizar.png"));
 
 	public ListPaymentsWindow(JDesktopPane desktop) {
-		super("Consultar Faturas", 610, 380, desktop);
+		super("Consultar Faturas", 610, 380, desktop, false);
 		setFrameIcon(iconPesquisar);
 		
 		criarComponentes();

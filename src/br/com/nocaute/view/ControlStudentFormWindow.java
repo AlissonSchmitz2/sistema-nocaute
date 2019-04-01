@@ -50,7 +50,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private static int width = screenRect.width;// area total da altura tirando subtraindo o menu iniciar
 
 	public ControlStudentFormWindow(JDesktopPane desktop) {
-		super("Controle de Alunos", width / 2 + 100, height - 150, desktop);
+		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
 
 		this.desktop = desktop;
 

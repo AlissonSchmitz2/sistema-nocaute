@@ -33,7 +33,7 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 	private JTable jTableModels;
 	
 	public ListRegistrationsWindow(JDesktopPane desktop) {
-		super("Matrículas", 445, 310, desktop);
+		super("Matrículas", 445, 310, desktop, true);
 		
 		try {
 			registrationDao = new RegistrationDAO(CONNECTION);

@@ -83,7 +83,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
 	public StudentRegistrationWindow(JDesktopPane desktop) {
-		super("Matricular Aluno", 450, 380, desktop);
+		super("Matricular Aluno", 450, 380, desktop, false);
 		setFrameIcon(iconJanela);
 
 		this.desktop = desktop;

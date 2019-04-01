@@ -33,7 +33,7 @@ public class ListStudentsWindow extends AbstractGridWindow {
 	private JTable jTableModels;
 
 	public ListStudentsWindow(JDesktopPane desktop) {
-		super("Alunos", 445, 310, desktop);
+		super("Alunos", 445, 310, desktop, true);
 		
 		try {
 			studentDao = new StudentDAO(CONNECTION);
