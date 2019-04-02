@@ -95,7 +95,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (validateFields()) {
+				if (!validateFields()) {
 					return;
 				}
 
@@ -304,32 +304,32 @@ public class UserFormWindow extends AbstractWindowFrame {
 	public boolean validateFields() {
 		if (txfUsuario.getText().isEmpty() || txfUsuario.getText() == null) {
 			bubbleWarning("Informe o nome do Usuario!");
-			return true;
+			return false;
 		}
 
 		if ((new String(txfSenha.getPassword()).isEmpty() || new String(txfSenha.getPassword()) == null)
 				&& txfSenha.isEnabled()) {
 			bubbleWarning("Informe uma senha para usuario!");
-			return true;
+			return false;
 		}
 
 		if ((new String(txfConfirmarSenha.getPassword()).isEmpty()
 				|| new String(txfConfirmarSenha.getPassword()) == null) && txfConfirmarSenha.isEnabled()) {
 			bubbleWarning("Confirme sua senha para o usuario!");
-			return true;
+			return false;
 		}
 
 		if (!(new String(txfConfirmarSenha.getPassword()).equals(new String(txfSenha.getPassword())))) {
 			bubbleWarning("Senhas não conferem!");
-			return true;
+			return false;
 		}
 
 		if (cbxPerfil.getSelectedIndex() == 0) {
 			bubbleWarning("Informe o perfil do usuario!");
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 }

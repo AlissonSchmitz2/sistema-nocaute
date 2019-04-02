@@ -175,7 +175,7 @@ public class ModalityFormWindow extends AbstractGridWindow{
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: Verificar modalidades e graduações duplicadas.
-				if(validateFields()) {
+				if(!validateFields()) {
 					return;
 				}
 				
@@ -455,15 +455,15 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	private boolean validateFields() {
 		if(txfModalidade.getText().isEmpty() || txfModalidade.getText() == null) {
 			bubbleWarning("Informe o nome da modalidade!");
-			return true;
+			return false;
 		}
 		
 		if(tableModel.isEmpty() || tableModel.getRowCount() == 0) {
 			bubbleWarning("Você deve informar ao menos uma graduação para a modalidade.");
-			return true;
+			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	public void disableButtonForRegisterUser() {

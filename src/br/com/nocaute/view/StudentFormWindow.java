@@ -195,7 +195,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (validateFields()) {
+				if (!validateFields()) {
 					return;
 				}
 
@@ -594,7 +594,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 		if (txfAluno.getText().isEmpty() || txfAluno.getText() == null) {
 			bubbleWarning("Informe o nome do aluno!");
-			return true;
+			return false;
 		}
 
 		// Se a data de nascimento for igual a atual ou for nula
@@ -603,45 +603,45 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 					formatador.format(new Date(System.currentTimeMillis())))
 					|| jDateNascimento.getDate() == null) {
 				bubbleWarning("Data de nascimento inválida!");
-				return true;
+				return false;
 			}
 		} catch (Exception e) {
 			bubbleWarning("Data de nascimento inválida!");
-			return true;
+			return false;
 		}
 
 		if (cbxSexo.getSelectedIndex() == 0) {
 			bubbleWarning("Informe o sexo do aluno!");
-			return true;
+			return false;
 		}
 
 		if (txfTelefone.getText().isEmpty() || txfTelefone.getText() == null || txfCelular.getText().isEmpty()
 				|| txfCelular.getText() == null) {
 			bubbleWarning("Informe ao menos um telefone para contato!");
-			return true;
+			return false;
 		}
 
 		if (txfEndereco.getText().isEmpty() || txfEndereco.getText() == null) {
 			bubbleWarning("Informe o endereço do aluno!");
-			return true;
+			return false;
 		}
 
 		if (txfBairro.getText().isEmpty() || txfBairro.getText() == null) {
 			bubbleWarning("Informe o bairro do aluno!");
-			return true;
+			return false;
 		}
 
 		if (txfCidade.getText().isEmpty() || txfCidade.getText() == null) {
 			bubbleWarning("Cidade não informada!");
-			return true;
+			return false;
 		}
 
 		if (txfCEP.getText().isEmpty() || txfCEP.getText() == null) {
 			bubbleWarning("Digite o CEP do aluno!");
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 	
 	public void disableButtonForRegisterUser() {
