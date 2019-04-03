@@ -293,13 +293,12 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	
 	private boolean validateFields() {
 		if (cbxModalidade.getSelectedItem() == null || ((Modality) cbxModalidade.getSelectedItem()).getId() == null
-				|| cbxModalidade.getSelectedItem().equals("-- Selecione --")) {
+				|| cbxModalidade.getSelectedIndex() == 0) {
 			bubbleWarning("Selecione uma modalidade!");
 			return false;
 		}
 		
-		if (cbxGraduacao.getSelectedItem() == null || ((Graduation) cbxGraduacao.getSelectedItem()).getId() == null
-				|| cbxGraduacao.getSelectedItem().equals("-- Selecione --")) {
+		if (cbxGraduacao.getSelectedItem() == null || ((Graduation) cbxGraduacao.getSelectedItem()).getId() == null) {
 			bubbleWarning("Selecione uma graduação!");
 			return false;
 		}

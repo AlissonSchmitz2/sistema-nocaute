@@ -588,6 +588,11 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 			return false;
 		}
 		
+		if(jTableRegistration.getRowCount() == 0 ) {
+			bubbleWarning("Informe ao menos uma modalidade para realizar a matrícula!");
+			return false;
+		}
+		
 		return true;
 	}
 	
