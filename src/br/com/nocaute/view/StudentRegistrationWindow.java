@@ -205,7 +205,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (validateFields()) {
+				if (!validateFields()) {
 					return;
 				}
 				
@@ -573,9 +573,22 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	}
 	
 	private boolean validateFields() {
+		if(txfAluno.getText().isEmpty() || txfAluno.getText() == null) {
+			bubbleWarning("Informe o aluno para realizar a matrícula!");
+			return false;
+		}
 		
+		if(jDataMatricula.getDate() == null) {
+			bubbleWarning("Data da matrícula inválida!");
+			return false;
+		}
 		
-		return false;
+		if(txfVencFatura.getText().isEmpty() || txfVencFatura.getText() == null) {
+			bubbleWarning("Dia do vencimento inválido!");
+			return false;
+		}
+		
+		return true;
 	}
 	
 }

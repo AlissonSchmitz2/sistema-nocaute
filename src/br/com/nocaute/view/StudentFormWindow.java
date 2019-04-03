@@ -11,7 +11,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +62,6 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 	private JDateChooser jDateNascimento;
 	private JTextArea txfObservacao;
 	private JComboBox<Genre> cbxSexo;
-	private SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
 
 	// Endereço
 	private JTextField txfEndereco, txfComplemento, txfBairro, txfEstado, txfPais, txfCEP;
@@ -599,8 +597,8 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 		// Se a data de nascimento for igual a atual ou for nula
 		try {
-			if (formatador.format(jDateNascimento.getDate()).equals(
-					formatador.format(new Date(System.currentTimeMillis())))
+			if (formatDate.format(jDateNascimento.getDate()).equals(
+					formatDate.format(new Date(System.currentTimeMillis())))
 					|| jDateNascimento.getDate() == null) {
 				bubbleWarning("Data de nascimento inválida!");
 				return false;

@@ -7,6 +7,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	protected static final String CREATE_MODE = "create";
 	protected static final String UPDATE_MODE = "update";
 	private String formMode = CREATE_MODE;
+	protected SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
 	
 	public static final Connection CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
 
