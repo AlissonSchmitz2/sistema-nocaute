@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -14,6 +13,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import com.toedter.calendar.JDateChooser;
+
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 
 public class ListPaymentsWindow extends AbstractGridWindow {
@@ -28,13 +29,9 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 	private PaymentsTableModel model;
 	private JTable jTablePayments;
 
-	// Icones
-	private ImageIcon iconPesquisar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/localizar.png"));
-
 	public ListPaymentsWindow(JDesktopPane desktop) {
 		super("Consultar Faturas", 610, 380, desktop, false);
-		setFrameIcon(iconPesquisar);
+		setFrameIcon(MasterImage.search_16x16);
 		
 		criarComponentes();
 
@@ -81,9 +78,8 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		cbxSituacao.setToolTipText("Informe a situação");
 		getContentPane().add(cbxSituacao);
 		
-		btnPesquisar = new JButton("Buscar");
+		btnPesquisar = new JButton("Buscar", MasterImage.search_16x16);
 		btnPesquisar.setBounds(475, 6, 110, 27);
-		btnPesquisar.setIcon(iconPesquisar);
 		btnPesquisar.setToolTipText("Clique aqui para pesquisar as faturas");
 		getContentPane().add(btnPesquisar);
 

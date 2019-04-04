@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -71,14 +70,11 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 	private JPanel painelAba;
 	private JTabbedPane tabelPane;
 
-	private ImageIcon iconJanela = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
-
 	private JDesktopPane desktop;
 
 	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged) {	
 		super("Cadastro de Alunos", 450, 460, desktop);
-		setFrameIcon(iconJanela);
+		setFrameIcon(MasterImage.student_16x16);
 
 		this.userLogged = userLogged;
 		this.desktop = desktop;

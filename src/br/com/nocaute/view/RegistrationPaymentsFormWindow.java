@@ -6,7 +6,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -20,6 +19,7 @@ import javax.swing.ListSelectionModel;
 
 import com.toedter.calendar.JDateChooser;
 
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 
@@ -35,15 +35,9 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 	private PaymentsTableModel model;
 	private JTable jTablePayments;
 
-	// Icones
-	private ImageIcon iconPesquisar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/localizar.png"));
-	private ImageIcon iconJanela = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/financeiro.png"));
-
 	public RegistrationPaymentsFormWindow(JDesktopPane desktop) {
 		super("Pagamentos de Faturas", 610, 380, desktop, false);
-		setFrameIcon(iconJanela);
+		setFrameIcon(MasterImage.financial_16x16);
 
 		criarComponentes();
 
@@ -90,9 +84,8 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 		cbxSituacao.setToolTipText("Informe a situação");
 		getContentPane().add(cbxSituacao);
 
-		btnPesquisar = new JButton("Buscar");
+		btnPesquisar = new JButton("Buscar", MasterImage.search_16x16);
 		btnPesquisar.setBounds(475, 6, 110, 27);
-		btnPesquisar.setIcon(iconPesquisar);
 		btnPesquisar.setToolTipText("Clique aqui para pesquisar as faturas");
 		getContentPane().add(btnPesquisar);
 

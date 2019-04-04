@@ -5,9 +5,33 @@ import javax.swing.ImageIcon;
 public final class MasterImage extends ImageIcon{
 	private static final long serialVersionUID = -1243931450819789591L;
 
+	//13x13
+	public static final MasterImage
+	ok_13x13 = LoadImage("13x13/ok.png");
+	
+	//16x16
+	public static final MasterImage
+	search_16x16 = LoadImage("16x16/localizar.png");
+
+	public static final MasterImage
+	user_16x16 = LoadImage("16x16/user.png");
+	
+	public static final MasterImage
+	financial_16x16 = LoadImage("16x16/financeiro.png");
+	
+	public static final MasterImage
+	report_16x16 = LoadImage("16x16/relatorio.png");
+	
+	public static final MasterImage
+	new_16x16 = LoadImage("16x16/novo.png");
+	
+	public static final MasterImage
+	student_16x16 = LoadImage("16x16/estudante.png");
+	
+	//22x22
 	public static final MasterImage
 	search_22x22 = LoadImage("22x22/localizar.png");
-
+	
 	public static final MasterImage	
 	add_22x22 = LoadImage("22x22/adicionar.png");
 	
@@ -17,15 +41,10 @@ public final class MasterImage extends ImageIcon{
 	public static final MasterImage
 	save_22x22 = LoadImage("22x22/salvar.png");
 	
+	//Logo
 	public static final MasterImage
-	ok_13x13 = LoadImage("13x13/ok.png");
-	
-	public static final MasterImage
-	user_16x16 = LoadImage("16x16/user.png");
-	
-	public static final MasterImage
-	financial_16x16 = LoadImage("16x16/financeiro.png");
-	
+	Loginlogo = LoadImage("wallpaper.png");
+
 	private MasterImage(final String titulo) {
 		super(MasterImage.class.getResource(titulo));
 	}

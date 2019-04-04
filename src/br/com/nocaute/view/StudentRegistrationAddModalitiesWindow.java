@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -19,6 +18,7 @@ import com.toedter.calendar.JDateChooser;
 import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.dao.PlanDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.pojos.Graduation;
 import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.pojos.Plan;
@@ -46,14 +46,6 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	private JComboBox<Modality> cbxModalidade = new JComboBox<Modality>();
 	private JComboBox<Graduation> cbxGraduacao = new JComboBox<Graduation>();
 	private JComboBox<Plan> cbxPlano = new JComboBox<Plan>();
-	
-	private ImageIcon iconJanela = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
-	private ImageIcon iconOK = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/13x13/ok.png"));
-	/*
-	private ImageIcon iconDelete = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/excluir.png"));*/
 
 	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop) {
 		super("Adicionar Modalidades", 300, 225, desktop);
@@ -76,7 +68,7 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	}
 	
 	private void constructor(JDesktopPane desktop) {
-		setFrameIcon(iconJanela);
+		setFrameIcon(MasterImage.student_16x16);
 		
 		try {
 			modalityDao = new ModalityDAO(CONNECTION);
@@ -187,9 +179,8 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 			e.printStackTrace();
 		}
 		
-		btnOk = new JButton("OK");
+		btnOk = new JButton("OK", MasterImage.ok_13x13);
 		btnOk.setBounds(100, 160, 100, 25);
-		btnOk.setIcon(iconOK);
 		btnOk.setToolTipText("Clique aqui para confirmar");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

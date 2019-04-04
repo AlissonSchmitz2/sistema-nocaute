@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
@@ -22,6 +21,7 @@ import br.com.nocaute.dao.InvoicesRegistrationDAO;
 import br.com.nocaute.dao.PlanDAO;
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.dao.RegistrationModalityDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.InvoicesRegistrationModel;
 import br.com.nocaute.model.PlanModel;
 import br.com.nocaute.model.RegistrationModalityModel;
@@ -54,13 +54,10 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 	
 	// Recupera a data atual.
 	Date currentDate = new Date();
-	
-	private ImageIcon icon = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/novo.png"));
 
 	public GeneratePaymentsWindow(JDesktopPane desktop) {
 		super("Gerar Faturas", 270, 120, desktop);
-		setFrameIcon(icon);
+		setFrameIcon(MasterImage.new_16x16);
 
 		try {
 			registrationDAO = new RegistrationDAO(CONNECTION);
@@ -179,9 +176,8 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 		jYearChooser.setBounds(190, 10, 50, 25);
 		getContentPane().add(jYearChooser);
 
-		btnGeneratePay = new JButton("Gerar Faturas");
+		btnGeneratePay = new JButton("Gerar Faturas", MasterImage.new_16x16);
 		btnGeneratePay.setBounds(90, 45, 150, 25);
-		btnGeneratePay.setIcon(icon);
 		btnGeneratePay.setToolTipText("Gerar as faturas");
 		getContentPane().add(btnGeneratePay);
 
