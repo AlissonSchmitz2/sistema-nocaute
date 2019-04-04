@@ -35,6 +35,7 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.enums.Genres;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.CityModel;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.model.UserModel;
@@ -70,14 +71,6 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 	private JPanel painelAba;
 	private JTabbedPane tabelPane;
 
-	// Icones
-	private ImageIcon iconBuscar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/localizar.png"));
-	private ImageIcon iconAdicionar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/adicionar.png"));
-	private ImageIcon iconRemover = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
-	private ImageIcon iconSalvar = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
 	private ImageIcon iconJanela = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 
@@ -362,28 +355,24 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 
 	private void createComponents() {
 
-		btnBuscar = new JButton("Buscar");
+		btnBuscar = new JButton("Buscar", MasterImage.search_22x22);
 		btnBuscar.setBounds(15, 5, 95, 40);
-		btnBuscar.setIcon(iconBuscar);
 		btnBuscar.setToolTipText("Clique aqui para buscar");
 		getContentPane().add(btnBuscar);
 
-		btnAdicionar = new JButton("Adicionar");
+		btnAdicionar = new JButton("Adicionar", MasterImage.add_22x22);
 		btnAdicionar.setBounds(110, 5, 110, 40);
-		btnAdicionar.setIcon(iconAdicionar);
 		btnAdicionar.setToolTipText("Clique aqui para adicionar");
 		getContentPane().add(btnAdicionar);
 
-		btnRemover = new JButton("Remover");
+		btnRemover = new JButton("Remover", MasterImage.remove_22x22);
 		btnRemover.setBounds(220, 5, 110, 40);
-		btnRemover.setIcon(iconRemover);
 		btnRemover.setToolTipText("Clique aqui para remover");
 		getContentPane().add(btnRemover);
 		btnRemover.setEnabled(false);
 
-		btnSalvar = new JButton("Salvar");
+		btnSalvar = new JButton("Salvar", MasterImage.save_22x22);
 		btnSalvar.setBounds(330, 5, 95, 40);
-		btnSalvar.setIcon(iconSalvar);
 		btnSalvar.setToolTipText("Clique aqui para salvar");
 		getContentPane().add(btnSalvar);
 		btnSalvar.setEnabled(false);
