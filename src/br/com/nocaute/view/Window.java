@@ -1,9 +1,11 @@
 package br.com.nocaute.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -15,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,6 +53,8 @@ public class Window extends JFrame {
 	private JMenu menuRelatoriosFaturas;
 	private JMenu menuUtilitarios;
 	private JMenu menuAjuda;
+	
+	//private JLabel wallpaper;
 
 	private ImageIcon iconPadrao = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/aplicacao.png"));
@@ -73,9 +78,18 @@ public class Window extends JFrame {
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		desktop.setVisible(true);
 		setContentPane(desktop);
-
+		
 		startingWindow();
 
+		//TODO: Wallpaper do sistema
+		/*ImageIcon logo = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/wallpaperHome.png"));
+		wallpaper = new JLabel(logo);
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		wallpaper.setBounds(0, -50, screenSize.width, screenSize.height);
+		getContentPane().add(wallpaper);
+		*/
+		
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 
