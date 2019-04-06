@@ -134,7 +134,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 				// Antes de retornar, seta o código ao objeto usuario
 				model.setCode(lastInsertedCode);
 				
-				//createUser(model);
+				createUser(model);
 				return model;
 			}
 		}
@@ -144,26 +144,17 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 	
 	public boolean createUser(UserModel model) throws SQLException {
 		
-		String query  =   "create	role		?1"+ //+ model.getUser() +
+		String query  =   "create	role		"+ model.getUser() +
 				"	with		login" +
-				"			encrypted password		'?2'"+//+ model.getPassword() +"'" +
+				"			encrypted password		'"+ new String(model.getPassword())  +"'"+
 				"			in role				admin";
 	
 		PreparedStatement pst = connection.prepareStatement(query);
 		
-		//pst.clearParameters();
+		pst.executeUpdate();
+		connection.commit();
 		
-		setParam(pst,1, model.getUser());
-		setParam(pst,2,model.getPassword());
-		
-		int result = pst.executeUpdate();
-		
-		if(result > 0) {
-			connection.commit();
-			System.out.println("Entrouu");
-			return true;
-		}	
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -196,13 +187,9 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		
 		PreparedStatement pst = connection.prepareStatement(query);
 		
-		int result = pst.executeUpdate();
-		
-		if(result > 0) {
-			connection.commit();
-
-			return true;
-		}	
+		pst.executeUpdate();
+		connection.commit();
+	
 		return false;
 	}
 
@@ -229,19 +216,13 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 	}
 	
 	public boolean deleteUser(String user) throws SQLException {
-		String query = "drop role ?1";
+		String query = "drop role " + user;
 		PreparedStatement pst = connection.prepareStatement(query);
 		
-		setParam(pst, 1, user);
+		pst.executeUpdate();
+		connection.commit();
 		
-		int result = pst.executeUpdate();
-		if(result > 0) {
-			connection.commit();
-			
-			return true;
-		}
-		
-		return false;
+		return true;
 	}
 
 	/**

@@ -100,7 +100,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 				}
 
 				model.setUser(txfUsuario.getText());
-				model.setPassword(txfSenha.getPassword().toString());
+				model.setPassword(new String(txfSenha.getPassword()));
 				model.setProfile(cbxPerfil.getSelectedItem().toString());
 
 				try {
@@ -132,7 +132,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 							bubbleError("Houve um erro ao cadastrar usuario");
 						}
 					}
-					
+
 				} catch (SQLException error) {
 					bubbleError(error.getMessage());
 					error.printStackTrace();

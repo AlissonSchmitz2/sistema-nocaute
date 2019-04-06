@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
@@ -15,6 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 
+import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AttendanceTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
@@ -43,6 +48,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private PaymentsSituationTableModel paymentsSituationTableModel;
 
 	private JDesktopPane desktop;
+	
+	private StudentModel model = new StudentModel();
+	private StudentDAO dao = null;
 
 	private static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
@@ -61,17 +69,20 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		createComponents();
 
+		setSituation(0);
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 	}
 
 	private void setButtonsActions() {
-		//TODO: Situações da matrícula do aluno
-		//0 - Aguardando Consulta...
-		//1 - Débitos Pendentes
-		//2 - Situação Regular
-		
-		setSituation(0);
+		txfCodMatriculate.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(java.awt.event.KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
+				}
+			}
+		});	
 	}
 
 	private void createComponents() {
@@ -179,6 +190,15 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		grid.setVisible(true);
 
 		add(grid);
+	}
+	
+	public void searchDataStudent(int code) {
+		try {
+			model = dao.findById(code);
+			txfStudent.setText(model.getName());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void setSituation(int stateSituation) {
