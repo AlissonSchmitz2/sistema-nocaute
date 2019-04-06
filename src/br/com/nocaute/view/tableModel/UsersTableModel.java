@@ -5,7 +5,7 @@ import br.com.nocaute.model.UserModel;
 public class UsersTableModel extends AbstractTableModel<UserModel>{
 
 	public UsersTableModel() {
-		super(new String[] {"ID","Usuario","Perfil"});
+		super(new String[] {"ID","Usuário","Perfil"});
 	}
 
 	private static final long serialVersionUID = 1L;

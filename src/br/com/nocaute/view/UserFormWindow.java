@@ -145,19 +145,23 @@ public class UserFormWindow extends AbstractWindowFrame {
 							if (selectedModel != null) {
 								// Atribui o model selecionado
 								model = selectedModel;
-
+								
 								txfUsuario.setText(model.getUser());
 								cbxPerfil.setSelectedItem(model.getProfile());
 
 								txfSenha.setEnabled(false);
 								txfConfirmarSenha.setEnabled(false);
-
+								
 								// Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
 
 								// Ativa campos
 								enableComponents(formFields);
-
+								
+								if(model.getUser().equals("admin") == true) {
+									cbxPerfil.setEnabled(false);
+								}
+								
 								// Ativa botão salvar
 								btnSalvar.setEnabled(true);
 
