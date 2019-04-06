@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
@@ -52,16 +51,12 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	
 	private GraduationsTableModel tableModel;
 	private JTable jTableGraduacoes;
-
-	// Icones
-	private ImageIcon iconJanela = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 	
 	private JDesktopPane desktop;
 	
 	public ModalityFormWindow(JDesktopPane desktop, UserModel userLogged) {
 			super("Modalidades e Graduações", 450, 335, desktop, false);
-			setFrameIcon(iconJanela);
+			setFrameIcon(MasterImage.student_16x16);
 			
 			this.desktop = desktop;
 			this.userLogged = userLogged;

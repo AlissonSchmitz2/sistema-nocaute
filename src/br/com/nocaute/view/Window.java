@@ -1,9 +1,11 @@
 package br.com.nocaute.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -15,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,12 +25,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
 
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.UserModel;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
-	// Janelas do Menu
+	//Janelas do Menu
 	private ControlStudentFormWindow frameControlStudentForm;
 	private UserFormWindow frameUserForm;
 	private StudentFormWindow frameStudentForm;
@@ -51,14 +55,7 @@ public class Window extends JFrame {
 	private JMenu menuUtilitarios;
 	private JMenu menuAjuda;
 	
-	//private JLabel wallpaper;
-
-	private ImageIcon iconPadrao = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/aplicacao.png"));
-	private ImageIcon iconRelatorio = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/relatorio.png"));
-	private ImageIcon iconInfo = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/32x32/informacao.png"));
+	private JLabel wallpaper;
 
 	private JSeparator separador;
 
@@ -79,13 +76,11 @@ public class Window extends JFrame {
 		startingWindow();
 
 		//TODO: Wallpaper do sistema
-		/*ImageIcon logo = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/wallpaperHome.png"));
-		wallpaper = new JLabel(logo);
+		wallpaper = new JLabel(MasterImage.WallpaperHome);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		wallpaper.setBounds(0, -50, screenSize.width, screenSize.height);
+		wallpaper.setBounds(0, -50, screenSize.width, screenSize.height - 110);
 		getContentPane().add(wallpaper);
-		*/
 		
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -139,7 +134,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemUsuarios() {
 		JMenuItem menuItem = new JMenuItem("Usuários");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedRegisterUser(menuItem);
@@ -185,7 +180,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemAlunos() {
 		JMenuItem menuItem = new JMenuItem("Alunos");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -204,7 +199,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemModalidades() {
 		JMenuItem menuItem = new JMenuItem("Modalidades");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 		
 		protectMenuItemBasedEnrollUser(menuItem);
@@ -222,7 +217,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemPlanos() {
 		JMenuItem menuItem = new JMenuItem("Planos");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedEnrollUser(menuItem);
@@ -244,11 +239,11 @@ public class Window extends JFrame {
 		menuProcessos.setFont(getDefaultFont());
 
 		menuProcessosMatricular = new JMenu("Matricular");
-		menuProcessosMatricular.setIcon(iconPadrao);
+		menuProcessosMatricular.setIcon(MasterImage.aplication_16x16);
 		menuProcessosMatricular.setFont(getDefaultFont());
 
 		menuProcessosFaturamento = new JMenu("Faturamento");
-		menuProcessosFaturamento.setIcon(iconPadrao);
+		menuProcessosFaturamento.setIcon(MasterImage.aplication_16x16);
 		menuProcessosFaturamento.setFont(getDefaultFont());
 
 		menuProcessos.add(menuProcessosMatricular);
@@ -265,7 +260,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemAluno() {
 		JMenuItem menuItem = new JMenuItem("Aluno");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -283,7 +278,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemGerarFaturas() {
 		JMenuItem menuItem = new JMenuItem("Gerar Faturas");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedRegisterUser(menuItem);
@@ -301,7 +296,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemConsultarFaturas() {
 		JMenuItem menuItem = new JMenuItem("Consultar Faturas");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -320,7 +315,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemRealizarPagamento() {
 		JMenuItem menuItem = new JMenuItem("Realizar Pagamento");
-		menuItem.setIcon(iconPadrao);
+		menuItem.setIcon(MasterImage.aplication_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedRegisterUser(menuItem);
@@ -342,7 +337,7 @@ public class Window extends JFrame {
 		menuRelatorios.setFont(getDefaultFont());
 
 		menuRelatoriosFaturas = new JMenu("Faturas");
-		menuRelatoriosFaturas.setIcon(iconRelatorio);
+		menuRelatoriosFaturas.setIcon(MasterImage.report_16x16);
 		menuRelatorios.setFont(getDefaultFont());
 
 		menuRelatorios.add(getMenuItemMatriculas());
@@ -356,7 +351,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemMatriculas() {
 		JMenuItem menuItem = new JMenuItem("Matriculas");
-		menuItem.setIcon(iconRelatorio);
+		menuItem.setIcon(MasterImage.report_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -375,7 +370,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemEmAberto() {
 		JMenuItem menuItem = new JMenuItem("Em Aberto");
-		menuItem.setIcon(iconRelatorio);
+		menuItem.setIcon(MasterImage.report_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -394,7 +389,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemPagas() {
 		JMenuItem menuItem = new JMenuItem("Pagas");
-		menuItem.setIcon(iconRelatorio);
+		menuItem.setIcon(MasterImage.report_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -441,7 +436,7 @@ public class Window extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(null, "Sistema desenvolvido por:\n\nAlisson Schmitz\n"
 						+ "Edvaldo da Rosa\nGiovane Santiago\nTúlio Borges\n" + "Wilian Hendler"
-						, "Informação", 0, iconInfo);
+						, "Informação", 0, MasterImage.information_32x32);
 			}
 		});
 
@@ -461,12 +456,10 @@ public class Window extends JFrame {
 		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
 		
 			//Se o frame adiconado ja estiver
-			//if (addedFrame.getTitle().equals(frame.getTitle()) && !addedFrame.getTitle().equals("Controle de Alunos") ) {
 			if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
 				//Remove janelas duplicadas
 				addedFrame.moveToFront();
 				frameAlreadyExists = true;
-				//desktop.remove(addedFrame);
 			}
 
 
@@ -479,7 +472,6 @@ public class Window extends JFrame {
 			}
 
 			frame.setSelected(true);
-			//frame.setMaximum(true);
 			frame.setVisible(true);
 		} catch (PropertyVetoException e) {
 			JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,

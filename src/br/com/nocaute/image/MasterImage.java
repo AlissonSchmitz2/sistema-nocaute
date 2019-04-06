@@ -28,6 +28,9 @@ public final class MasterImage extends ImageIcon{
 	public static final MasterImage
 	student_16x16 = LoadImage("16x16/estudante.png");
 	
+	public static final MasterImage
+	aplication_16x16 = LoadImage("16x16/aplicacao.png");
+	
 	//22x22
 	public static final MasterImage
 	search_22x22 = LoadImage("22x22/localizar.png");
@@ -41,9 +44,16 @@ public final class MasterImage extends ImageIcon{
 	public static final MasterImage
 	save_22x22 = LoadImage("22x22/salvar.png");
 	
+	//32x32
+	public static final MasterImage
+	information_32x32 = LoadImage("32x32/informacao.png");
+	
 	//Logo
 	public static final MasterImage
 	Loginlogo = LoadImage("wallpaper.png");
+	
+	public static final MasterImage
+	WallpaperHome = LoadImage("wallpaperHome.png");
 
 	private MasterImage(final String titulo) {
 		super(MasterImage.class.getResource(titulo));
