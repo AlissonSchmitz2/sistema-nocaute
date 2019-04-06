@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.view.tableModel.StudentsTableModel;
 
@@ -34,6 +35,8 @@ public class ListStudentsWindow extends AbstractGridWindow {
 
 	public ListStudentsWindow(JDesktopPane desktop) {
 		super("Alunos", 445, 310, desktop, true);
+		
+		setFrameIcon(MasterImage.student_16x16);
 		
 		try {
 			studentDao = new StudentDAO(CONNECTION);

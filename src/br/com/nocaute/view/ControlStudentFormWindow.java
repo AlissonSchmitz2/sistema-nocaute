@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 
 import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.StudentModel;
 import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AttendanceTableModel;
@@ -46,8 +47,6 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	// Grid Situação de pagamento
 	private JTable jTablePaymentsSituation;
 	private PaymentsSituationTableModel paymentsSituationTableModel;
-
-	private JDesktopPane desktop;
 	
 	private StudentModel model = new StudentModel();
 	private StudentDAO dao = null;
@@ -60,10 +59,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	public ControlStudentFormWindow(JDesktopPane desktop) {
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
 
-		this.desktop = desktop;
-
 		setClosable(false);
 		setIconifiable(true);
+		setFrameIcon(MasterImage.control_16x16);
 
 		setLocation((screenRect.width - this.getSize().width) / 2, (screenRect.height - this.getSize().height) / 2);
 

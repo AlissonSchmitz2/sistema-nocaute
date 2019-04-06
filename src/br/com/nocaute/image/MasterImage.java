@@ -31,6 +31,12 @@ public final class MasterImage extends ImageIcon{
 	public static final MasterImage
 	aplication_16x16 = LoadImage("16x16/aplicacao.png");
 	
+	public static final MasterImage
+	yingyang_16x16 = LoadImage("16x16/yingyang.png");
+	
+	public static final MasterImage
+	control_16x16 = LoadImage("16x16/control.png");
+	
 	//22x22
 	public static final MasterImage
 	search_22x22 = LoadImage("22x22/localizar.png");

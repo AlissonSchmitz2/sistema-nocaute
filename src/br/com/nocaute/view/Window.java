@@ -73,6 +73,8 @@ public class Window extends JFrame {
 		desktop.setVisible(true);
 		setContentPane(desktop);
 		
+		setIconImage(MasterImage.yingyang_16x16.getImage());
+		
 		startingWindow();
 
 		//TODO: Wallpaper do sistema

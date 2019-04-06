@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import br.com.nocaute.dao.UserDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.view.tableModel.UsersTableModel;
 
@@ -35,6 +36,8 @@ public class ListUsersWindow extends AbstractGridWindow {
 	public ListUsersWindow(JDesktopPane desktop) {
 		super("Usuários", 445, 310, desktop, true);
 
+		setFrameIcon(MasterImage.user_16x16);
+		
 		try {
 			dao = new UserDAO(CONNECTION);
 		} catch (Exception e) {

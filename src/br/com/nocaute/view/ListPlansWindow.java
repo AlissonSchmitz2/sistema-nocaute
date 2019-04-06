@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import br.com.nocaute.dao.PlanDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.PlanModel;
 import br.com.nocaute.view.tableModel.PlansTableModel;
 
@@ -34,6 +35,8 @@ public class ListPlansWindow extends AbstractGridWindow {
 
 	public ListPlansWindow(JDesktopPane desktop) {
 		super("Planos", 445, 310, desktop, true);
+		
+		setFrameIcon(MasterImage.financial_16x16);
 		
 		try {
 			planDao = new PlanDAO(CONNECTION);

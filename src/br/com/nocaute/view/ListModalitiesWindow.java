@@ -20,6 +20,7 @@ import javax.swing.ListSelectionModel;
 
 import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.GraduationModel;
 import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.view.tableModel.ModalitiesTableModel;
@@ -41,6 +42,8 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 	
 	public ListModalitiesWindow(JDesktopPane desktop) {
 		super("Modalidades", 445, 310, desktop, true);
+		
+		setFrameIcon(MasterImage.student_16x16);
 		
 		try {
 			modalityDAO = new ModalityDAO(CONNECTION);

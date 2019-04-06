@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.view.tableModel.RegistrationsTableModel;
 
@@ -34,6 +35,8 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 	
 	public ListRegistrationsWindow(JDesktopPane desktop) {
 		super("Matrículas", 445, 310, desktop, true);
+		
+		setFrameIcon(MasterImage.student_16x16);
 		
 		try {
 			registrationDao = new RegistrationDAO(CONNECTION);
