@@ -98,7 +98,8 @@ public class Window extends JFrame {
 
 	private void startingWindow() {
 		String dataLogin = getDateTime();
-		this.setTitle("Sistema Nocaute v1.0.0-betha   " + dataLogin);
+		this.setTitle("Sistema Nocaute v1.0.0-betha      " + "Usuário Logado: " + userLogged.getUser() + " ("
+				+ userLogged.getProfile() + ")" + " - Último Login: " + dataLogin);
 		this.setJMenuBar(getWindowMenuBar());
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setBounds(new Rectangle(0, 0, 796, 713));
