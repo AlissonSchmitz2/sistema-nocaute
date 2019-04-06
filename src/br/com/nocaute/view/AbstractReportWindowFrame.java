@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
@@ -14,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import com.toedter.calendar.JDateChooser;
+
+import br.com.nocaute.image.MasterImage;
 
 public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 	private static final long serialVersionUID = -4201960150625152379L;
@@ -27,13 +28,9 @@ public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 	protected JDateChooser jDateChooserDe = null, jDateChooserAte = null;
 	protected JPanel painel;
 
-	// Icones
-	protected ImageIcon iconJanela = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/16x16/relatorio.png"));
-
 	public AbstractReportWindowFrame(String nameWindow, JDesktopPane desktop) {
 		super(nameWindow, 220, 210, desktop);
-		setFrameIcon(iconJanela);
+		setFrameIcon(MasterImage.report_16x16);
 
 		criarComponentes();
 		
@@ -78,9 +75,8 @@ public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 		cbxTipo.setToolTipText("Tipo do relatório");
 		getContentPane().add(cbxTipo);
 
-		btnProcessar = new JButton("Processar");
+		btnProcessar = new JButton("Processar", MasterImage.report_16x16);
 		btnProcessar.setBounds(85, 143, 110, 24);
-		btnProcessar.setIcon(iconJanela);
 		btnProcessar.setToolTipText("Gerar Relatório");
 		getContentPane().add(btnProcessar);
 

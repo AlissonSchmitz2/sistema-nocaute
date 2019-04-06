@@ -50,6 +50,8 @@ public class Window extends JFrame {
 	private JMenu menuRelatoriosFaturas;
 	private JMenu menuUtilitarios;
 	private JMenu menuAjuda;
+	
+	//private JLabel wallpaper;
 
 	private ImageIcon iconPadrao = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/aplicacao.png"));
@@ -73,9 +75,18 @@ public class Window extends JFrame {
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		desktop.setVisible(true);
 		setContentPane(desktop);
-
+		
 		startingWindow();
 
+		//TODO: Wallpaper do sistema
+		/*ImageIcon logo = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/wallpaperHome.png"));
+		wallpaper = new JLabel(logo);
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		wallpaper.setBounds(0, -50, screenSize.width, screenSize.height);
+		getContentPane().add(wallpaper);
+		*/
+		
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 

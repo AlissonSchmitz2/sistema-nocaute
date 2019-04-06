@@ -23,6 +23,7 @@ import javax.swing.event.InternalFrameEvent;
 
 import br.com.nocaute.dao.GraduationDAO;
 import br.com.nocaute.dao.ModalityDAO;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.GraduationModel;
 import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.UserModel;
@@ -53,16 +54,6 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	private JTable jTableGraduacoes;
 
 	// Icones
-	private ImageIcon iconBuscar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/localizar.png"));
-	private ImageIcon iconAdicionar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/adicionar.png"));
-	private ImageIcon iconRemover = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/remover.png"));
-	private ImageIcon iconSalvar = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/22x22/salvar.png"));
-	private ImageIcon iconOK = new ImageIcon(
-			this.getClass().getResource("/br/com/nocaute/image/13x13/ok.png"));
 	private ImageIcon iconJanela = new ImageIcon(
 			this.getClass().getResource("/br/com/nocaute/image/16x16/estudante.png"));
 	
@@ -336,28 +327,24 @@ public class ModalityFormWindow extends AbstractGridWindow{
 
 	private void createComponents() {
 
-		btnBuscar = new JButton("Buscar");
+		btnBuscar = new JButton("Buscar", MasterImage.search_22x22);
 		btnBuscar.setBounds(15, 5, 95, 40);
-		btnBuscar.setIcon(iconBuscar);
 		btnBuscar.setToolTipText("Clique aqui para buscar os usuários");
 		getContentPane().add(btnBuscar);
 
-		btnAdicionar = new JButton("Adicionar");
+		btnAdicionar = new JButton("Adicionar", MasterImage.add_22x22);
 		btnAdicionar.setBounds(110, 5, 110, 40);
-		btnAdicionar.setIcon(iconAdicionar);
 		btnAdicionar.setToolTipText("Clique aqui para adicionar um usuário");
 		getContentPane().add(btnAdicionar);
 
-		btnRemover = new JButton("Remover");
+		btnRemover = new JButton("Remover", MasterImage.remove_22x22);
 		btnRemover.setBounds(220, 5, 110, 40);
-		btnRemover.setIcon(iconRemover);
 		btnRemover.setToolTipText("Clique aqui para remover");
 		getContentPane().add(btnRemover);
 		btnRemover.setEnabled(false);
 
-		btnSalvar = new JButton("Salvar");
+		btnSalvar = new JButton("Salvar", MasterImage.save_22x22);
 		btnSalvar.setBounds(330, 5, 95, 40);
-		btnSalvar.setIcon(iconSalvar);
 		btnSalvar.setToolTipText("Clique aqui para salvar");
 		getContentPane().add(btnSalvar);
 		btnSalvar.setEnabled(false);
@@ -408,9 +395,8 @@ public class ModalityFormWindow extends AbstractGridWindow{
 	        }
 	    });
 		
-		btnOk = new JButton("OK");
+		btnOk = new JButton("OK", MasterImage.ok_13x13);
 		btnOk.setBounds(355, 77, 70, 25);
-		btnOk.setIcon(iconOK);
 		btnOk.setToolTipText("Clique aqui para confirmar");
 		getContentPane().add(btnOk);		
 		

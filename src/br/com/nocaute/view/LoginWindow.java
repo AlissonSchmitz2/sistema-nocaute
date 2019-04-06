@@ -1,17 +1,16 @@
 package br.com.nocaute.view;
 
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.swing.*;
 
 import br.com.nocaute.dao.UserDAO;
 import br.com.nocaute.database.ConnectionFactory;
+import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.UserModel;
 
 public class LoginWindow extends JDialog {
@@ -24,8 +23,6 @@ public class LoginWindow extends JDialog {
 
 	private static Connection CONNECTION = null;
 
-	private ImageIcon logo = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/wallpaper.png"));
-
 	LoginWindow() {
 		setSize(280, 280);
 		setTitle("Sistema Nocaute");
@@ -37,7 +34,7 @@ public class LoginWindow extends JDialog {
 	}
 
 	public void createComponents() {
-		wallpaper = new JLabel(logo);
+		wallpaper = new JLabel(MasterImage.Loginlogo);
 		wallpaper.setBounds(95, 10, 80, 80);
 		getContentPane().add(wallpaper);
 
