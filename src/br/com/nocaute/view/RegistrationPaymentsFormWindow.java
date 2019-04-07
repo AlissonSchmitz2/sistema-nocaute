@@ -123,8 +123,8 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 		teste2.setRegistrationCode(2);
 
 		try {
-			model.addModel(teste1);
-			model.addModel(teste2);
+			//model.addModel(teste1);
+			//model.addModel(teste2);
 		} catch (Exception e) {
 			System.err.printf("Erro ao iniciar lista de cursos: %s.\n", e.getMessage());
 		}

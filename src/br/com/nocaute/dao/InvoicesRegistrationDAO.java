@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.nocaute.dao.contracts.Selectable;
-import br.com.nocaute.model.GraduationModel;
 import br.com.nocaute.model.InvoicesRegistrationModel;
 
 public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationModel>  implements Selectable<InvoicesRegistrationModel>{	
@@ -130,6 +129,12 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		return null;
 	}
 	
+	/**
+	 * Recupera a lista de faturas relacionadas a um determinado código de matrícula.
+	 * 
+	 * @param registrationCode
+	 * @return invoicesRegistrationList
+	 */
 	public List<InvoicesRegistrationModel> getByRegistrationCode(Integer registrationCode) throws SQLException {		
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
 		
@@ -139,6 +144,46 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		
 		List<InvoicesRegistrationModel> invoicesRegistrationList = new ArrayList<InvoicesRegistrationModel>();
 		
+		ResultSet rst = pst.executeQuery();
+		
+		while(rst.next()) {
+			InvoicesRegistrationModel model = createModelFromResultSet(rst);
+			
+			invoicesRegistrationList.add(model);
+		}
+		
+		return invoicesRegistrationList;
+	}
+	
+	/**
+	 * Recupera a lista de faturas entre duas datas de acordo com a situação da fatura.
+	 * 
+	 * @param startDate
+	 * @param finishDate
+	 * @param situation
+	 * @return invoicesRegistrationList
+	 */
+	public List<InvoicesRegistrationModel> searchInvoices(String startDate, String finishDate, String situation) throws SQLException{
+		String query = "";
+		
+		if (situation.equals("Todas")) {
+			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
+					+ finishDate + "'";
+		} else if (situation.equals("Em Aberto")) {
+			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
+					+ finishDate + "'" + " AND data_pagamento IS NULL AND data_cancelamento IS NULL";
+		} else if (situation.equals("Pagas")) {
+			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
+					+ finishDate + "'" + " AND data_pagamento IS NOT NULL";
+		} else if (situation.equals("Canceladas")) {
+			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
+					+ finishDate + "'" + " AND data_cancelamento IS NOT NULL";
+		}
+
+		PreparedStatement pst = connection.prepareStatement(query);
+		
+		List<InvoicesRegistrationModel> invoicesRegistrationList = new ArrayList<InvoicesRegistrationModel>();
+				
 		ResultSet rst = pst.executeQuery();
 		
 		while(rst.next()) {
