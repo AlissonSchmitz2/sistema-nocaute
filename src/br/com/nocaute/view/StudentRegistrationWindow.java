@@ -45,7 +45,7 @@ import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
 
-public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
+public class StudentRegistrationWindow extends AbstractToolbar implements KeyEventPostProcessor {
 	private static final long serialVersionUID = -6790083507948009923L;
 	
 	private RegistrationDAO registrationDao;
@@ -57,7 +57,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	private List<Component> formFields = new ArrayList<Component>();
 
 	// Componentes
-	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar, btnAddModalidade;
+	private JButton btnAddModalidade;
 	private JLabel label;
 	private JTextField txfMatricula, txfAlunoDescricao;
 	private JFormattedTextField txfVencFatura;
@@ -122,7 +122,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		return false;
 	}
 
-	private void setButtonsActions() {
+	protected void setButtonsActions() {
 		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -396,28 +396,6 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 	}
 
 	private void criarComponentes() {
-
-		btnBuscar = new JButton("Buscar", MasterImage.search_22x22);
-		btnBuscar.setBounds(15, 5, 95, 40);
-		btnBuscar.setToolTipText("Clique aqui para buscar os usuários");
-		getContentPane().add(btnBuscar);
-
-		btnAdicionar = new JButton("Adicionar", MasterImage.add_22x22);
-		btnAdicionar.setBounds(110, 5, 110, 40);
-		btnAdicionar.setToolTipText("Clique aqui para adicionar um usuário");
-		getContentPane().add(btnAdicionar);
-
-		btnRemover = new JButton("Remover", MasterImage.remove_22x22);
-		btnRemover.setBounds(220, 5, 110, 40);
-		btnRemover.setToolTipText("Clique aqui para remover");
-		getContentPane().add(btnRemover);
-		btnRemover.setEnabled(false);
-
-		btnSalvar = new JButton("Salvar", MasterImage.save_22x22);
-		btnSalvar.setBounds(330, 5, 95, 40);
-		btnSalvar.setToolTipText("Clique aqui para salvar");
-		getContentPane().add(btnSalvar);
-		btnSalvar.setEnabled(false);
 
 		label = new JLabel("Matrícula: ");
 		label.setBounds(5, 55, 50, 25);

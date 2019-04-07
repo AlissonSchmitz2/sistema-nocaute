@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
@@ -20,7 +19,7 @@ import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.UserModel;
 import br.com.nocaute.util.InternalFrameListener;
 
-public class UserFormWindow extends AbstractWindowFrame {
+public class UserFormWindow extends AbstractToolbar {
 	private static final long serialVersionUID = -2537423200954897351L;
 
 	private UserModel model = new UserModel();
@@ -31,7 +30,6 @@ public class UserFormWindow extends AbstractWindowFrame {
 	List<Component> formFields = new ArrayList<Component>();
 
 	// Componentes
-	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
 	private JLabel label;
 	private JTextField txfUsuario;
 	private JPasswordField txfSenha, txfConfirmarSenha;
@@ -40,7 +38,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 	JDesktopPane desktop;
 
 	public UserFormWindow(JDesktopPane desktop) {
-		super("Usuários", 455, 200, desktop);
+		super("Usuários", 455, 200, desktop, false);
 		setFrameIcon(MasterImage.user_16x16);
 
 		this.desktop = desktop;
@@ -59,7 +57,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 		setButtonsActions();
 	}
 
-	private void setButtonsActions() {
+	protected void setButtonsActions() {
 		// Ações de botões
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -221,28 +219,6 @@ public class UserFormWindow extends AbstractWindowFrame {
 	}
 
 	private void criarComponentes() {
-
-		btnBuscar = new JButton("Buscar", MasterImage.search_22x22);
-		btnBuscar.setBounds(15, 5, 95, 40);
-		btnBuscar.setToolTipText("Clique aqui para buscar os usuários");
-		getContentPane().add(btnBuscar);
-
-		btnAdicionar = new JButton("Adicionar", MasterImage.add_22x22);
-		btnAdicionar.setBounds(110, 5, 110, 40);
-		btnAdicionar.setToolTipText("Clique aqui para adicionar um usuário");
-		getContentPane().add(btnAdicionar);
-
-		btnRemover = new JButton("Remover", MasterImage.remove_22x22);
-		btnRemover.setBounds(220, 5, 110, 40);
-		btnRemover.setToolTipText("Clique aqui para remover");
-		getContentPane().add(btnRemover);
-		formFields.add(btnRemover);
-
-		btnSalvar = new JButton("Salvar", MasterImage.save_22x22);
-		btnSalvar.setBounds(330, 5, 95, 40);
-		btnSalvar.setToolTipText("Clique aqui para salvar");
-		getContentPane().add(btnSalvar);
-		formFields.add(btnSalvar);
 
 		label = new JLabel("Usuário: ");
 		label.setBounds(5, 55, 50, 25);

@@ -32,15 +32,12 @@ public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 		super(nameWindow, 220, 210, desktop);
 		setFrameIcon(MasterImage.report_16x16);
 
-		criarComponentes();
-		
-		// Seta as ações esperadas para cada botão
-		setButtonsActions();
+		createComponents();
 	}
 
 	protected abstract void setButtonsActions(); 
 
-	private void criarComponentes() {
+	private void createComponents() {
 		
 		painel = new JPanel();
 		painel.setBounds(new Rectangle(25, 15, 150, 110));
