@@ -30,7 +30,8 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 	
 	private String[] columnsToUpdate = new String[] {
 			"valor",
-			"data_pagamento"
+			"data_pagamento",
+			"data_cancelamento"
 	};
 	
 	Connection connection;
@@ -67,16 +68,18 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 	}
 	
 	public boolean update(InvoicesRegistrationModel model) throws SQLException {
-		String query = getUpdateQuery(TABLE_NAME, "data_vencimento", columnsToUpdate);
+		String query = "UPDATE " + TABLE_NAME + " SET valor = ?, data_pagamento = ?, data_cancelamento = ? WHERE codigo_matricula = ? AND data_vencimento = ?";
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
 		setParam(pst, 1, model.getValue());
 		setParam(pst, 2, model.getPaymentDate());
+		setParam(pst, 3, model.getCancellationDate());
 
 		// Identificador WHERE
-		setParam(pst, 3, model.getDueDate());
-
+		setParam(pst, 4, model.getRegistrationCode());
+		setParam(pst, 5, model.getDueDate());
+		
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
