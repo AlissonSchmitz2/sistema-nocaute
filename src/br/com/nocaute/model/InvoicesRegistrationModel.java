@@ -9,6 +9,10 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	private float valor;
 	private Date data_pagamento;
 	private Date data_cancelamento;
+	
+	// Auxiliares
+	private boolean matricula_cancelada;
+	private boolean destacar_valor;
 
 	/**
 	 * codigo_matricula
@@ -89,5 +93,39 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	public void setCancellationDate(Date cancellationDate) {
 		this.data_cancelamento = cancellationDate;
 	}
+
+	/**
+	 * matricula_cancelada
+	 */
+	public boolean isRegistrationFinished() {
+		return matricula_cancelada;
+	}
+
+	/**
+	 * matricula_cancelada
+	 * 
+	 * @param registrationFinish
+	 */
+	public void setRegistrationFinish(boolean registrationFinish) {
+		this.matricula_cancelada = registrationFinish;
+	}
+
+	/**
+	 * destacar_valor
+	 */
+	public boolean isHighlightValue() {
+		return destacar_valor;
+	}
+
+	/**
+	 * destacar_valor
+	 * 
+	 * @param highlightValue
+	 */
+	public void setHighlightValue(boolean highlightValue) {
+		this.destacar_valor = highlightValue;
+	}
+	
+	
 
 }

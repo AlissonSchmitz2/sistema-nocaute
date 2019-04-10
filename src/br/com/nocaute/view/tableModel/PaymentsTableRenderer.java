@@ -11,6 +11,9 @@ import br.com.nocaute.model.InvoicesRegistrationModel;
 public class PaymentsTableRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 6493992927252298137L;
 
+	// Coluna que será destacada (3 -> Valor).
+	private final int columnAlter = 3;
+	
 	// Método responsável por colorir as células da tabela.
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -36,13 +39,25 @@ public class PaymentsTableRenderer extends DefaultTableCellRenderer {
 				celula.setBackground(new Color(22, 152, 26, 100));
 			} 
 			// Fatura cancelada. (Amarelo)
-			else if (model.getCancellationDate() != null) {
+			else if (model.getCancellationDate() != null && !model.isRegistrationFinished()) {
 				celula.setBackground(new Color(244, 244, 0, 100));
 			} 
 			// Matrícula encerrada. (Vermelho)
 			else {
 				celula.setBackground(new Color(249, 0, 0, 100));
 			}
+			
+			// Destacar coluna Valor de vermelho.
+			if (model.isHighlightValue()) {
+				try {
+					if (column == columnAlter) {
+						setBackground(new Color(249, 0, 0, 100));
+					}
+				} catch (Exception error) {
+					error.printStackTrace();
+				}
+			}
+            
 		} else {
 			// caso contrario, muda a cor de fundo para azul escuro e a fonte para a cor
 			// correspondente ao status da fatura.
@@ -57,7 +72,7 @@ public class PaymentsTableRenderer extends DefaultTableCellRenderer {
 				celula.setForeground(Color.GREEN);
 			} 
 			// Fatura cancelada. (Amarelo)
-			else if (model.getCancellationDate() != null) {
+			else if (model.getCancellationDate() != null && !model.isRegistrationFinished()) {
 				celula.setForeground(Color.YELLOW);
 			} 
 			// Matrícula encerrada. (Vermelho)

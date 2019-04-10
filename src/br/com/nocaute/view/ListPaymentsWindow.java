@@ -2,6 +2,7 @@ package br.com.nocaute.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,8 +19,14 @@ import javax.swing.ListSelectionModel;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
+import br.com.nocaute.dao.PlanDAO;
+import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.dao.RegistrationModalityDAO;
 import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.InvoicesRegistrationModel;
+import br.com.nocaute.model.PlanModel;
+import br.com.nocaute.model.RegistrationModalityModel;
+import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 import br.com.nocaute.view.tableModel.PaymentsTableRenderer;
 
@@ -35,8 +42,20 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 	private PaymentsTableModel tableModel;
 	private JTable jTablePayments;
 	
-	// InvoicesRegistration.
+	// InvoicesRegistration
 	private InvoicesRegistrationDAO invoicesRegistrationDAO;
+	
+	// Registration Modalities
+	private RegistrationModalityDAO registrationModalityDAO;
+	
+	// Registration
+	private RegistrationDAO registrationDAO;
+	
+	// Plan
+	private PlanDAO planDAO;
+	
+	// Data atual
+	private Date currentDate = new Date();
 
 	public ListPaymentsWindow(JDesktopPane desktop) {
 		super("Consultar Faturas", 610, 380, desktop, false);
@@ -44,6 +63,9 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		
 		try {
 			invoicesRegistrationDAO = new InvoicesRegistrationDAO(CONNECTION);
+			registrationDAO = new RegistrationDAO(CONNECTION);
+			registrationModalityDAO = new RegistrationModalityDAO(CONNECTION);
+			planDAO = new PlanDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
@@ -63,18 +85,79 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					String formatedStartDate = dateFormat.format(startDate.getDate());
 					String formatedFinishDate = dateFormat.format(finishDate.getDate());
-					
+
 					// Recupera a lista de faturas entre as datas e a situação selecionada.
-					List<InvoicesRegistrationModel> invoicesRegistrationList = invoicesRegistrationDAO
-							.searchInvoices(formatedStartDate, formatedFinishDate, cbxSituation.getSelectedItem().toString());
-					
+					List<InvoicesRegistrationModel> invoicesRegistrationList = invoicesRegistrationDAO.searchInvoices(
+							formatedStartDate, formatedFinishDate, cbxSituation.getSelectedItem().toString());
+
 					tableModel.clear();
-					
+
 					if(invoicesRegistrationList.isEmpty()) {
 						bubbleWarning("Nenhuma fatura foi encontrada");
 					} else {
+						// Recupera todas as matrículas.
+						List<RegistrationModel> registrationsList = registrationDAO.selectAll();
+
+						// Percorre as matrículas
+						for (int i = 0; i < registrationsList.size(); i++) {
+							RegistrationModel registrationModel = registrationsList.get(i);
+							// Caso a matrícula tenha sido encerrada, seta o cancelamento_registro das
+							// faturas como true.
+							if (registrationModel.getClosingDate() != null) {
+								for (int j = 0; j < invoicesRegistrationList.size(); j++) {
+									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);
+									if (invoicesRegistrationModel.getRegistrationCode() == registrationModel.getRegistrationCode()) {
+										invoicesRegistrationModel.setRegistrationFinish(true);
+									}
+								}
+							}
+							// Caso não tenha sido cancelada, inicia o processo para verificar se alguma
+							// modalidade foi cancelada após a geração das faturas futuras (mês vencimento
+							// maior que o mês atual).
+							else {
+								// Lista de modalidades relacionadas a um determinado codigo_matricula.
+								List<RegistrationModalityModel> modalitiesList = registrationModalityDAO
+										.getByRegistrationCode(registrationModel.getRegistrationCode());
+
+								// Calculos para recuperar o valor total da fatura.
+								BigDecimal valorFatura;
+								float valorTotal = 0;
+								for (int k = 0; k < modalitiesList.size(); k++) {
+									// Verifica se o aluno está matriculado na modadalide (dataFim não preenchida).
+									if (modalitiesList.get(k).getFinishDate() == null) {
+										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
+										valorFatura = planModel.getMonthlyValue();
+										valorTotal += valorFatura.floatValue();
+									}
+								}
+
+								for (int j = 0; j < invoicesRegistrationList.size(); j++) {
+									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);
+
+									@SuppressWarnings("deprecation")
+									int currentMonth = currentDate.getMonth();
+									@SuppressWarnings("deprecation")
+									int invoiceMonth = invoicesRegistrationModel.getDueDate().getMonth();
+
+									// Caso o mês da fatura seja maior que o mês atual e o valor total seja
+									// diferente do valor atual da fatura (modalidades alteradas), o valor da fatura
+									// será destacado e alterado.
+									if (invoiceMonth > currentMonth && invoicesRegistrationModel.getValue() > valorTotal
+											&& invoicesRegistrationModel.getRegistrationCode() == registrationModel
+													.getRegistrationCode()) {
+										// System.out.println("Vencimento: " + invoicesRegistrationModel.getDueDate() +
+										// "Valor fatura: " + invoicesRegistrationModel.getValue() + "Novo valor: " +
+										// valorTotal);
+										invoicesRegistrationModel.setValue(valorTotal);
+										invoicesRegistrationModel.setHighlightValue(true);
+									}
+								}
+							}
+						}
+
+						// Adiciona as faturas a table.
 						tableModel.addModelsList(invoicesRegistrationList);
-					}					
+					}										
 				} catch (SQLException error) {
 					error.printStackTrace();
 				}
