@@ -629,6 +629,15 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			}
 		}
 		
+		// Insere a data de encerramento na tabela de matrículas.
+		try {
+			RegistrationModel registrationModel = registrationDao.findById(model.getRegistrationCode());
+			registrationModel.setClosingDate(finishDate);
+			registrationDao.update(registrationModel);
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
+		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");		
 		labelCloseRegistration.setText("Matrícula encerrada em: " + dateFormat.format(finishDate));
 		labelCloseRegistration.setBounds(170, 55, 200, 25);	
