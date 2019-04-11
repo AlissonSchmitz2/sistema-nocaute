@@ -21,7 +21,7 @@ public class ReportPaymentsOpenFormWindow extends AbstractReportWindowFrame{
 		//String novaData = formatador.format(jDateChooser.getDate());
 		
 		// Ação Processar relatorio
-		btnProcessar.addActionListener(new ActionListener() {
+		btnProcess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO: processar relatorio
 			}
