@@ -44,6 +44,7 @@ public class Window extends JFrame {
 	private ReportRegistrationFormWindow frameReportRegistrationForm;
 	private ReportPaymentsOpenFormWindow frameReportPaymentsOpenForm;
 	private ReportPaymentsPayFormWindow frameReportPaymentsPayForm;
+	private BackupWindow frameBackupWindow;
 
 	private JMenu menuSistema;
 	private JMenu menuCadastros;
@@ -414,9 +415,24 @@ public class Window extends JFrame {
 		menuUtilitarios = new JMenu("Utilitários");
 		menuUtilitarios.setFont(getDefaultFont());
 
-		// menuUtilitarios.add(getMenuItem());
+		menuUtilitarios.add(getMenuItemBackup());
 
 		return menuUtilitarios;
+	}
+	
+	private JMenuItem getMenuItemBackup() {
+		JMenuItem menuItem = new JMenuItem("Backup");
+		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setFont(getDefaultFont());
+		
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frameBackupWindow = new BackupWindow(desktop);
+				abrirFrame(frameBackupWindow);
+			}
+		});
+
+		return menuItem;
 	}
 
 	// MENU AJUDA
@@ -464,7 +480,6 @@ public class Window extends JFrame {
 				addedFrame.moveToFront();
 				frameAlreadyExists = true;
 			}
-
 
 		}
 
