@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
@@ -18,9 +20,18 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 
+import br.com.nocaute.dao.InvoicesRegistrationDAO;
+import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.image.MasterImage;
+import br.com.nocaute.model.InvoicesRegistrationModel;
+import br.com.nocaute.model.RegistrationModalityModel;
+import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
+import br.com.nocaute.pojos.Graduation;
+import br.com.nocaute.pojos.Modality;
+import br.com.nocaute.pojos.Plan;
+import br.com.nocaute.pojos.RegistrationModality;
 import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AttendanceTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
@@ -47,10 +58,13 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	// Grid Situação de pagamento
 	private JTable jTablePaymentsSituation;
 	private PaymentsSituationTableModel paymentsSituationTableModel;
-	
-	private StudentModel model = new StudentModel();
-	private StudentDAO dao = null;
 
+	private StudentModel  studentModel  = new StudentModel();
+	
+	private StudentDAO studentDao = null;
+	private RegistrationDAO registrationDao = null;
+	private InvoicesRegistrationDAO invoicesDao = null;
+	
 	private static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
 	private static int height = screenRect.height;// area total da altura tirando subtraindo o menu iniciar
@@ -76,11 +90,15 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		txfCodMatriculate.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(java.awt.event.KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if(!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
+						bubbleWarning("Nenhum aluno foi encontrado!");
+						txfStudent.setText("");
+						studentRegistrationModalitiesTableModel.clear();
+					}
 				}
 			}
-		});	
+		});
 	}
 
 	private void createComponents() {
@@ -138,7 +156,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		getContentPane().add(masterMonthChooser);
 
 		createGridAttendance();
-		
+
 		createGridSituationPayments();
 	}
 
@@ -173,7 +191,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		add(grid);
 	}
-	
+
 	private void createGridSituationPayments() {
 		paymentsSituationTableModel = new PaymentsSituationTableModel();
 		jTablePaymentsSituation = new JTable(paymentsSituationTableModel);
@@ -189,32 +207,73 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		add(grid);
 	}
+
+	private List<RegistrationModality> mapRegistrationModalitiesModelToRegistrationModalitiesPojo(List<RegistrationModalityModel> registrationModalityList) {
+		 return registrationModalityList.stream()
+				.map(model -> { 
+					RegistrationModality pojo = new RegistrationModality();
+					pojo.setId(model.getId());
+					pojo.setRegistrationCode(model.getRegistrationCode());
+					pojo.setModality(new Modality(model.getModalityId(), model.getModality().getName()));
+					pojo.setGraduation(new Graduation(model.getGraduationId(), model.getGraduation().getName()));
+					pojo.setPlan(new Plan(model.getPlanId(), model.getPlan().getName()));
+					pojo.setStartDate(model.getStartDate());
+					pojo.setFinishDate(model.getFinishDate());
+					
+					return pojo;
+				}).collect(Collectors.toList());
+	}
 	
-	public void searchDataStudent(int code) {
+	public boolean searchDataStudent(int code) {
 		try {
-			model = dao.findById(code);
-			txfStudent.setText(model.getName());
+			studentDao = new StudentDAO(CONNECTION);
+			studentModel = studentDao.findById(code);
+			
+			registrationDao  = new RegistrationDAO(CONNECTION);
+			invoicesDao      = new InvoicesRegistrationDAO(CONNECTION);
+			
+			if (studentModel instanceof StudentModel) {
+				txfStudent.setText(studentModel.getName());
+				
+				studentRegistrationModalitiesTableModel.clear();
+				RegistrationModel registrationModel = registrationDao.findByStudentId(studentModel.getCode(),true);
+				studentRegistrationModalitiesTableModel.addModelsList(
+						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities())
+					);
+				
+				registrationModel.getRegistrationCode();
+				//List<InvoicesRegistrationModel> invoicesModel = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
+				//paymentsSituationTableModel.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
+				
+				btnDataStudent     .setEnabled(true);
+				btnDataMatriculate .setEnabled(true);
+				
+				return true;
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return false;
 	}
-	
+
 	private void setSituation(int stateSituation) {
-		switch(stateSituation) {
-			case 0:
-				label.setText("Aguardando Consulta...");
-				panelSituation.setBackground(Color.LIGHT_GRAY);
-				break;
-			case 1:
-				label.setText("Débitos Pendentes");
-				panelSituation.setBackground(Color.RED);
-				break;
-			case 2:
-				label.setText("Situação Regular");
-				panelSituation.setBackground(Color.GREEN);
-				break;
-			default:
-				bubbleError("Situação Inválida!");
+		switch (stateSituation) {
+		case 0:
+			label.setText("Aguardando Consulta...");
+			panelSituation.setBackground(Color.LIGHT_GRAY);
+			break;
+		case 1:
+			label.setText("Débitos Pendentes");
+			panelSituation.setBackground(Color.RED);
+			break;
+		case 2:
+			label.setText("Situação Regular");
+			panelSituation.setBackground(Color.GREEN);
+			break;
+		default:
+			bubbleError("Situação Inválida!");
 		}
 	}
 

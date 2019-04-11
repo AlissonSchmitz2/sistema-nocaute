@@ -141,7 +141,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
 							UserModel selectedModel = ((ListUsersWindow) e.getInternalFrame()).getSelectedModel();
-
+								
 							if (selectedModel != null) {
 								// Atribui o model selecionado
 								model = selectedModel;
@@ -149,6 +149,7 @@ public class UserFormWindow extends AbstractWindowFrame {
 								txfUsuario.setText(model.getUser());
 								cbxPerfil.setSelectedItem(model.getProfile());
 
+								
 								txfSenha.setEnabled(false);
 								txfConfirmarSenha.setEnabled(false);
 
@@ -163,7 +164,8 @@ public class UserFormWindow extends AbstractWindowFrame {
 
 								// Ativa botão remover
 								btnRemover.setEnabled(true);
-
+								txfUsuario.setEnabled(false);
+								
 								txfConfirmarSenha.setEnabled(false);
 								txfSenha.setEnabled(false);
 							}

@@ -173,7 +173,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		if (result > 0) {
 			connection.commit();
 			
-			//updateUser(model);
+			updateUser(model);
 			return true;
 		}			
 		return false;
@@ -195,7 +195,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 	@Override
 	public boolean delete(UserModel model) throws SQLException {
-		return deleteById(model.getCode());// && deleteUser(model.getUser());
+		return deleteById(model.getCode()) && deleteUser(model.getUser());
 	}
 
 	@Override

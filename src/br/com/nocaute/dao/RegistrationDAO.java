@@ -163,6 +163,38 @@ private static final String TABLE_NAME = "matriculas";
 		return model;
 	}
 	
+	public RegistrationModel findByStudentId(Integer id,boolean loadModatilies) throws SQLException { 
+		RegistrationModel model = null;
+		
+		String query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
+				+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE r.codigo_aluno = ?";
+		PreparedStatement pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, id);
+		ResultSet rst = pst.executeQuery();
+
+		if (rst.next()) {
+			model = createModelFromResultSet(rst);
+			
+			//Adiciona relacionamento Aluno
+			if (Integer.valueOf(rst.getInt("codigo_aluno")) != null) {
+				StudentModel student = new StudentModel();
+				//Para o propósito de listagem, somente código e nome do aluno são suficientes
+				student.setCode(Integer.valueOf(rst.getInt("codigo_aluno")));
+				student.setName(rst.getString("aluno"));
+				
+				model.setStudent(student);
+			}
+			
+			//Adiciona relacionamento Modalidades
+			if (loadModatilies) {
+				model.setModalities(registrationModalityDao.getByRegistrationCode(model.getRegistrationCode()));
+			}
+		}
+		
+		return model;
+	}
+	
 	@Override
 	public RegistrationModel insert(RegistrationModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
