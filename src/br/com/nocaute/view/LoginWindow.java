@@ -64,7 +64,17 @@ public class LoginWindow extends JDialog {
 				authUser();
 			}
 		});
-		btnAcess.addKeyListener(new KeyAdapter() {
+		
+		txfName.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
+					authUser();
+				}
+			}
+		});
+		
+		txfPassword.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -73,7 +83,7 @@ public class LoginWindow extends JDialog {
 			}
 		});
 	}
-
+	
 	private void authUser() {
 		//TODO:Mudar modo com que é feito autenticação do usuario
 		CONNECTION = ConnectionFactory.getConnection("master", txfName.getText(),
