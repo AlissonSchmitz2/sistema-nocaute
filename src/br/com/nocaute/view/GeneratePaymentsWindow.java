@@ -144,6 +144,11 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 							valorTotal += valorFatura.floatValue();
 						}
 					}
+					
+					// Caso o valor total seja igual a 0, significa que a matrícula do aluno foi cancelada, então não gera a fatura.
+					if(valorTotal == 0) {
+						continue;
+					}
 
 					// Monta o objeto a ser inserido no banco.
 					invoicesRegistrationModel = new InvoicesRegistrationModel();

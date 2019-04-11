@@ -1,34 +1,52 @@
 package br.com.nocaute.view.tableModel;
 
-import br.com.nocaute.model.RegistrationModel;
+import java.sql.SQLException;
+import java.util.Date;
 
-public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
+import br.com.nocaute.dao.RegistrationDAO;
+import br.com.nocaute.dao.StudentDAO;
+import br.com.nocaute.database.ConnectionFactory;
+import br.com.nocaute.model.InvoicesRegistrationModel;
+import br.com.nocaute.model.RegistrationModel;
+import br.com.nocaute.model.StudentModel;
+
+public class PaymentsTableModel extends AbstractTableModel<InvoicesRegistrationModel>{
 	private static final long serialVersionUID = 8326282879975874840L;
 
+	private StudentDAO studentDAO;
+	private RegistrationDAO registrationDAO;
+	
 	public PaymentsTableModel() {
 		super(new String[] { "Matrícula", "Aluno", "Vencimento", "Valor", "Pagamento", "Cancelamento" });
+		
+		try {
+			studentDAO = new StudentDAO(ConnectionFactory.getConnection("master", "admin", "admin"));
+			registrationDAO = new RegistrationDAO(ConnectionFactory.getConnection("master", "admin", "admin"));
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
 	}
 	
 	@Override
-	protected void setObjectValueAt(int columnIndex, RegistrationModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, InvoicesRegistrationModel model, Object aValue) {
 		switch (columnIndex) {
 			case 0:
 				model.setRegistrationCode(Integer.parseInt(aValue.toString()));
 				break;
 			case 1:
-				model.setStudentCode(Integer.parseInt(aValue.toString()));
-				break;
-			case 2:
-				//model.setExpirationDay(Integer.parseInt(aValue.toString()));
-				break;
-			case 3:
-				//model.set(Integer.parseInt(aValue.toString()));
-				break;
-			case 4:
 				//model.setStudentCode(Integer.parseInt(aValue.toString()));
 				break;
+			case 2:
+				model.setDueDate(new Date((long) aValue));
+				break;
+			case 3:
+				model.setValue(Float.parseFloat(aValue.toString()));
+				break;
+			case 4:
+				model.setPaymentDate(new Date((long) aValue));
+				break;
 			case 5:
-				//model.setClosingDate(Integer.parseInt(aValue.toString()));
+				model.setCancellationDate(new Date((long) aValue));
 				break;
 			default:
 				System.err.println("Índice da coluna inválido");
@@ -36,7 +54,7 @@ public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
 	}
 
 	@Override
-	protected Object getObjectValueAt(int columnIndex, RegistrationModel model) {
+	protected Object getObjectValueAt(int columnIndex, InvoicesRegistrationModel model) {
 		String valueObject = null;
 		
 		switch (columnIndex) {
@@ -44,25 +62,41 @@ public class PaymentsTableModel extends AbstractTableModel<RegistrationModel>{
 			valueObject = model.getRegistrationCode().toString();
 			break;
 		case 1:
-			valueObject = model.getStudentCode().toString();
+			valueObject = getStudentName(model.getRegistrationCode());
 			break;
 		case 2:
-			//model.setExpirationDay(Integer.parseInt(aValue.toString()));
+			valueObject = model.getDueDate().toString();
 			break;
 		case 3:
-			//model.set(Integer.parseInt(aValue.toString()));
+			valueObject = String.valueOf(model.getValue());
 			break;
 		case 4:
-			//model.setStudentCode(Integer.parseInt(aValue.toString()));
+			if(model.getPaymentDate() != null) {
+				valueObject = model.getPaymentDate().toString();
+			}
 			break;
 		case 5:
-			//model.setClosingDate(Integer.parseInt(aValue.toString()));
+			if(model.getCancellationDate() != null) {
+				valueObject = model.getCancellationDate().toString();
+			}
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");
 		}
 
 		return valueObject;
+	}
+	
+	private String getStudentName(Integer registrationCode) {
+		try {
+			RegistrationModel registrationModel = registrationDAO.findById(registrationCode);
+			StudentModel studentModel = studentDAO.findById(registrationModel.getStudentCode());
+			return studentModel.getName();
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
+		
+		return "";
 	}
 	
 }

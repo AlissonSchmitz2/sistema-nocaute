@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
@@ -42,7 +41,7 @@ import br.com.nocaute.pojos.Genre;
 import br.com.nocaute.util.PlaceholderTextField;
 import br.com.nocaute.view.comboModel.GenericComboModel;
 
-public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPostProcessor {
+public class StudentFormWindow extends AbstractToolbar implements KeyEventPostProcessor {
 	private static final long serialVersionUID = 1631880171317467520L;
 
 	private StudentDAO studentDao;
@@ -55,7 +54,6 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 	private List<Component> formFields = new ArrayList<Component>();
 
 	// Componentes
-	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar;
 	private JLabel label;
 	private JTextField txfAluno, txfEmail;
 	private JFormattedTextField txfTelefone, txfCelular, txfNumero;
@@ -73,7 +71,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 	private JDesktopPane desktop;
 
 	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged) {	
-		super("Cadastro de Alunos", 450, 460, desktop);
+		super("Cadastro de Alunos", 450, 460, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
 
 		this.userLogged = userLogged;
@@ -114,7 +112,7 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 		});
 	}
 
-	private void setButtonsActions() {
+	protected void setButtonsActions() {
 		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -350,28 +348,6 @@ public class StudentFormWindow extends AbstractWindowFrame implements KeyEventPo
 	}
 
 	private void createComponents() {
-
-		btnBuscar = new JButton("Buscar", MasterImage.search_22x22);
-		btnBuscar.setBounds(15, 5, 95, 40);
-		btnBuscar.setToolTipText("Clique aqui para buscar");
-		getContentPane().add(btnBuscar);
-
-		btnAdicionar = new JButton("Adicionar", MasterImage.add_22x22);
-		btnAdicionar.setBounds(110, 5, 110, 40);
-		btnAdicionar.setToolTipText("Clique aqui para adicionar");
-		getContentPane().add(btnAdicionar);
-
-		btnRemover = new JButton("Remover", MasterImage.remove_22x22);
-		btnRemover.setBounds(220, 5, 110, 40);
-		btnRemover.setToolTipText("Clique aqui para remover");
-		getContentPane().add(btnRemover);
-		btnRemover.setEnabled(false);
-
-		btnSalvar = new JButton("Salvar", MasterImage.save_22x22);
-		btnSalvar.setBounds(330, 5, 95, 40);
-		btnSalvar.setToolTipText("Clique aqui para salvar");
-		getContentPane().add(btnSalvar);
-		btnSalvar.setEnabled(false);
 
 		label = new JLabel("Nome: ");
 		label.setBounds(5, 55, 50, 25);

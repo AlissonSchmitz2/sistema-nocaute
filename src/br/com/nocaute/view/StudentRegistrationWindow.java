@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -35,8 +37,10 @@ import javax.swing.text.NumberFormatter;
 
 import com.toedter.calendar.JDateChooser;
 
+import br.com.nocaute.dao.InvoicesRegistrationDAO;
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.image.MasterImage;
+import br.com.nocaute.model.InvoicesRegistrationModel;
 import br.com.nocaute.model.RegistrationModalityModel;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
@@ -45,20 +49,23 @@ import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
 
-public class StudentRegistrationWindow extends AbstractGridWindow implements KeyEventPostProcessor {
+public class StudentRegistrationWindow extends AbstractToolbar implements KeyEventPostProcessor {
 	private static final long serialVersionUID = -6790083507948009923L;
 	
 	private RegistrationDAO registrationDao;
 	private RegistrationModel model = new RegistrationModel();
 	private ListRegistrationsWindow searchRegistrationWindow;
 	private ListStudentsWindow searchStudentWindow;
+	
+	private InvoicesRegistrationDAO invoicesRegistrationDAO;
 
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
 
 	// Componentes
-	private JButton btnBuscar, btnAdicionar, btnRemover, btnSalvar, btnAddModalidade;
+	private JButton btnAddModalidade;
 	private JLabel label;
+	private JLabel labelCloseRegistration = new JLabel();
 	private JTextField txfMatricula, txfAlunoDescricao;
 	private JFormattedTextField txfVencFatura;
 	private JDateChooser jDataMatricula;
@@ -78,11 +85,12 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		
 		try {
 			this.registrationDao = new RegistrationDAO(CONNECTION);
+			this.invoicesRegistrationDAO = new InvoicesRegistrationDAO(CONNECTION);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		criarComponentes();
+		createComponents();
 
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
@@ -122,7 +130,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		return false;
 	}
 
-	private void setButtonsActions() {
+	protected void setButtonsActions() {
 		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -135,6 +143,10 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 				// Limpar dados dos campos
 				clearFormFields(formFields);
 
+				// Remove a mensagem de encerramento de matrícula.
+				getContentPane().remove(labelCloseRegistration);
+				getContentPane().repaint();
+				
 				// Cria nova entidade model
 				model = new RegistrationModel();
 				
@@ -206,13 +218,43 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 
 				try {
 					// EDIÇÃO CADASTRO
-					if (isEditing()) {
-						boolean result = registrationDao.update(model);
+					if (isEditing()) {						
+						//Verificar se todas as modalidades foram encerradas.
+						boolean modalitiesFinished = true;
+						List<RegistrationModalityModel> modalitiesList = model.getModalities();
+						for(int i = 0; i < modalitiesList.size(); i++) {
+							if(modalitiesList.get(i).getFinishDate() == null) {
+								modalitiesFinished = false;
+							}
+						}
+						
+						// Caso todas as modalidades tenham sido encerradas, solicita uma confirmação do
+						// usuário para cancelamento da matrícula.
+						if(modalitiesFinished) {
+							int optionSelected = JOptionPane.showConfirmDialog(null, "Todas as modalidades foram encerradas.\nDeseja realmente encerrar a matrícula?");
+							
+							// 0 -> Sim.
+							if(optionSelected == 0) {
+								boolean result = registrationDao.update(model);
 
-						if (result) {
-							bubbleSuccess("Matrícula editada com sucesso");
-						} else {
-							bubbleError("Houve um erro ao editar matrícula");
+								if (result) {
+									bubbleSuccess("Matrícula editada com sucesso");
+									closeRegistration();
+									cancelInvoices();
+								} else {
+									bubbleError("Houve um erro ao editar matrícula");
+								}
+							}
+						} 
+						// Caso não tenham sido encerradas todas as modalidades, procede com o update normalmente.
+						else {						
+							boolean result = registrationDao.update(model);
+	
+							if (result) {
+								bubbleSuccess("Matrícula editada com sucesso");
+							} else {
+								bubbleError("Houve um erro ao editar matrícula");
+							}
 						}
 					// NOVO CADASTRO
 					} else {
@@ -260,38 +302,55 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 									//Faz uma nova consulta para busca o model selecionado
 									//para forçar o carregamento do relacionamentos do model
 									model = registrationDao.findById(selectedModel.getRegistrationCode(), true);
-	
+									
+									// Remove a mensagem de encerramento de matrícula.
+									getContentPane().remove(labelCloseRegistration);
+									getContentPane().repaint();
+									
+									//Verificar se todas as modalidades foram encerradas.
+									boolean modalitiesFinished = true;
+									List<RegistrationModalityModel> modalitiesList = model.getModalities();
+									for(int i = 0; i < modalitiesList.size(); i++) {
+										if(modalitiesList.get(i).getFinishDate() == null) {
+											modalitiesFinished = false;
+										}
+									}									
+									
 									//Seta dados do model para os campos
 									txfMatricula.setText(model.getRegistrationCode().toString());
 									txfVencFatura.setText(model.getExpirationDay().toString());
-									
+										
 									if (model.getRegistrationDate() != null) {
 										jDataMatricula.setDate(model.getRegistrationDate());
 									}
-									
+										
 									//Seta dados do aluno
 									if (model.getStudent() != null) {
 										txfAluno.setText(model.getStudent().getCode().toString());
 										txfAlunoDescricao.setText(model.getStudent().getName());
 									}
-									
+										
 									//Seta dados na grid
 									studentRegistrationModalitiesTableModel.clear();
 									studentRegistrationModalitiesTableModel.addModelsList(
 										mapRegistrationModalitiesModelToRegistrationModalitiesPojo(model.getModalities())
 									);
-	
-									// Seta form para modo Edição
-									setFormMode(UPDATE_MODE);
-	
-									// Ativa campos
-									enableComponents(formFields);
-	
-									// Ativa botão salvar
-									btnSalvar.setEnabled(true);
-	
-									// Ativa botão remover
-									btnRemover.setEnabled(true);
+		
+									if(modalitiesFinished) {
+										closeRegistration();
+									} else {
+										// Seta form para modo Edição
+										setFormMode(UPDATE_MODE);
+			
+										// Ativa campos
+										enableComponents(formFields);
+			
+										// Ativa botão salvar
+										btnSalvar.setEnabled(true);
+			
+										// Ativa botão remover
+										btnRemover.setEnabled(true);
+									}									
 								}
 							} catch (SQLException error) {
 								bubbleError("Erro ao recuperar matrícula");
@@ -395,29 +454,7 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		}
 	}
 
-	private void criarComponentes() {
-
-		btnBuscar = new JButton("Buscar", MasterImage.search_22x22);
-		btnBuscar.setBounds(15, 5, 95, 40);
-		btnBuscar.setToolTipText("Clique aqui para buscar os usuários");
-		getContentPane().add(btnBuscar);
-
-		btnAdicionar = new JButton("Adicionar", MasterImage.add_22x22);
-		btnAdicionar.setBounds(110, 5, 110, 40);
-		btnAdicionar.setToolTipText("Clique aqui para adicionar um usuário");
-		getContentPane().add(btnAdicionar);
-
-		btnRemover = new JButton("Remover", MasterImage.remove_22x22);
-		btnRemover.setBounds(220, 5, 110, 40);
-		btnRemover.setToolTipText("Clique aqui para remover");
-		getContentPane().add(btnRemover);
-		btnRemover.setEnabled(false);
-
-		btnSalvar = new JButton("Salvar", MasterImage.save_22x22);
-		btnSalvar.setBounds(330, 5, 95, 40);
-		btnSalvar.setToolTipText("Clique aqui para salvar");
-		getContentPane().add(btnSalvar);
-		btnSalvar.setEnabled(false);
+	private void createComponents() {
 
 		label = new JLabel("Matrícula: ");
 		label.setBounds(5, 55, 50, 25);
@@ -578,6 +615,60 @@ public class StudentRegistrationWindow extends AbstractGridWindow implements Key
 		}
 		
 		return true;
+	}
+	
+	// Exibe a mensagem com a data de encerramento da matrícula e desabilita os campos.
+	private void closeRegistration() {
+		List<RegistrationModalityModel> modalitiesList = model.getModalities();
+		Date finishDate = null;
+		for(int i = 0; i < modalitiesList.size(); i++) {
+			if( i == 0) {
+				finishDate = modalitiesList.get(i).getFinishDate();
+			} else if(modalitiesList.get(i).getFinishDate().compareTo(finishDate) > 0) {
+				finishDate = modalitiesList.get(i).getFinishDate();
+			}
+		}
+		
+		// Insere a data de encerramento na tabela de matrículas.
+		try {
+			RegistrationModel registrationModel = registrationDao.findById(model.getRegistrationCode());
+			registrationModel.setClosingDate(finishDate);
+			registrationDao.update(registrationModel);
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");		
+		labelCloseRegistration.setText("Matrícula encerrada em: " + dateFormat.format(finishDate));
+		labelCloseRegistration.setBounds(170, 55, 200, 25);	
+		labelCloseRegistration.setForeground(Color.RED);
+		getContentPane().add(labelCloseRegistration);
+		getContentPane().repaint();
+		
+		disableComponents(formFields);
+		btnRemover.setEnabled(false);
+		btnSalvar.setEnabled(false);
+	}
+	
+	// Cancela as faturas futuras relacionadas a matrícula cancelada.
+	private void cancelInvoices() {
+		try {
+			List<InvoicesRegistrationModel> invoicesList = invoicesRegistrationDAO.getByRegistrationCode(model.getRegistrationCode());
+			Date currentDate = new Date();
+			@SuppressWarnings("deprecation")
+			int currentMonth = currentDate.getMonth();
+			
+			for(int i = 0; i < invoicesList.size(); i++) {
+				@SuppressWarnings("deprecation")
+				int invoiceMonth = invoicesList.get(i).getDueDate().getMonth();
+				if(invoiceMonth > currentMonth) {
+					invoicesList.get(i).setCancellationDate(currentDate);
+					invoicesRegistrationDAO.update(invoicesList.get(i));
+				}
+			}			
+		} catch (SQLException error) {
+			error.printStackTrace();
+		}
 	}
 	
 }

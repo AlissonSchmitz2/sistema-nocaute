@@ -253,8 +253,10 @@ private static final String TABLE_NAME = "matriculas";
 		if (result > 0) {
 			connection.commit();
 			
-			//Sincroniza as modalidades
-			return registrationModalityDao.sync(model.getRegistrationCode(), model.getModalities());
+			if(model.getModalities() != null) {
+				//Sincroniza as modalidades			
+				return registrationModalityDao.sync(model.getRegistrationCode(), model.getModalities());
+			}			
 		}
 
 		return false;

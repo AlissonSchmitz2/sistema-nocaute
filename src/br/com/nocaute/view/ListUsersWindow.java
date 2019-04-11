@@ -111,7 +111,7 @@ public class ListUsersWindow extends AbstractGridWindow {
 				if (me.getClickCount() == 2) {
 					// Atribui o model da linha clicada
 					selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
-
+					
 					// Fecha a janela
 					try {
 						setClosed(true);
