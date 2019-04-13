@@ -138,7 +138,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemUsuarios() {
 		JMenuItem menuItem = new JMenuItem("Usuários");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.user_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedRegisterUser(menuItem);
@@ -184,7 +184,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemAlunos() {
 		JMenuItem menuItem = new JMenuItem("Alunos");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.student_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -203,7 +203,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemModalidades() {
 		JMenuItem menuItem = new JMenuItem("Modalidades");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.student_16x16);
 		menuItem.setFont(getDefaultFont());
 		
 		protectMenuItemBasedEnrollUser(menuItem);
@@ -221,7 +221,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemPlanos() {
 		JMenuItem menuItem = new JMenuItem("Planos");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.financial_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedEnrollUser(menuItem);
@@ -243,11 +243,11 @@ public class Window extends JFrame {
 		menuProcessos.setFont(getDefaultFont());
 
 		menuProcessosMatricular = new JMenu("Matricular");
-		menuProcessosMatricular.setIcon(MasterImage.aplication_16x16);
+		menuProcessosMatricular.setIcon(MasterImage.student_16x16);
 		menuProcessosMatricular.setFont(getDefaultFont());
 
 		menuProcessosFaturamento = new JMenu("Faturamento");
-		menuProcessosFaturamento.setIcon(MasterImage.aplication_16x16);
+		menuProcessosFaturamento.setIcon(MasterImage.financial_16x16);
 		menuProcessosFaturamento.setFont(getDefaultFont());
 
 		menuProcessos.add(menuProcessosMatricular);
@@ -264,7 +264,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemAluno() {
 		JMenuItem menuItem = new JMenuItem("Aluno");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.student_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -282,7 +282,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemGerarFaturas() {
 		JMenuItem menuItem = new JMenuItem("Gerar Faturas");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.financial_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedRegisterUser(menuItem);
@@ -300,7 +300,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemConsultarFaturas() {
 		JMenuItem menuItem = new JMenuItem("Consultar Faturas");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.search_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
@@ -319,7 +319,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemRealizarPagamento() {
 		JMenuItem menuItem = new JMenuItem("Realizar Pagamento");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		menuItem.setIcon(MasterImage.financial_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedRegisterUser(menuItem);
@@ -421,8 +421,8 @@ public class Window extends JFrame {
 	}
 	
 	private JMenuItem getMenuItemBackup() {
-		JMenuItem menuItem = new JMenuItem("Backup");
-		menuItem.setIcon(MasterImage.aplication_16x16);
+		JMenuItem menuItem = new JMenuItem("Backup e Restore");
+		menuItem.setIcon(MasterImage.backup_restore_16x16);
 		menuItem.setFont(getDefaultFont());
 		
 		menuItem.addActionListener(new ActionListener() {
