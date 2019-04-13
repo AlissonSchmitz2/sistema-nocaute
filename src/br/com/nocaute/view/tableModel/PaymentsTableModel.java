@@ -1,6 +1,8 @@
 package br.com.nocaute.view.tableModel;
 
 import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import br.com.nocaute.dao.RegistrationDAO;
@@ -15,7 +17,8 @@ public class PaymentsTableModel extends AbstractTableModel<InvoicesRegistrationM
 
 	private StudentDAO studentDAO;
 	private RegistrationDAO registrationDAO;
-	
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		
 	public PaymentsTableModel() {
 		super(new String[] { "Matrícula", "Aluno", "Vencimento", "Valor", "Pagamento", "Cancelamento" });
 		
@@ -34,12 +37,11 @@ public class PaymentsTableModel extends AbstractTableModel<InvoicesRegistrationM
 				model.setRegistrationCode(Integer.parseInt(aValue.toString()));
 				break;
 			case 1:
-				//model.setStudentCode(Integer.parseInt(aValue.toString()));
 				break;
 			case 2:
 				model.setDueDate(new Date((long) aValue));
 				break;
-			case 3:
+			case 3:			
 				model.setValue(Float.parseFloat(aValue.toString()));
 				break;
 			case 4:
@@ -65,19 +67,19 @@ public class PaymentsTableModel extends AbstractTableModel<InvoicesRegistrationM
 			valueObject = getStudentName(model.getRegistrationCode());
 			break;
 		case 2:
-			valueObject = model.getDueDate().toString();
+			valueObject = dateFormat.format(model.getDueDate());
 			break;
 		case 3:
-			valueObject = String.valueOf(model.getValue());
+			valueObject = String.valueOf(NumberFormat.getCurrencyInstance().format(model.getValue()));
 			break;
 		case 4:
 			if(model.getPaymentDate() != null) {
-				valueObject = model.getPaymentDate().toString();
+				valueObject = dateFormat.format(model.getPaymentDate());
 			}
 			break;
 		case 5:
 			if(model.getCancellationDate() != null) {
-				valueObject = model.getCancellationDate().toString();
+				valueObject = dateFormat.format(model.getCancellationDate());
 			}
 			break;
 		default:

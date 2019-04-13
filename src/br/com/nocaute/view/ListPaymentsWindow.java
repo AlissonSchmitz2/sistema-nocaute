@@ -1,10 +1,14 @@
 package br.com.nocaute.view;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +16,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -19,11 +26,13 @@ import javax.swing.ListSelectionModel;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
+import br.com.nocaute.dao.ModalityDAO;
 import br.com.nocaute.dao.PlanDAO;
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.dao.RegistrationModalityDAO;
 import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.InvoicesRegistrationModel;
+import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.PlanModel;
 import br.com.nocaute.model.RegistrationModalityModel;
 import br.com.nocaute.model.RegistrationModel;
@@ -54,6 +63,9 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 	// Plan
 	private PlanDAO planDAO;
 	
+	// Modality
+	private ModalityDAO modalityDAO;
+	
 	// Data atual
 	private Date currentDate = new Date();
 
@@ -66,6 +78,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 			registrationDAO = new RegistrationDAO(CONNECTION);
 			registrationModalityDAO = new RegistrationModalityDAO(CONNECTION);
 			planDAO = new PlanDAO(CONNECTION);
+			modalityDAO = new ModalityDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
@@ -79,6 +92,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 	private void setButtonsActions() {
 		// Ação Pesquisar
 		btnSearch.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
 					// Auxiliares para consulta ao banco.
@@ -120,23 +134,33 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 										.getByRegistrationCode(registrationModel.getRegistrationCode());
 
 								// Calculos para recuperar o valor total da fatura.
-								BigDecimal valorFatura;
+								BigDecimal valorAux;
 								float valorTotal = 0;
+								List<String> descricaoDesconto = new ArrayList<>();
 								for (int k = 0; k < modalitiesList.size(); k++) {
+									int currentMonth = currentDate.getMonth();
+									
 									// Verifica se o aluno está matriculado na modadalide (dataFim não preenchida).
 									if (modalitiesList.get(k).getFinishDate() == null) {
 										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
-										valorFatura = planModel.getMonthlyValue();
-										valorTotal += valorFatura.floatValue();
+										valorAux = planModel.getMonthlyValue();
+										valorTotal += valorAux.floatValue();
+									} 
+									// Caso não esteja, recupera o valor e monta a descriação do desconto.
+									else if(modalitiesList.get(k).getFinishDate().getMonth() >= currentMonth){
+										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
+										valorAux = planModel.getMonthlyValue();
+										
+										ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
+										String descricao = "- R$" + valorAux + " -> Cancelamento da modalidade " + modalityModel.getName();
+										descricaoDesconto.add(descricao);
 									}
 								}
 
 								for (int j = 0; j < invoicesRegistrationList.size(); j++) {
 									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);
 
-									@SuppressWarnings("deprecation")
 									int currentMonth = currentDate.getMonth();
-									@SuppressWarnings("deprecation")
 									int invoiceMonth = invoicesRegistrationModel.getDueDate().getMonth();
 
 									// Caso o mês da fatura seja maior que o mês atual e o valor total seja
@@ -145,11 +169,14 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 									if (invoiceMonth > currentMonth && invoicesRegistrationModel.getValue() > valorTotal
 											&& invoicesRegistrationModel.getRegistrationCode() == registrationModel
 													.getRegistrationCode()) {
-										// System.out.println("Vencimento: " + invoicesRegistrationModel.getDueDate() +
-										// "Valor fatura: " + invoicesRegistrationModel.getValue() + "Novo valor: " +
-										// valorTotal);
+										// Seta novo valor da fatura.
 										invoicesRegistrationModel.setValue(valorTotal);
+										
+										// Seta o destaque da fatura para true.										
 										invoicesRegistrationModel.setHighlightValue(true);
+										
+										// Seta a descrição do desconto da fatura.
+										invoicesRegistrationModel.setDiscountDescription(descricaoDesconto);
 									}
 								}
 							}
@@ -217,7 +244,28 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		jTablePayments.getColumnModel().getColumn(0).setMaxWidth(55);
 		jTablePayments.getColumnModel().getColumn(1).setPreferredWidth(155);
 		jTablePayments.getColumnModel().getColumn(3).setPreferredWidth(40);
-		
+        
+        jTablePayments.addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent me) {
+				// Se clicou com o botão direito do mouse na linha.
+				if ((me.getClickCount() == 1) && (me.getButton() == MouseEvent.BUTTON3)) {
+					InvoicesRegistrationModel model = ((PaymentsTableModel) jTablePayments.getModel()).getModel(jTablePayments.getSelectedRow());
+					// Caso a coluna esteja destacada, abre o popupmenu.
+					if(model.isHighlightValue()) {
+						createPopupMenu().show(jTablePayments, me.getX(), me.getY());
+					}					
+				}
+			}
+			
+			@Override
+		    public void mousePressed(MouseEvent event) {
+		        // Seleciona a linha no ponto em que o mouse foi pressionado.
+		        Point point = event.getPoint();
+		        int currentRow = jTablePayments.rowAtPoint(point);
+		        jTablePayments.setRowSelectionInterval(currentRow, currentRow);
+		    }
+		});
 
 		grid = new JScrollPane(jTablePayments);
 		setLayout(null);
@@ -225,5 +273,28 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		grid.setVisible(true);
 
 		add(grid);
+	}
+	
+	private JPopupMenu createPopupMenu() {
+		JPopupMenu jPopupMenu = new JPopupMenu();
+		
+		JMenuItem jMenuItemDetails = new JMenuItem("Detalhes");
+		jMenuItemDetails.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InvoicesRegistrationModel model = ((PaymentsTableModel) jTablePayments.getModel()).getModel(jTablePayments.getSelectedRow());
+				
+				String descricao = "";
+            	for(int i = 0; i < model.getDiscountDescription().size(); i++){
+            		descricao += model.getDiscountDescription().get(i) + "\n";
+            	}
+            	
+                JOptionPane.showMessageDialog(null, descricao);
+			}
+		});
+		
+		jPopupMenu.add(jMenuItemDetails);
+		
+		return jPopupMenu;
 	}
 }

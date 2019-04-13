@@ -2,6 +2,8 @@ package br.com.nocaute.view.tableModel;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
+
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,7 +12,7 @@ import br.com.nocaute.model.InvoicesRegistrationModel;
 
 public class PaymentsTableRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 6493992927252298137L;
-
+	
 	// Coluna que será destacada (3 -> Valor).
 	private final int columnAlter = 3;
 	
@@ -81,7 +83,21 @@ public class PaymentsTableRenderer extends DefaultTableCellRenderer {
 			}
 		}
 		
+		// Alinhar as colunas no centro, menos a coluna nome.
+		if(column == 1) {
+			celula.setHorizontalAlignment(LEFT);
+		} else {
+			celula.setHorizontalAlignment(CENTER);
+		}
+		
+		// Definir a fonte do codigo_matricula como negrito.
+		if(column == 0) {
+			celula.setFont(celula.getFont().deriveFont(Font.BOLD));
+		} else {
+			celula.setFont(celula.getFont());
+		}
+		
 		return celula;
-	}
+	}	
 
 }

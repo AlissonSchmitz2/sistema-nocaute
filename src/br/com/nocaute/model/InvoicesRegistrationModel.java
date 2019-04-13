@@ -1,6 +1,7 @@
 package br.com.nocaute.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class InvoicesRegistrationModel extends AbstractModel {
 
@@ -13,6 +14,7 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	// Auxiliares
 	private boolean matricula_cancelada;
 	private boolean destacar_valor;
+	private List<String> descricao_desconto;
 
 	/**
 	 * codigo_matricula
@@ -125,7 +127,21 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	public void setHighlightValue(boolean highlightValue) {
 		this.destacar_valor = highlightValue;
 	}
-	
-	
+
+	/**
+	 * descricao_desconto
+	 */
+	public List<String> getDiscountDescription() {
+		return descricao_desconto;
+	}
+
+	/**
+	 * descricao_desconto
+	 * 
+	 * @param discountDescription
+	 */
+	public void setDiscountDescription(List<String> discountDescription) {
+		this.descricao_desconto = discountDescription;
+	}
 
 }
