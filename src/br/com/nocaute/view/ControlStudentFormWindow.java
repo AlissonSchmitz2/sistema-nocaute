@@ -4,15 +4,20 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -69,10 +74,16 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
 	private static int height = screenRect.height;// area total da altura tirando subtraindo o menu iniciar
 	private static int width = screenRect.width;// area total da altura tirando subtraindo o menu iniciar
+	
+	private StudentFormWindow frameStudentForm;
 
+	private JDesktopPane desktop;
+	
 	public ControlStudentFormWindow(JDesktopPane desktop) {
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
 
+		this.desktop = desktop;
+		
 		setClosable(false);
 		setIconifiable(true);
 		setFrameIcon(MasterImage.control_16x16);
@@ -81,7 +92,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		createComponents();
 
-		setSituation(0);
+		setSituationColor(0);
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 	}
@@ -94,9 +105,23 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					if(!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
 						bubbleWarning("Nenhum aluno foi encontrado!");
 						txfStudent.setText("");
+						
 						studentRegistrationModalitiesTableModel.clear();
+						paymentsSituationTableModel.clear();
+						
+						btnDataStudent.setEnabled(false);
+						btnDataMatriculate.setEnabled(false);
+						
+						setSituationColor(0);
 					}
 				}
+			}
+		});
+		
+		btnDataStudent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frameStudentForm = new StudentFormWindow(desktop,studentModel);
+				abrirFrame(frameStudentForm);
 			}
 		});
 	}
@@ -235,7 +260,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			if (studentModel instanceof StudentModel) {
 				txfStudent.setText(studentModel.getName());
 				
+				paymentsSituationTableModel.clear();
 				studentRegistrationModalitiesTableModel.clear();
+				
 				RegistrationModel registrationModel = registrationDao.findByStudentId(studentModel.getCode(),true);
 				studentRegistrationModalitiesTableModel.addModelsList(
 						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities())
@@ -244,6 +271,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				registrationModel.getRegistrationCode();
 				List<InvoicesRegistrationModel> invoicesModel = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
 				paymentsSituationTableModel.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
+				
+				int situation = verificateSituation(invoicesModel);
+				setSituationColor(situation);
 				
 				btnDataStudent     .setEnabled(true);
 				btnDataMatriculate .setEnabled(true);
@@ -258,7 +288,18 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		return false;
 	}
 
-	private void setSituation(int stateSituation) {
+	public int verificateSituation(List<InvoicesRegistrationModel> listModel) {
+		for(InvoicesRegistrationModel invoices : listModel) {
+			if(invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
+					|| invoices.getCancellationDate().toString().isEmpty())) {
+				return 2;
+			}
+		}
+		
+		return 1;
+	}
+	
+	private void setSituationColor(int stateSituation) {
 		switch (stateSituation) {
 		case 0:
 			label.setText("Aguardando Consulta...");
@@ -276,5 +317,35 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			bubbleError("Situação Inválida!");
 		}
 	}
+	
+	// HELPERS
+		private void abrirFrame(AbstractWindowFrame frame) {
+			boolean frameAlreadyExists = false;
+
+			// Percorre todos os frames adicionados
+			for (JInternalFrame addedFrame : desktop.getAllFrames()) {
+			
+				//Se o frame adiconado ja estiver
+				if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
+					//Remove janelas duplicadas
+					addedFrame.moveToFront();
+					frameAlreadyExists = true;
+				}
+
+			}
+
+			try {
+				if (!frameAlreadyExists) {
+					desktop.add(frame);
+					frame.moveToFront();
+				}
+
+				frame.setSelected(true);
+				frame.setVisible(true);
+			} catch (PropertyVetoException e) {
+				JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,
+						null);
+			}
+		}
 
 }

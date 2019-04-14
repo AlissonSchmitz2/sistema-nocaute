@@ -70,6 +70,27 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 
 	private JDesktopPane desktop;
 
+	public StudentFormWindow(JDesktopPane desktop, StudentModel model) {
+		super("Cadastro de Alunos", 450, 460, desktop, false);
+		setFrameIcon(MasterImage.student_16x16);
+		
+		this.desktop = desktop;
+		
+		createComponents();
+		
+		btnAdicionar.setEnabled(false);
+		btnBuscar.setEnabled(false);
+		
+		AssignModelSelected(model);
+		
+		//Enable false para todos os campos, tela somente de 
+		//visualização de dados através da tela de controle de alunos
+		addFormFieldsOnlyView();
+		
+	    disableComponents(formFields);
+		
+	}
+	
 	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged) {	
 		super("Cadastro de Alunos", 450, 460, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
@@ -249,40 +270,11 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 						public void internalFrameClosed(InternalFrameEvent e) {
 							StudentModel selectedModel = ((ListStudentsWindow) e.getInternalFrame()).getSelectedModel();
 
-							if (selectedModel != null) {
+							if (selectedModel != null) {		
 								// Atribui o model selecionado
 								model = selectedModel;
 
-								// Seta dados do model para os campos
-								txfAluno.setText(model.getName());
-								if (model.getBirthDate() != null) {
-									jDateNascimento.setDate(model.getBirthDate());
-								}
-								if (!String.valueOf(model.getGenre()).isEmpty()) {
-									int genreCounter = 0;
-									for (String code : Genres.getGenres().keySet()) {
-										genreCounter++;
-
-										if (model.getGenre() == code.charAt(0)) {
-											cbxSexo.setSelectedIndex(genreCounter);
-										}
-									}
-								}
-								txfTelefone.setText(model.getTelephone());
-								txfCelular.setText(model.getMobilePhone());
-								txfEmail.setText(model.getEmail());
-								txfObservacao.setText(model.getObservation());
-								txfEndereco.setText(model.getAddress());
-								txfNumero.setText(model.getNumber());
-								txfComplemento.setText(model.getAddressComplement());
-								txfBairro.setText(model.getNeighborhood());
-								txfCEP.setText(model.getPostalCode());
-
-								if (model.getCity() != null) {
-									txfCidade.setText(model.getCity().getName());
-									txfEstado.setText(model.getCity().getState());
-									txfPais.setText(model.getCity().getCountry());
-								}
+								AssignModelSelected(model);
 
 								// Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
@@ -306,6 +298,40 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 		});
 	}
 
+	public void AssignModelSelected(StudentModel model) {
+		
+		// Seta dados do model para os campos
+		txfAluno.setText(model.getName());
+		if (model.getBirthDate() != null) {
+			jDateNascimento.setDate(model.getBirthDate());
+		}
+		if (!String.valueOf(model.getGenre()).isEmpty()) {
+			int genreCounter = 0;
+			for (String code : Genres.getGenres().keySet()) {
+				genreCounter++;
+
+				if (model.getGenre() == code.charAt(0)) {
+					cbxSexo.setSelectedIndex(genreCounter);
+				}
+			}
+		}
+		txfTelefone.setText(model.getTelephone());
+		txfCelular.setText(model.getMobilePhone());
+		txfEmail.setText(model.getEmail());
+		txfObservacao.setText(model.getObservation());
+		txfEndereco.setText(model.getAddress());
+		txfNumero.setText(model.getNumber());
+		txfComplemento.setText(model.getAddressComplement());
+		txfBairro.setText(model.getNeighborhood());
+		txfCEP.setText(model.getPostalCode());
+
+		if (model.getCity() != null) {
+			txfCidade.setText(model.getCity().getName());
+			txfEstado.setText(model.getCity().getState());
+			txfPais.setText(model.getCity().getCountry());
+		}
+	}
+	
 	@Override
 	public boolean postProcessKeyEvent(KeyEvent ke) {
 		// Abre tela seleção cidade ao clicar F9
@@ -607,5 +633,24 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 		if(userLogged.hasProfileRegister()) {
 			formFields.add(btnBuscar);
 		}
+	}
+	
+	public void addFormFieldsOnlyView() {
+		
+		formFields.add(txfAluno);
+		formFields.add(cbxSexo);
+		formFields.add(jDateNascimento);
+		formFields.add(txfCEP);
+		formFields.add(txfCelular);
+		formFields.add(txfCidade);
+		formFields.add(txfComplemento);
+		formFields.add(txfEmail);
+		formFields.add(txfEndereco);
+		formFields.add(txfNumero);
+		formFields.add(txfObservacao);
+		formFields.add(txfAluno);
+	    formFields.add(txfTelefone);
+	    formFields.add(txfBairro);
+	    
 	}
 }
