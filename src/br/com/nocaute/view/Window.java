@@ -163,7 +163,8 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				new LoginWindow().setVisible(true);
+				setVisible(false);
 			}
 		});
 
