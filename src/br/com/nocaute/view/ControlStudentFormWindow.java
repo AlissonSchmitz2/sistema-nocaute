@@ -242,8 +242,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					);
 				
 				registrationModel.getRegistrationCode();
-				//List<InvoicesRegistrationModel> invoicesModel = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
-				//paymentsSituationTableModel.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
+				List<InvoicesRegistrationModel> invoicesModel = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
+				paymentsSituationTableModel.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
 				
 				btnDataStudent     .setEnabled(true);
 				btnDataMatriculate .setEnabled(true);

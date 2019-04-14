@@ -1,10 +1,11 @@
 package br.com.nocaute.view.tableModel;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.com.nocaute.model.RegistrationModel;
+import br.com.nocaute.model.InvoicesRegistrationModel;
 
-public class PaymentsSituationTableModel extends AbstractTableModel<RegistrationModel> {
+public class PaymentsSituationTableModel extends AbstractTableModel<InvoicesRegistrationModel> {
 	private static final long serialVersionUID = 8414805286948636210L;
 
 	public PaymentsSituationTableModel() {
@@ -12,21 +13,19 @@ public class PaymentsSituationTableModel extends AbstractTableModel<Registration
 	}
 
 	@Override
-	protected void setObjectValueAt(int columnIndex, RegistrationModel model, Object aValue) {
+	protected void setObjectValueAt(int columnIndex, InvoicesRegistrationModel model, Object aValue) {
 		switch (columnIndex) {
 		case 0:
-			model.setExpirationDay(Integer.parseInt(aValue.toString()));
+			model.setDueDate((Date) aValue);
 			break;
 		case 1:
-			//TODO: Valor do plano
-			//model.setExpirationDay(Integer.parseInt(aValue.toString()));
+			model.setValue((Float) aValue);
 			break;
 		case 2:
-			//TODO: Data do pagamento
-			//model.setExpirationDay(Integer.parseInt(aValue.toString()));
+			model.setPaymentDate((Date) aValue);
 			break;
 		case 3:
-			model.setClosingDate((Date) aValue);
+			model.setCancellationDate((Date) aValue);
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");
@@ -34,23 +33,25 @@ public class PaymentsSituationTableModel extends AbstractTableModel<Registration
 	}
 
 	@Override
-	protected Object getObjectValueAt(int columnIndex, RegistrationModel model) {
+	protected Object getObjectValueAt(int columnIndex, InvoicesRegistrationModel model) {
 		String valueObject = null;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 		switch (columnIndex) {
 		case 0:
-			valueObject = model.getExpirationDay().toString();
+			valueObject = dateFormat.format(model.getDueDate());
 			break;
 		case 1:
-			//TODO: Valor do plano 
-			//valueObject = model.getExpirationDay().toString();
-			break;
+			valueObject = String.valueOf(model.getValue());
 		case 2:
-			//TODO: Data de pagamento
-			//valueObject = model.getExpirationDay().toString();
+			if (model.getPaymentDate() != null) {
+				valueObject = dateFormat.format(model.getPaymentDate());
+			}
 			break;
 		case 3:
-			valueObject = model.getClosingDate().toString();
+			if (model.getCancellationDate() != null) {
+				valueObject = dateFormat.format(model.getCancellationDate());
+			}
 			break;
 		default:
 			System.err.println("Índice da coluna inválido");
