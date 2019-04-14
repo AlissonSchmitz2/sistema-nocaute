@@ -76,13 +76,15 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	private StudentRegistrationAddModalitiesWindow studentRegistrationAddModalitiesWindow;
 	
 	private JDesktopPane desktop;
-
+	private boolean isOnlyView = false;
+	
 	public StudentRegistrationWindow(JDesktopPane desktop,RegistrationModel model) {
 		super("Matricular Aluno", 450, 380, desktop, false);
 		
 		setFrameIcon(MasterImage.student_16x16);
 
-		this.desktop = desktop;
+		this.desktop    = desktop;
+		this.isOnlyView = true;
 		
 		createComponents();
 		
@@ -571,7 +573,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		jTableRegistration.setDefaultRenderer(Object.class, renderer);
 		jTableRegistration.addMouseListener(new MouseAdapter() {
 	        public void mouseClicked (MouseEvent me) {
-	            if (me.getClickCount() == 2) {
+	            if (me.getClickCount() == 2 && !isOnlyView) {
 	            	if (studentRegistrationAddModalitiesWindow == null) {
 	            		int selectedRow = jTableRegistration.getSelectedRow();
 	            		

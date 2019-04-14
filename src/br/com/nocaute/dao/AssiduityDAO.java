@@ -13,33 +13,28 @@ import br.com.nocaute.dao.contracts.Searchable;
 import br.com.nocaute.dao.contracts.Selectable;
 import br.com.nocaute.model.AssiduityModel;
 import br.com.nocaute.model.CityModel;
-import br.com.nocaute.model.InvoicesRegistrationModel;
 
-public class AssiduityDAO extends AbstractDAO<CityModel> implements Selectable<AssiduityModel>, Searchable<AssiduityModel>, Insertable<AssiduityModel>{
+public class AssiduityDAO extends AbstractDAO<CityModel>
+		implements Selectable<AssiduityModel>, Searchable<AssiduityModel>, Insertable<AssiduityModel> {
 	private static final String TABLE_NAME = "assiduidade";
-	
+
 	private String columnId = "id_assiduidade";
-	
+
 	private String defaultOrderBy = "id_assiduidade ASC";
-	
-	private String[] defaultValuesToInsert = new String[] {"DEFAULT"};
-	
-	private String[] columnsToInsert = new String[] {
-			"codigo_matricula",
-			"data_entrada",
-			"id_assiduidade",
-			"data_pagamento",
-			"data_cancelamento"
-	};
-		
+
+	private String[] defaultValuesToInsert = new String[] { "DEFAULT" };
+
+	private String[] columnsToInsert = new String[] { "codigo_matricula", "data_entrada", "id_assiduidade",
+			"data_pagamento", "data_cancelamento" };
+
 	Connection connection;
-	
-	public AssiduityDAO(Connection connection) throws SQLException{
+
+	public AssiduityDAO(Connection connection) throws SQLException {
 		this.connection = connection;
-		
+
 		this.connection.setAutoCommit(false);
 	}
-	
+
 	@Override
 	public List<AssiduityModel> search(String word) throws SQLException {
 		// TODO Auto-generated method stub
@@ -62,27 +57,27 @@ public class AssiduityDAO extends AbstractDAO<CityModel> implements Selectable<A
 			AssiduityModelList.add(model);
 		}
 
-		return AssiduityModelList;		
+		return AssiduityModelList;
 	}
 
 	@Override
 	public AssiduityModel findById(Integer id) throws SQLException {
 		AssiduityModel model = null;
-		
+
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, id);
-		
+
 		ResultSet rst = pst.executeQuery();
-		
-		if(rst.next()) {
+
+		if (rst.next()) {
 			model = createModelFromResultSet(rst);
-			
+
 			return model;
 		}
-		
+
 		return null;
 	}
 
@@ -108,7 +103,7 @@ public class AssiduityDAO extends AbstractDAO<CityModel> implements Selectable<A
 
 		return null;
 	}
-	
+
 	/**
 	 * Cria um objeto Model a partir do resultado obtido no banco de dados
 	 * 
@@ -125,5 +120,5 @@ public class AssiduityDAO extends AbstractDAO<CityModel> implements Selectable<A
 
 		return model;
 	}
-	
+
 }

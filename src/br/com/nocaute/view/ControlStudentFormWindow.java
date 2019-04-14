@@ -64,28 +64,28 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private JTable jTablePaymentsSituation;
 	private PaymentsSituationTableModel paymentsSituationTableModel;
 
-	private StudentModel  studentModel  = new StudentModel();
+	private StudentModel studentModel = new StudentModel();
 	RegistrationModel registrationModel = new RegistrationModel();
-	
+
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
 	private InvoicesRegistrationDAO invoicesDao = null;
-	
+
 	private static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
 	private static int height = screenRect.height;// area total da altura tirando subtraindo o menu iniciar
 	private static int width = screenRect.width;// area total da altura tirando subtraindo o menu iniciar
-	
-	private StudentFormWindow          frameStudentForm;
-	private StudentRegistrationWindow  frameStudentRegistrationForm;
+
+	private StudentFormWindow frameStudentForm;
+	private StudentRegistrationWindow frameStudentRegistrationForm;
 
 	private JDesktopPane desktop;
-	
+
 	public ControlStudentFormWindow(JDesktopPane desktop) {
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
 
 		this.desktop = desktop;
-		
+
 		setClosable(false);
 		setIconifiable(true);
 		setFrameIcon(MasterImage.control_16x16);
@@ -104,34 +104,34 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			@Override
 			public void keyPressed(java.awt.event.KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if(!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
+					if (!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
 						bubbleWarning("Nenhum aluno foi encontrado!");
 						txfStudent.setText("");
-						
+
 						studentRegistrationModalitiesTableModel.clear();
 						paymentsSituationTableModel.clear();
-						
+
 						btnDataStudent.setEnabled(false);
 						btnDataMatriculate.setEnabled(false);
-						
+
 						setSituationColor(0);
 					}
 				}
 			}
 		});
-		
+
 		btnDataStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentForm = new StudentFormWindow(desktop,studentModel);
+				frameStudentForm = new StudentFormWindow(desktop, studentModel);
 				abrirFrame(frameStudentForm);
 			}
 		});
-		
+
 		btnDataMatriculate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop,registrationModel);
-				abrirFrame(frameStudentRegistrationForm);	
+				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop, registrationModel);
+				abrirFrame(frameStudentRegistrationForm);
 			}
 		});
 	}
@@ -243,72 +243,73 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		add(grid);
 	}
 
-	private List<RegistrationModality> mapRegistrationModalitiesModelToRegistrationModalitiesPojo(List<RegistrationModalityModel> registrationModalityList) {
-		 return registrationModalityList.stream()
-				.map(model -> { 
-					RegistrationModality pojo = new RegistrationModality();
-					pojo.setId(model.getId());
-					pojo.setRegistrationCode(model.getRegistrationCode());
-					pojo.setModality(new Modality(model.getModalityId(), model.getModality().getName()));
-					pojo.setGraduation(new Graduation(model.getGraduationId(), model.getGraduation().getName()));
-					pojo.setPlan(new Plan(model.getPlanId(), model.getPlan().getName()));
-					pojo.setStartDate(model.getStartDate());
-					pojo.setFinishDate(model.getFinishDate());
-					
-					return pojo;
-				}).collect(Collectors.toList());
+	private List<RegistrationModality> mapRegistrationModalitiesModelToRegistrationModalitiesPojo(
+			List<RegistrationModalityModel> registrationModalityList) {
+		return registrationModalityList.stream().map(model -> {
+			RegistrationModality pojo = new RegistrationModality();
+			pojo.setId(model.getId());
+			pojo.setRegistrationCode(model.getRegistrationCode());
+			pojo.setModality(new Modality(model.getModalityId(), model.getModality().getName()));
+			pojo.setGraduation(new Graduation(model.getGraduationId(), model.getGraduation().getName()));
+			pojo.setPlan(new Plan(model.getPlanId(), model.getPlan().getName()));
+			pojo.setStartDate(model.getStartDate());
+			pojo.setFinishDate(model.getFinishDate());
+
+			return pojo;
+		}).collect(Collectors.toList());
 	}
-	
+
 	public boolean searchDataStudent(int code) {
 		try {
 			studentDao = new StudentDAO(CONNECTION);
 			studentModel = studentDao.findById(code);
-			
-			registrationDao  = new RegistrationDAO(CONNECTION);
-			invoicesDao      = new InvoicesRegistrationDAO(CONNECTION);
-			
+
+			registrationDao = new RegistrationDAO(CONNECTION);
+			invoicesDao = new InvoicesRegistrationDAO(CONNECTION);
+
 			if (studentModel instanceof StudentModel) {
 				txfStudent.setText(studentModel.getName());
-				
+
 				paymentsSituationTableModel.clear();
 				studentRegistrationModalitiesTableModel.clear();
-				
-				registrationModel = registrationDao.findByStudentId(studentModel.getCode(),true);
+
+				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
 				studentRegistrationModalitiesTableModel.addModelsList(
-						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities())
-					);
-				
+						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
+
 				registrationModel.getRegistrationCode();
-				List<InvoicesRegistrationModel> invoicesModel = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
-				paymentsSituationTableModel.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
-				
+				List<InvoicesRegistrationModel> invoicesModel = invoicesDao
+						.getByRegistrationCode(registrationModel.getRegistrationCode());
+				paymentsSituationTableModel
+						.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
+
 				int situation = verificateSituation(invoicesModel);
 				setSituationColor(situation);
-				
-				btnDataStudent     .setEnabled(true);
-				btnDataMatriculate .setEnabled(true);
-				
+
+				btnDataStudent.setEnabled(true);
+				btnDataMatriculate.setEnabled(true);
+
 				return true;
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 
 	public int verificateSituation(List<InvoicesRegistrationModel> listModel) {
-		for(InvoicesRegistrationModel invoices : listModel) {
-			if(invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
+		for (InvoicesRegistrationModel invoices : listModel) {
+			if (invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
 					|| invoices.getCancellationDate().toString().isEmpty())) {
 				return 2;
 			}
 		}
-		
+
 		return 1;
 	}
-	
+
 	private void setSituationColor(int stateSituation) {
 		switch (stateSituation) {
 		case 0:
@@ -327,35 +328,35 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			bubbleError("Situação Inválida!");
 		}
 	}
-	
+
 	// HELPERS
-		private void abrirFrame(AbstractWindowFrame frame) {
-			boolean frameAlreadyExists = false;
+	private void abrirFrame(AbstractWindowFrame frame) {
+		boolean frameAlreadyExists = false;
 
-			// Percorre todos os frames adicionados
-			for (JInternalFrame addedFrame : desktop.getAllFrames()) {
-			
-				//Se o frame adiconado ja estiver
-				if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
-					//Remove janelas duplicadas
-					addedFrame.moveToFront();
-					frameAlreadyExists = true;
-				}
+		// Percorre todos os frames adicionados
+		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
 
+			// Se o frame adiconado ja estiver
+			if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
+				// Remove janelas duplicadas
+				addedFrame.moveToFront();
+				frameAlreadyExists = true;
 			}
 
-			try {
-				if (!frameAlreadyExists) {
-					desktop.add(frame);
-					frame.moveToFront();
-				}
-
-				frame.setSelected(true);
-				frame.setVisible(true);
-			} catch (PropertyVetoException e) {
-				JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,
-						null);
-			}
 		}
+
+		try {
+			if (!frameAlreadyExists) {
+				desktop.add(frame);
+				frame.moveToFront();
+			}
+
+			frame.setSelected(true);
+			frame.setVisible(true);
+		} catch (PropertyVetoException e) {
+			JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,
+					null);
+		}
+	}
 
 }
