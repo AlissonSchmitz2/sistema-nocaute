@@ -77,6 +77,27 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	
 	private JDesktopPane desktop;
 
+	public StudentRegistrationWindow(JDesktopPane desktop,RegistrationModel model) {
+		super("Matricular Aluno", 450, 380, desktop, false);
+		
+		setFrameIcon(MasterImage.student_16x16);
+
+		this.desktop = desktop;
+		
+		createComponents();
+		
+		btnAdicionar.setEnabled(false);
+		btnBuscar.setEnabled(false);
+		
+		AssignModelSelected(model);
+		
+		//Enable false para todos os campos, tela somente de 
+		//visualização de dados através da tela de controle de alunos
+		addFormFieldsOnlyView();
+		
+	    disableComponents(formFields); 
+	}
+	
 	public StudentRegistrationWindow(JDesktopPane desktop) {
 		super("Matricular Aluno", 450, 380, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
@@ -303,54 +324,8 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 									//para forçar o carregamento do relacionamentos do model
 									model = registrationDao.findById(selectedModel.getRegistrationCode(), true);
 									
-									// Remove a mensagem de encerramento de matrícula.
-									getContentPane().remove(labelCloseRegistration);
-									getContentPane().repaint();
-									
-									//Verificar se todas as modalidades foram encerradas.
-									boolean modalitiesFinished = true;
-									List<RegistrationModalityModel> modalitiesList = model.getModalities();
-									for(int i = 0; i < modalitiesList.size(); i++) {
-										if(modalitiesList.get(i).getFinishDate() == null) {
-											modalitiesFinished = false;
-										}
-									}									
-									
-									//Seta dados do model para os campos
-									txfMatricula.setText(model.getRegistrationCode().toString());
-									txfVencFatura.setText(model.getExpirationDay().toString());
+									AssignModelSelected(model);
 										
-									if (model.getRegistrationDate() != null) {
-										jDataMatricula.setDate(model.getRegistrationDate());
-									}
-										
-									//Seta dados do aluno
-									if (model.getStudent() != null) {
-										txfAluno.setText(model.getStudent().getCode().toString());
-										txfAlunoDescricao.setText(model.getStudent().getName());
-									}
-										
-									//Seta dados na grid
-									studentRegistrationModalitiesTableModel.clear();
-									studentRegistrationModalitiesTableModel.addModelsList(
-										mapRegistrationModalitiesModelToRegistrationModalitiesPojo(model.getModalities())
-									);
-		
-									if(modalitiesFinished) {
-										closeRegistration();
-									} else {
-										// Seta form para modo Edição
-										setFormMode(UPDATE_MODE);
-			
-										// Ativa campos
-										enableComponents(formFields);
-			
-										// Ativa botão salvar
-										btnSalvar.setEnabled(true);
-			
-										// Ativa botão remover
-										btnRemover.setEnabled(true);
-									}									
 								}
 							} catch (SQLException error) {
 								bubbleError("Erro ao recuperar matrícula");
@@ -396,6 +371,56 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		});
 	}
 	
+	public void AssignModelSelected(RegistrationModel model) {
+		// Remove a mensagem de encerramento de matrícula.
+		getContentPane().remove(labelCloseRegistration);
+		getContentPane().repaint();
+		
+		//Verificar se todas as modalidades foram encerradas.
+		boolean modalitiesFinished = true;
+		List<RegistrationModalityModel> modalitiesList = model.getModalities();
+		for(int i = 0; i < modalitiesList.size(); i++) {
+			if(modalitiesList.get(i).getFinishDate() == null) {
+				modalitiesFinished = false;
+			}
+		}									
+		
+		//Seta dados do model para os campos
+		txfMatricula.setText(model.getRegistrationCode().toString());
+		txfVencFatura.setText(model.getExpirationDay().toString());
+			
+		if (model.getRegistrationDate() != null) {
+			jDataMatricula.setDate(model.getRegistrationDate());
+		}
+			
+		//Seta dados do aluno
+		if (model.getStudent() != null) {
+			txfAluno.setText(model.getStudent().getCode().toString());
+			txfAlunoDescricao.setText(model.getStudent().getName());
+		}
+			
+		//Seta dados na grid
+		studentRegistrationModalitiesTableModel.clear();
+		studentRegistrationModalitiesTableModel.addModelsList(
+			mapRegistrationModalitiesModelToRegistrationModalitiesPojo(model.getModalities())
+		);
+
+		if(modalitiesFinished) {
+			closeRegistration();
+		} else {
+			// Seta form para modo Edição
+			setFormMode(UPDATE_MODE);
+
+			// Ativa campos
+			enableComponents(formFields);
+
+			// Ativa botão salvar
+			btnSalvar.setEnabled(true);
+
+			// Ativa botão remover
+			btnRemover.setEnabled(true);
+		}								
+	}
 	private List<RegistrationModalityModel> mapRegistrationModalitiesPojoToRegistrationModalitiesModel(List<RegistrationModality> registrationModalityList) {
 		 return registrationModalityList.stream()
 				.map(pojo -> { 
@@ -671,4 +696,12 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		}
 	}
 	
+	public void addFormFieldsOnlyView() {		
+		formFields.add(txfAluno);
+		formFields.add(txfAlunoDescricao);
+		formFields.add(txfVencFatura);
+		formFields.add(btnAddModalidade);
+		formFields.add(btnAdicionar);
+		formFields.add(btnBuscar);    
+	}
 }

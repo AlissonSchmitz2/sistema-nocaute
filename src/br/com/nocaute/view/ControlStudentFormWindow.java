@@ -65,6 +65,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private PaymentsSituationTableModel paymentsSituationTableModel;
 
 	private StudentModel  studentModel  = new StudentModel();
+	RegistrationModel registrationModel = new RegistrationModel();
 	
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
@@ -75,7 +76,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private static int height = screenRect.height;// area total da altura tirando subtraindo o menu iniciar
 	private static int width = screenRect.width;// area total da altura tirando subtraindo o menu iniciar
 	
-	private StudentFormWindow frameStudentForm;
+	private StudentFormWindow          frameStudentForm;
+	private StudentRegistrationWindow  frameStudentRegistrationForm;
 
 	private JDesktopPane desktop;
 	
@@ -122,6 +124,14 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			public void actionPerformed(ActionEvent e) {
 				frameStudentForm = new StudentFormWindow(desktop,studentModel);
 				abrirFrame(frameStudentForm);
+			}
+		});
+		
+		btnDataMatriculate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop,registrationModel);
+				abrirFrame(frameStudentRegistrationForm);	
 			}
 		});
 	}
@@ -263,7 +273,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				paymentsSituationTableModel.clear();
 				studentRegistrationModalitiesTableModel.clear();
 				
-				RegistrationModel registrationModel = registrationDao.findByStudentId(studentModel.getCode(),true);
+				registrationModel = registrationDao.findByStudentId(studentModel.getCode(),true);
 				studentRegistrationModalitiesTableModel.addModelsList(
 						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities())
 					);
