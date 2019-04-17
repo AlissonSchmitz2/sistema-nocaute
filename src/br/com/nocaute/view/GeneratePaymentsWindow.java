@@ -98,11 +98,6 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 					calendar.set(selectedYear, selectedMonth, registrationModel.getExpirationDay());
 					Date dueDate = calendar.getTime();
 
-					// Verifica a geração de faturas inválidas (vencidas).
-					if ((dueDate.compareTo(currentDate)) < 0) {
-						continue;
-					}
-
 					// Recupera a lista de todas as faturas relacionadas a um determinado código de matrícula.
 					List<InvoicesRegistrationModel> invoicesRegistrationsList = invoicesRegistrationDAO
 							.getByRegistrationCode(registrationCode);

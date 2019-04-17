@@ -275,6 +275,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		add(grid);
 	}
 	
+	// Cria e atribui as ações aos menus exibidos com o clique direito.
 	private JPopupMenu createPopupMenu() {
 		JPopupMenu jPopupMenu = new JPopupMenu();
 		

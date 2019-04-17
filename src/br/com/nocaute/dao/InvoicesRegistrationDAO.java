@@ -28,12 +28,6 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 			"data_cancelamento"
 	};
 	
-	private String[] columnsToUpdate = new String[] {
-			"valor",
-			"data_pagamento",
-			"data_cancelamento"
-	};
-	
 	Connection connection;
 	
 	public InvoicesRegistrationDAO(Connection connection) throws SQLException{
@@ -90,7 +84,6 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		return false;
 	}
 	
-	//TODO: Verificar utilidade.
 	@Override
 	public List<InvoicesRegistrationModel> selectAll() throws SQLException {
 		String query = getSelectAllQuery(TABLE_NAME, "*", defaultOrderBy);
@@ -110,7 +103,6 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		return invoicesRegistrationList;
 	}
 	
-	//TODO: Verificar utilidade.
 	@Override
 	public InvoicesRegistrationModel findById(Integer id) throws SQLException {
 		InvoicesRegistrationModel model = null;
@@ -171,16 +163,16 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		
 		if (situation.equals("Todas")) {
 			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
-					+ finishDate + "'";
+					+ finishDate + "'" + " ORDER BY " + defaultOrderBy;
 		} else if (situation.equals("Em Aberto")) {
 			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
-					+ finishDate + "'" + " AND data_pagamento IS NULL AND data_cancelamento IS NULL";
+					+ finishDate + "'" + " AND data_pagamento IS NULL AND data_cancelamento IS NULL" + " ORDER BY " + defaultOrderBy;
 		} else if (situation.equals("Pagas")) {
 			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
-					+ finishDate + "'" + " AND data_pagamento IS NOT NULL";
+					+ finishDate + "'" + " AND data_pagamento IS NOT NULL" + " ORDER BY " + defaultOrderBy;
 		} else if (situation.equals("Canceladas")) {
 			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
-					+ finishDate + "'" + " AND data_cancelamento IS NOT NULL";
+					+ finishDate + "'" + " AND data_cancelamento IS NOT NULL" + " ORDER BY " + defaultOrderBy;
 		}
 
 		PreparedStatement pst = connection.prepareStatement(query);
