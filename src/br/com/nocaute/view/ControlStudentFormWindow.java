@@ -10,6 +10,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,10 +28,14 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 
+import com.sun.jmx.snmp.Timestamp;
+
+import br.com.nocaute.dao.AssiduityDAO;
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.image.MasterImage;
+import br.com.nocaute.model.AssiduityModel;
 import br.com.nocaute.model.InvoicesRegistrationModel;
 import br.com.nocaute.model.RegistrationModalityModel;
 import br.com.nocaute.model.RegistrationModel;
@@ -38,6 +45,7 @@ import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
 import br.com.nocaute.util.MasterMonthChooser;
+import br.com.nocaute.view.tableModel.AssiduityTableModel;
 import br.com.nocaute.view.tableModel.AttendanceTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
 import br.com.nocaute.view.tableModel.StudentRegistrationModalitiesTableModel;
@@ -58,18 +66,20 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	// Grid Assiduidade
 	private JTable jTableAttendance;
-	private AttendanceTableModel attendanceTableModel;
+	private AssiduityTableModel assiduityTableModel;
 
 	// Grid Situação de pagamento
 	private JTable jTablePaymentsSituation;
 	private PaymentsSituationTableModel paymentsSituationTableModel;
 
 	private StudentModel studentModel = new StudentModel();
-	RegistrationModel registrationModel = new RegistrationModel();
+	private RegistrationModel registrationModel = new RegistrationModel();
+	private AssiduityModel assiduityModel = new AssiduityModel();
 
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
 	private InvoicesRegistrationDAO invoicesDao = null;
+	private AssiduityDAO assiduityDao = null;
 
 	private static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
@@ -110,6 +120,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 						studentRegistrationModalitiesTableModel.clear();
 						paymentsSituationTableModel.clear();
+						assiduityTableModel.clear();
 
 						btnDataStudent.setEnabled(false);
 						btnDataMatriculate.setEnabled(false);
@@ -190,7 +201,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		masterMonthChooser.setBorder(new LineBorder(Color.gray));
 		getContentPane().add(masterMonthChooser);
 
-		createGridAttendance();
+		createGridAssiduity();
 
 		createGridSituationPayments();
 	}
@@ -211,9 +222,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		add(grid);
 	}
 
-	private void createGridAttendance() {
-		attendanceTableModel = new AttendanceTableModel();
-		jTableAttendance = new JTable(attendanceTableModel);
+	private void createGridAssiduity() {
+		assiduityTableModel = new AssiduityTableModel();
+		jTableAttendance = new JTable(assiduityTableModel);
 		jTableAttendance.setDefaultRenderer(Object.class, renderer);
 
 		// Habilita a seleção por linha
@@ -261,17 +272,19 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	public boolean searchDataStudent(int code) {
 		try {
-			studentDao = new StudentDAO(CONNECTION);
+			studentDao   = new StudentDAO(CONNECTION);
 			studentModel = studentDao.findById(code);
 
 			registrationDao = new RegistrationDAO(CONNECTION);
-			invoicesDao = new InvoicesRegistrationDAO(CONNECTION);
+			invoicesDao     = new InvoicesRegistrationDAO(CONNECTION);
+			assiduityDao    = new AssiduityDAO(CONNECTION);
 
 			if (studentModel instanceof StudentModel) {
 				txfStudent.setText(studentModel.getName());
 
 				paymentsSituationTableModel.clear();
 				studentRegistrationModalitiesTableModel.clear();
+				assiduityTableModel.clear();
 
 				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
 				studentRegistrationModalitiesTableModel.addModelsList(
@@ -283,9 +296,17 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				paymentsSituationTableModel
 						.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
 
+				assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
+				assiduityModel.setInputDate(getDateTime());
+				
+				assiduityModel = assiduityDao.insert(assiduityModel);
+				assiduityTableModel.addModel(assiduityModel);
+																	 
 				int situation = verificateSituation(invoicesModel);
 				setSituationColor(situation);
-
+				
+				System.out.println(getDateTime().toString());
+															 
 				btnDataStudent.setEnabled(true);
 				btnDataMatriculate.setEnabled(true);
 
@@ -357,6 +378,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			JOptionPane.showMessageDialog(rootPane, "Houve um erro ao abrir a janela", "", JOptionPane.ERROR_MESSAGE,
 					null);
 		}
+	}
+	
+	private Date getDateTime() {
+		//DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Date date = new Date();
+		return date;
 	}
 
 }

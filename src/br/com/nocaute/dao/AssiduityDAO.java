@@ -24,8 +24,7 @@ public class AssiduityDAO extends AbstractDAO<CityModel>
 
 	private String[] defaultValuesToInsert = new String[] { "DEFAULT" };
 
-	private String[] columnsToInsert = new String[] { "codigo_matricula", "data_entrada", "id_assiduidade",
-			"data_pagamento", "data_cancelamento" };
+	private String[] columnsToInsert = new String[] { "id_assiduidade","codigo_matricula", "data_entrada"};
 
 	Connection connection;
 
