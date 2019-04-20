@@ -3,15 +3,21 @@ package br.com.nocaute.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,15 +26,21 @@ import java.sql.Timestamp;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import br.com.nocaute.dao.AssiduityDAO;
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
@@ -44,10 +56,13 @@ import br.com.nocaute.pojos.Graduation;
 import br.com.nocaute.pojos.Modality;
 import br.com.nocaute.pojos.Plan;
 import br.com.nocaute.pojos.RegistrationModality;
+import br.com.nocaute.util.JNumberFormatField;
 import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AssiduityTableModel;
 import br.com.nocaute.view.tableModel.AttendanceTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
+import br.com.nocaute.view.tableModel.PaymentsTableModel;
+import br.com.nocaute.view.tableModel.PaymentsTableRenderer;
 import br.com.nocaute.view.tableModel.StudentRegistrationModalitiesTableModel;
 
 public class ControlStudentFormWindow extends AbstractGridWindow {
@@ -69,12 +84,14 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private AssiduityTableModel assiduityTableModel;
 
 	// Grid Situação de pagamento
-	private JTable jTablePaymentsSituation;
+	private JTable jTablePayments;
 	private PaymentsSituationTableModel paymentsSituationTableModel;
 
 	private StudentModel studentModel = new StudentModel();
 	private RegistrationModel registrationModel = new RegistrationModel();
 	private AssiduityModel assiduityModel = new AssiduityModel();
+
+	private List<AssiduityModel> assiduityList = new ArrayList<AssiduityModel>();
 
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
@@ -91,10 +108,22 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	private JDesktopPane desktop;
 
+	private Date currentDate = new Date();
+
 	public ControlStudentFormWindow(JDesktopPane desktop) {
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
 
 		this.desktop = desktop;
+
+		try {
+			studentDao = new StudentDAO(CONNECTION);
+			registrationDao = new RegistrationDAO(CONNECTION);
+			invoicesDao = new InvoicesRegistrationDAO(CONNECTION);
+			assiduityDao = new AssiduityDAO(CONNECTION);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		setClosable(false);
 		setIconifiable(true);
@@ -118,9 +147,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						bubbleWarning("Nenhum aluno foi encontrado!");
 						txfStudent.setText("");
 
-						studentRegistrationModalitiesTableModel.clear();
-						paymentsSituationTableModel.clear();
-						assiduityTableModel.clear();
+						clearTables();
 
 						btnDataStudent.setEnabled(false);
 						btnDataMatriculate.setEnabled(false);
@@ -145,6 +172,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				abrirFrame(frameStudentRegistrationForm);
 			}
 		});
+
 	}
 
 	private void createComponents() {
@@ -238,22 +266,6 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		add(grid);
 	}
 
-	private void createGridSituationPayments() {
-		paymentsSituationTableModel = new PaymentsSituationTableModel();
-		jTablePaymentsSituation = new JTable(paymentsSituationTableModel);
-		jTablePaymentsSituation.setDefaultRenderer(Object.class, renderer);
-
-		// Habilita a seleção por linha
-		jTablePaymentsSituation.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-		grid = new JScrollPane(jTablePaymentsSituation);
-		setLayout(null);
-		resizeGrid(grid, 220, 260, 538, 280);
-		grid.setVisible(true);
-
-		add(grid);
-	}
-
 	private List<RegistrationModality> mapRegistrationModalitiesModelToRegistrationModalitiesPojo(
 			List<RegistrationModalityModel> registrationModalityList) {
 		return registrationModalityList.stream().map(model -> {
@@ -270,41 +282,40 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		}).collect(Collectors.toList());
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean searchDataStudent(int code) {
 		try {
-			studentDao   = new StudentDAO(CONNECTION);
 			studentModel = studentDao.findById(code);
-
-			registrationDao = new RegistrationDAO(CONNECTION);
-			invoicesDao     = new InvoicesRegistrationDAO(CONNECTION);
-			assiduityDao    = new AssiduityDAO(CONNECTION);
-
 			if (studentModel instanceof StudentModel) {
 				txfStudent.setText(studentModel.getName());
 
-				paymentsSituationTableModel.clear();
-				studentRegistrationModalitiesTableModel.clear();
-				assiduityTableModel.clear();
+				clearTables();
 
+				//Insere os dados da matricula na TableModel de matriculas.
 				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
 				studentRegistrationModalitiesTableModel.addModelsList(
 						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
 
-				registrationModel.getRegistrationCode();
+				//Insere os dados de pagamento do aluno na TableModel de pagamento.
 				List<InvoicesRegistrationModel> invoicesModel = invoicesDao
 						.getByRegistrationCode(registrationModel.getRegistrationCode());
 				paymentsSituationTableModel
 						.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
 
+				//Inicia processo de assiduidade do aluno.
 				assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
 				assiduityModel.setInputDate(getDateTime());
-				
+
 				assiduityModel = assiduityDao.insert(assiduityModel);
-				assiduityTableModel.addModel(assiduityModel);
-																	 
+				assiduityList = assiduityDao.search(String.valueOf(assiduityModel.getRegistrationCode()));
+
+				assiduityTableModel.addModelsList(assiduityList.stream()
+						.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
+						.collect(Collectors.toList()));
+
 				int situation = verificateSituation(invoicesModel);
 				setSituationColor(situation);
-															 
+
 				btnDataStudent.setEnabled(true);
 				btnDataMatriculate.setEnabled(true);
 
@@ -377,11 +388,247 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					null);
 		}
 	}
-	
+
 	private Timestamp getDateTime() {
 		long datahoraEmMillisegundos = new Date().getTime();
-		Timestamp ts = new Timestamp (datahoraEmMillisegundos);
+		Timestamp ts = new Timestamp(datahoraEmMillisegundos);
 		return ts;
+	}
+
+	private void clearTables() {
+		paymentsSituationTableModel.clear();
+		studentRegistrationModalitiesTableModel.clear();
+		assiduityTableModel.clear();
+	}
+
+	private void createGridSituationPayments() {
+		paymentsSituationTableModel = new PaymentsSituationTableModel();
+		jTablePayments = new JTable(paymentsSituationTableModel);
+		jTablePayments.setDefaultRenderer(Object.class, renderer);
+
+		// Habilita a seleção por linha
+		jTablePayments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		// jTablePayments.setDefaultRenderer(Object.class, new PaymentsTableRenderer());
+
+		jTablePayments.addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent me) {
+				// Se clicou com o botão direito do mouse na linha
+				if ((me.getClickCount() == 1) && (me.getButton() == MouseEvent.BUTTON3)) {
+					InvoicesRegistrationModel model = ((PaymentsSituationTableModel) jTablePayments.getModel())
+							.getModel(jTablePayments.getSelectedRow());
+					// Caso a coluna esteja destacada, abre o popupmenu com a opção detalhes
+					// habilitada.
+					if (model.isHighlightValue()) {
+						createPopupMenu(true).show(jTablePayments, me.getX(), me.getY());
+					} else {
+						createPopupMenu(false).show(jTablePayments, me.getX(), me.getY());
+					}
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent event) {
+				// Seleciona a linha no ponto em que o mouse foi pressionado.
+				Point point = event.getPoint();
+				int currentRow = jTablePayments.rowAtPoint(point);
+				jTablePayments.setRowSelectionInterval(currentRow, currentRow);
+			}
+		});
+
+		grid = new JScrollPane(jTablePayments);
+		setLayout(null);
+		resizeGrid(grid, 220, 260, 538, 280);
+		grid.setVisible(true);
+
+		add(grid);
+	}
+
+	// Cria e atribui as ações aos menus exibidos com o clique direito.
+	private JPopupMenu createPopupMenu(boolean detailsEnable) {
+		JPopupMenu jPopupMenu = new JPopupMenu();
+
+		JMenuItem jMenuItemPayInvoice = new JMenuItem("Pagar Fatura");
+		jMenuItemPayInvoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
+
+				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja realizar o pagamento da fatura?");
+
+				// Realiza o pagamento da fatura.
+				if (selectedOption == 0) {
+					if (selectedModel.getPaymentDate() == null && selectedModel.getCancellationDate() == null) {
+						selectedModel.setPaymentDate(currentDate);
+						try {
+							if (invoicesDao.update(selectedModel)) {
+								bubbleSuccess("Fatura atualizada com sucesso");
+							}
+
+							// Atualiza a tabela.
+							paymentsSituationTableModel.fireTableDataChanged();
+						} catch (SQLException error) {
+							error.printStackTrace();
+						}
+					} else {
+						bubbleError("A fatura selecionada já foi paga ou está cancelada");
+					}
+				}
+			}
+		});
+
+		JMenuItem jMenuItemCancelInvoice = new JMenuItem("Cancelar Fatura");
+		jMenuItemCancelInvoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
+
+				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja cancelar a fatura?");
+
+				// Realiza o cancelamento da fatura.
+				if (selectedOption == 0) {
+					if (selectedModel.getCancellationDate() == null) {
+						selectedModel.setCancellationDate(currentDate);
+						try {
+							if (invoicesDao.update(selectedModel)) {
+								bubbleSuccess("Fatura atualizada com sucesso");
+							}
+
+							// Atualiza a tabela.
+							paymentsSituationTableModel.fireTableDataChanged();
+						} catch (SQLException error) {
+							error.printStackTrace();
+						}
+					} else {
+						bubbleError("A fatura selecionada já foi cancelada");
+					}
+				}
+			}
+		});
+
+		JMenuItem jMenuItemReopenInvoice = new JMenuItem("Reabrir Fatura");
+		jMenuItemReopenInvoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
+
+				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja reabrir a fatura?");
+
+				// Reabre a fatura.
+				if (selectedOption == 0) {
+					if (selectedModel.getCancellationDate() != null) {
+						// Verifica se a matrícula correspondente a fatura não está encerrada.
+						if (!selectedModel.isRegistrationFinished()) {
+							selectedModel.setCancellationDate(null);
+							try {
+								if (invoicesDao.update(selectedModel)) {
+									bubbleSuccess("Fatura atualizada com sucesso");
+								}
+
+								// Atualiza a tabela.
+								paymentsSituationTableModel.fireTableDataChanged();
+							} catch (SQLException error) {
+								error.printStackTrace();
+							}
+						} else {
+							bubbleError("Não é possível reabrir a fatura de uma matrícula encerrada");
+						}
+					} else {
+						bubbleError("A fatura selecionada já está aberta");
+					}
+				}
+			}
+		});
+
+		JMenuItem jMenuItemUpdateValueInvoice = new JMenuItem("Desconto/Acréscimo");
+		jMenuItemUpdateValueInvoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
+
+				if (selectedModel.getCancellationDate() == null && selectedModel.getPaymentDate() == null) {
+					JDialog valueDialog = new JDialog();
+					valueDialog.setTitle("Desconto/Acréscimo");
+					valueDialog.setSize(325, 135);
+					valueDialog.setVisible(true);
+					valueDialog.setBackground(new Color(239, 239, 239));
+					valueDialog.setLayout(null);
+					valueDialog.setLocationRelativeTo(null);
+					valueDialog.setResizable(false);
+
+					JLabel label = new JLabel("Insira um novo valor para a fatura (Valor atual: "
+							+ NumberFormat.getCurrencyInstance().format(selectedModel.getValue()) + ").");
+					label.setBounds(10, 5, 350, 25);
+					valueDialog.add(label);
+
+					JNumberFormatField txfValue = new JNumberFormatField();
+					txfValue.setBounds(10, 30, 290, 20);
+					txfValue.setToolTipText("Informe o valor");
+					valueDialog.add(txfValue);
+
+					JButton btnOK = new JButton("Confirmar");
+					btnOK.setBounds(10, 60, 100, 25);
+					valueDialog.add(btnOK);
+
+					btnOK.addActionListener(new ActionListener() {
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							float newValue = txfValue.getValue().floatValue();
+							selectedModel.setValue(newValue);
+
+							try {
+								if (invoicesDao.update(selectedModel)) {
+									bubbleSuccess("Fatura atualizada com sucesso");
+									valueDialog.dispose();
+								}
+
+								// Atualiza a tabela.
+								paymentsSituationTableModel.fireTableDataChanged();
+							} catch (SQLException error) {
+								error.printStackTrace();
+							}
+						}
+					});
+				} else {
+					bubbleError("A fatura selecionada já foi paga ou está cancelada");
+				}
+
+			}
+		});
+
+		JMenuItem jMenuItemDetails = new JMenuItem("Detalhes");
+		jMenuItemDetails.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				InvoicesRegistrationModel model = ((PaymentsSituationTableModel) jTablePayments.getModel())
+						.getModel(jTablePayments.getSelectedRow());
+
+				String descricao = "";
+				for (int i = 0; i < model.getDiscountDescription().size(); i++) {
+					descricao += model.getDiscountDescription().get(i) + "\n";
+				}
+
+				JOptionPane.showMessageDialog(null, descricao);
+			}
+		});
+		jMenuItemDetails.setEnabled(detailsEnable);
+
+		jPopupMenu.add(jMenuItemPayInvoice);
+		jPopupMenu.add(new JSeparator());
+		jPopupMenu.add(jMenuItemCancelInvoice);
+		jPopupMenu.add(new JSeparator());
+		jPopupMenu.add(jMenuItemReopenInvoice);
+		jPopupMenu.add(new JSeparator());
+		jPopupMenu.add(jMenuItemUpdateValueInvoice);
+		jPopupMenu.add(new JSeparator());
+		jPopupMenu.add(jMenuItemDetails);
+
+		return jPopupMenu;
 	}
 
 }

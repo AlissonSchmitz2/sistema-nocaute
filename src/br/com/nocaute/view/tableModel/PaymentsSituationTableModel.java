@@ -1,5 +1,6 @@
 package br.com.nocaute.view.tableModel;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -42,7 +43,7 @@ public class PaymentsSituationTableModel extends AbstractTableModel<InvoicesRegi
 			valueObject = dateFormat.format(model.getDueDate());
 			break;
 		case 1:
-			valueObject = String.valueOf(model.getValue());
+			valueObject = String.valueOf(NumberFormat.getCurrencyInstance().format( model.getValue()));
 		case 2:
 			if (model.getPaymentDate() != null) {
 				valueObject = dateFormat.format(model.getPaymentDate());

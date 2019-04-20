@@ -36,8 +36,30 @@ public class AssiduityDAO extends AbstractDAO<CityModel>
 
 	@Override
 	public List<AssiduityModel> search(String word) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "select id_assiduidade,  "
+				      +"       codigo_matricula,"
+				      +"       data_entrada     "
+				      +"from " + TABLE_NAME
+				      +" where codigo_matricula = ?";
+		
+		PreparedStatement pst = connection.prepareStatement(query);
+		
+		setParam(pst, 1, Integer.parseInt(word));
+		
+		List<AssiduityModel> modelList = new ArrayList<AssiduityModel>();
+		
+		ResultSet rst = pst.executeQuery();
+		
+		while(rst.next()) {
+			AssiduityModel model = new AssiduityModel();
+			
+			model.setRegistrationCode(rst.getInt("codigo_matricula"));
+			model.setInputDate(rst.getTimestamp("data_entrada"));
+			model.setAssiduityCode(rst.getInt("id_assiduidade"));
+			
+			modelList.add(model);
+		}
+		return modelList;
 	}
 
 	@Override

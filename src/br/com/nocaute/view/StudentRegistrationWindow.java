@@ -705,5 +705,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		formFields.add(btnAddModalidade);
 		formFields.add(btnAdicionar);
 		formFields.add(btnBuscar);    
+		formFields.add(btnRemover);
+		formFields.add(btnSalvar);
 	}
 }
