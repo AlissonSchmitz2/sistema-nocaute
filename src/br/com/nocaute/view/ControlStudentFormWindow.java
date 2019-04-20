@@ -61,6 +61,7 @@ import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AssiduityTableModel;
 import br.com.nocaute.view.tableModel.AttendanceTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
+import br.com.nocaute.view.tableModel.PaymentsSituationTableRenderer;
 import br.com.nocaute.view.tableModel.PaymentsTableModel;
 import br.com.nocaute.view.tableModel.PaymentsTableRenderer;
 import br.com.nocaute.view.tableModel.StudentRegistrationModalitiesTableModel;
@@ -404,11 +405,11 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private void createGridSituationPayments() {
 		paymentsSituationTableModel = new PaymentsSituationTableModel();
 		jTablePayments = new JTable(paymentsSituationTableModel);
-		jTablePayments.setDefaultRenderer(Object.class, renderer);
+		//jTablePayments.setDefaultRenderer(Object.class, renderer);
 
 		// Habilita a seleção por linha
 		jTablePayments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		// jTablePayments.setDefaultRenderer(Object.class, new PaymentsTableRenderer());
+		jTablePayments.setDefaultRenderer(Object.class, new PaymentsSituationTableRenderer());
 
 		jTablePayments.addMouseListener(new MouseAdapter() {
 
