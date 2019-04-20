@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.sql.Timestamp;
+
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -27,8 +29,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
-
-import com.sun.jmx.snmp.Timestamp;
 
 import br.com.nocaute.dao.AssiduityDAO;
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
@@ -304,8 +304,6 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 																	 
 				int situation = verificateSituation(invoicesModel);
 				setSituationColor(situation);
-				
-				System.out.println(getDateTime().toString());
 															 
 				btnDataStudent.setEnabled(true);
 				btnDataMatriculate.setEnabled(true);
@@ -380,10 +378,10 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		}
 	}
 	
-	private Date getDateTime() {
-		//DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		Date date = new Date();
-		return date;
+	private Timestamp getDateTime() {
+		long datahoraEmMillisegundos = new Date().getTime();
+		Timestamp ts = new Timestamp (datahoraEmMillisegundos);
+		return ts;
 	}
 
 }

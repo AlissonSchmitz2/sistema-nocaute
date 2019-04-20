@@ -1,11 +1,12 @@
 package br.com.nocaute.model;
 
 import java.util.Date;
+import java.sql.Timestamp;
 
 public class AssiduityModel extends AbstractModel{
 	private int codigo_assiduidade;
 	private int codigo_matricula;
-	private Date data_entrada;
+	private Timestamp data_entrada;
 	
 	/**
 	 * @return the codigo_assiduidade
@@ -38,14 +39,14 @@ public class AssiduityModel extends AbstractModel{
 	/**
 	 * @return the data_entrada
 	 */
-	public Date getInputDate() {
+	public Timestamp getInputDate() {
 		return data_entrada;
 	}
 	
 	/**
 	 * @param data_entrada the data_entrada to set
 	 */
-	public void setInputDate(Date inputDate) {
+	public void setInputDate(Timestamp inputDate) {
 		this.data_entrada = inputDate;
 	}
 	

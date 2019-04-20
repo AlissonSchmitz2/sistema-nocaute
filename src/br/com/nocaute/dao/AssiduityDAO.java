@@ -89,7 +89,7 @@ public class AssiduityDAO extends AbstractDAO<CityModel>
 
 		setParam(pst, 1, model.getRegistrationCode());
 		setParam(pst, 2, model.getInputDate());
-
+		System.out.println(model.getInputDate().getTime());
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
@@ -114,7 +114,7 @@ public class AssiduityDAO extends AbstractDAO<CityModel>
 		AssiduityModel model = new AssiduityModel();
 
 		model.setRegistrationCode(rst.getInt("codigo_matricula"));
-		model.setInputDate(rst.getDate("data_entrada"));
+		model.setInputDate(rst.getTimestamp("data_entrada"));
 		model.setAssiduityCode(rst.getInt("id_assiduidade"));
 
 		return model;
