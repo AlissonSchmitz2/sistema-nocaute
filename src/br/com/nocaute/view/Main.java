@@ -7,10 +7,17 @@ public class Main {
 		//Muda o Layout da janela para o padrão do Windows
 		 try {
 	            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-	                if ("Windows".equals(info.getName())) {
+	            	//Windows
+	            	if ("Windows".equals(info.getName())) {
 	                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
 	                    break;
 	                }
+	            	//Linux
+	            	if ("Nimbus".equals(info.getName())) {
+	            		javax.swing.UIManager.setLookAndFeel(info.getClassName());
+	                    break;
+	                }
+
 	            }
 	        } catch (ClassNotFoundException ex) {
 	            java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
