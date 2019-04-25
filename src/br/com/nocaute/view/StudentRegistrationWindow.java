@@ -171,6 +171,9 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 				
 				//Limpa grid
 				studentRegistrationModalitiesTableModel.clear();
+				
+				// Esconde botão reativar matrícula
+				btnUnlockRegistration.setVisible(false);
 
 				// Ativa botão salvar
 				btnSalvar.setEnabled(true);
@@ -195,6 +198,9 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 
 							// Desativa campos
 							disableComponents(formFields);
+							
+							// Esconde botão reativar matrícula
+							btnUnlockRegistration.setVisible(false);
 
 							// Limpar dados dos campos
 							clearFormFields(formFields);
@@ -327,7 +333,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 									//para forçar o carregamento do relacionamentos do model
 									model = registrationDao.findById(selectedModel.getRegistrationCode(), true);
 									
-									assignModelToForm(model);	
+									assignModelToForm(model);
 								}
 							} catch (SQLException error) {
 								bubbleError("Erro ao recuperar matrícula");
@@ -371,6 +377,46 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 				}
 			}
 		});
+		
+		// Ação Remover
+		btnUnlockRegistration.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//Set modalidades ao model
+					model.setModalities(mapRegistrationModalitiesPojoToRegistrationModalitiesModel(studentRegistrationModalitiesTableModel.getModelsList()));
+					
+					boolean modalitiesFinished = isAllModalitiesFinished(model.getModalities());
+					
+					if (modalitiesFinished) {
+						bubbleWarning("É preciso conter ao menos uma modalidade sem data fim para reativar.");
+						
+						return;
+					}
+					
+					//Remove data de encerramento
+					model.setClosingDate(null);
+					boolean result = registrationDao.update(model);
+					
+					if (result) {
+						//Esconde botão reativar matrícula
+						btnUnlockRegistration.setVisible(false);
+						
+						//Faz uma nova consulta para busca o model selecionado
+						//para forçar o carregamento do relacionamentos do model
+						model = registrationDao.findById(model.getRegistrationCode(), true);
+						
+						assignModelToForm(model);
+						
+						bubbleSuccess("Matrícula reativada com sucesso");
+					} else {
+						bubbleError("Houve um erro ao reativar matrícula");
+					}
+				} catch (SQLException error) {
+					bubbleError(error.getMessage());
+					error.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	public void assignModelToForm(RegistrationModel model) {
@@ -378,8 +424,11 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		getContentPane().remove(labelCloseRegistration);
 		getContentPane().repaint();
 		
+		//Remover botão reativar matrícula
+		btnUnlockRegistration.setVisible(false);
+		
 		//Verificar se todas as modalidades foram encerradas.
-		boolean modalitiesFinished = isAllModalitiesFinished(model.getModalities());								
+		boolean modalitiesFinished = isAllModalitiesFinished(model.getModalities());							
 		
 		//Seta dados do model para os campos
 		txfMatricula.setText(model.getRegistrationCode().toString());
@@ -400,12 +449,13 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		studentRegistrationModalitiesTableModel.addModelsList(
 			mapRegistrationModalitiesModelToRegistrationModalitiesPojo(model.getModalities())
 		);
+		
+		// Seta form para modo Edição
+		setFormMode(UPDATE_MODE);
 
 		if(modalitiesFinished) {
 			closeFormForClosedRegistration(model.getClosingDate());
 		} else {
-			// Seta form para modo Edição
-			setFormMode(UPDATE_MODE);
 
 			// Ativa campos
 			enableComponents(formFields);
@@ -571,7 +621,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		btnUnlockRegistration.setBounds(273, 140, 150, 23);
 		btnUnlockRegistration.setToolTipText("Clique aqui para reativar a matrícula");
 		getContentPane().add(btnUnlockRegistration);
-		formFields.add(btnUnlockRegistration);		
+		btnUnlockRegistration.setVisible(false);
 
 		createGrid();
 	}
@@ -657,18 +707,26 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	
 	// Desabilita os campos.
 	private void closeFormForClosedRegistration(Date finishDate) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");		
-		labelCloseRegistration.setText("Matrícula encerrada em: " + dateFormat.format(finishDate));
-		labelCloseRegistration.setBounds(170, 55, 200, 25);	
-		labelCloseRegistration.setForeground(Color.RED);
-		getContentPane().add(labelCloseRegistration);
-		getContentPane().repaint();
-		
+		if (finishDate != null) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");		
+			labelCloseRegistration.setText("Matrícula encerrada em: " + dateFormat.format(finishDate));
+			labelCloseRegistration.setBounds(170, 55, 200, 25);	
+			labelCloseRegistration.setForeground(Color.RED);
+			getContentPane().add(labelCloseRegistration);
+			getContentPane().repaint();
+		}
+
 		disableComponents(formFields);
 		btnRemover.setEnabled(false);
 		btnSalvar.setEnabled(false);
+		
+		//Habilita o campo para permitir reativação da matrícula
+		btnUnlockRegistration.setVisible(true);
+		
+		//Ativa o botão para adicionar modalidades
+		btnAddModalidade.setEnabled(true);
 	}
-	
+
 	// Cancela as faturas futuras relacionadas a matrícula cancelada.
 	@SuppressWarnings("deprecation")
 	private void cancelInvoices(RegistrationModel model) {
