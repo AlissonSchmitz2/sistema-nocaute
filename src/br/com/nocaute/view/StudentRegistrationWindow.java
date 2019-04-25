@@ -63,7 +63,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	private List<Component> formFields = new ArrayList<Component>();
 
 	// Componentes
-	private JButton btnAddModalidade;
+	private JButton btnAddModalidade, btnUnlockRegistration;
 	private JLabel label;
 	private JLabel labelCloseRegistration = new JLabel();
 	private JTextField txfMatricula, txfAlunoDescricao;
@@ -561,11 +561,17 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			e.printStackTrace();
 		}
 
-		btnAddModalidade = new JButton("Adicionar Modalidade");
-		btnAddModalidade.setBounds(5, 140, 150, 23);
+		btnAddModalidade = new JButton("Adicionar Modalidade", MasterImage.new_alternative_16x16);
+		btnAddModalidade.setBounds(5, 140, 155, 23);
 		btnAddModalidade.setToolTipText("Clique aqui para adicionar uma modalidade");
 		getContentPane().add(btnAddModalidade);
 		formFields.add(btnAddModalidade);
+		
+		btnUnlockRegistration = new JButton("Reativar Matrícula", MasterImage.unlock_16x16);
+		btnUnlockRegistration.setBounds(273, 140, 150, 23);
+		btnUnlockRegistration.setToolTipText("Clique aqui para reativar a matrícula");
+		getContentPane().add(btnUnlockRegistration);
+		formFields.add(btnUnlockRegistration);		
 
 		createGrid();
 	}

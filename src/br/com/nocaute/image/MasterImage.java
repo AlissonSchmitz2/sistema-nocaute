@@ -40,6 +40,12 @@ public final class MasterImage extends ImageIcon{
 	public static final MasterImage
 	backup_restore_16x16 = LoadImage("16x16/stock-refresh.png");
 	
+	public static final MasterImage
+	unlock_16x16 = LoadImage("16x16/liberar.png");
+	
+	public static final MasterImage
+	new_alternative_16x16 = LoadImage("16x16/novo_alternativo.png");
+	
 	//22x22
 	public static final MasterImage
 	search_22x22 = LoadImage("22x22/localizar.png");
