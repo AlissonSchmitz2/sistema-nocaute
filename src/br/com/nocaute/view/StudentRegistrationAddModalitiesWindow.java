@@ -2,6 +2,8 @@ package br.com.nocaute.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -173,11 +175,20 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 			jDtFim.setDateFormatString("dd/MM/yyyy");
 			jDtFim.setBounds(70, 130, 100, 20);
 			jDtFim.setToolTipText("Data do fim da matrícula");
+			jDtFim.getDateEditor().addPropertyChangeListener(
+				    new PropertyChangeListener() {
+				        @Override
+				        public void propertyChange(PropertyChangeEvent e) {
+				            evaluateComboboxesDisabling();
+				        }
+				    });
 			getContentPane().add(jDtFim);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		evaluateComboboxesDisabling();
 		
 		btnOk = new JButton("OK", MasterImage.ok_13x13);
 		btnOk.setBounds(100, 160, 100, 25);
@@ -280,6 +291,13 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 			graduationsList.add(new Graduation(0, "-- Selecione --"));
 			plansList.add(new Plan(0, "-- Selecione --"));
 		}
+	}
+	
+	private void evaluateComboboxesDisabling() {
+		Date finishDate = jDtFim.getDate();
+		cbxModalidade.setEnabled(finishDate == null);
+		cbxGraduacao.setEnabled(finishDate == null);
+		cbxPlano.setEnabled(finishDate == null);
 	}
 	
 	private boolean validateFields() {
