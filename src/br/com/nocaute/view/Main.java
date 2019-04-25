@@ -1,6 +1,10 @@
 package br.com.nocaute.view;
 
+import java.awt.Font;
+import java.util.Enumeration;
+
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 public class Main {
 
@@ -22,6 +26,8 @@ public class Main {
 			//Alternativa para outros sistemas operacionais
 			if (!hasWindowLookAndFeel) {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				
+				setUIFont(new FontUIResource(Font.SANS_SERIF, Font.PLAIN, 11));
 			}
 		} catch (ClassNotFoundException ex) {
 			java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -43,5 +49,15 @@ public class Main {
 			}
 		});
 	}
+	
+	public static void setUIFont (javax.swing.plaf.FontUIResource f){
+	    Enumeration<Object> keys = UIManager.getDefaults().keys();
+	    while (keys.hasMoreElements()) {
+	      Object key = keys.nextElement();
+	      Object value = UIManager.get (key);
+	      if (value instanceof FontUIResource)
+	        UIManager.put (key, f);
+	      }
+	    } 
 
 }
