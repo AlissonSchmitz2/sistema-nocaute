@@ -131,7 +131,7 @@ private static final String TABLE_NAME = "matriculas";
 		return model;
 	}
 	
-	public RegistrationModel findById(Integer id, boolean loadModatilies) throws SQLException {
+	public RegistrationModel findById(Integer id, boolean loadModalities) throws SQLException {
 		RegistrationModel model = null;
 
 		String query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
@@ -155,7 +155,7 @@ private static final String TABLE_NAME = "matriculas";
 			}
 			
 			//Adiciona relacionamento Modalidades
-			if (loadModatilies) {
+			if (loadModalities) {
 				model.setModalities(registrationModalityDao.getByRegistrationCode(model.getRegistrationCode()));
 			}
 		}
@@ -163,7 +163,7 @@ private static final String TABLE_NAME = "matriculas";
 		return model;
 	}
 	
-	public RegistrationModel findByStudentId(Integer id,boolean loadModatilies) throws SQLException { 
+	public RegistrationModel findByStudentId(Integer id, boolean loadModatilies) throws SQLException { 
 		RegistrationModel model = null;
 		
 		String query = "SELECT r.*, a.aluno FROM " + TABLE_NAME

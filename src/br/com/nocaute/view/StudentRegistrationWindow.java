@@ -243,7 +243,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 
 				try {
 					// EDIÇÃO CADASTRO
-					if (isEditing()) {					
+					if (isEditing()) {			
 						//Verificar se todas as modalidades foram encerradas.
 						List<RegistrationModalityModel> modalitiesList = model.getModalities();
 						boolean modalitiesFinished = isAllModalitiesFinished(modalitiesList);
@@ -288,6 +288,14 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 						}
 					// NOVO CADASTRO
 					} else {
+						//Antes de salvar, faz uma consulta para verificar se o usuário já foi matriculado
+						RegistrationModel existentRegistration = registrationDao.findByStudentId(model.getStudentCode(), false);
+						if (existentRegistration != null) {
+							bubbleError("Já existe uma matrícula para o aluno selecionado");
+							
+							return;
+						}
+						
 						RegistrationModel insertedModel = registrationDao.insert(model);
 
 						if (insertedModel != null) {
