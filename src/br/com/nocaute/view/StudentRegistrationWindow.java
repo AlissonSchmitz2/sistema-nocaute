@@ -78,7 +78,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	private JDesktopPane desktop;
 	private boolean isOnlyView = false;
 	
-	public StudentRegistrationWindow(JDesktopPane desktop,RegistrationModel model) {
+	public StudentRegistrationWindow(JDesktopPane desktop, RegistrationModel model) {
 		super("Matricular Aluno", 450, 380, desktop, false);
 		
 		setFrameIcon(MasterImage.student_16x16);
@@ -91,11 +91,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		btnAdicionar.setEnabled(false);
 		btnBuscar.setEnabled(false);
 		
-		AssignModelSelected(model);
-		
-		//Enable false para todos os campos, tela somente de 
-		//visualização de dados através da tela de controle de alunos
-		addFormFieldsOnlyView();
+		assignModelToForm(model);
 		
 	    disableComponents(formFields); 
 	}
@@ -143,7 +139,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	public boolean postProcessKeyEvent(KeyEvent ke) {
 		// Abre tela seleção cidade ao clicar F9
 		if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_F9) {
-			if (btnSalvar.isEnabled()) {
+			if (btnSalvar.isEnabled() && txfAluno.isEnabled()) {
 				openSearchStudentWindow();
 			}
 
@@ -241,15 +237,10 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 
 				try {
 					// EDIÇÃO CADASTRO
-					if (isEditing()) {						
+					if (isEditing()) {					
 						//Verificar se todas as modalidades foram encerradas.
-						boolean modalitiesFinished = true;
 						List<RegistrationModalityModel> modalitiesList = model.getModalities();
-						for(int i = 0; i < modalitiesList.size(); i++) {
-							if(modalitiesList.get(i).getFinishDate() == null) {
-								modalitiesFinished = false;
-							}
-						}
+						boolean modalitiesFinished = isAllModalitiesFinished(modalitiesList);
 						
 						// Caso todas as modalidades tenham sido encerradas, solicita uma confirmação do
 						// usuário para cancelamento da matrícula.
@@ -258,19 +249,29 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 							
 							// 0 -> Sim.
 							if(optionSelected == 0) {
+								Date finishDate = modalitiesList.stream()
+										.filter(obj -> obj.getFinishDate() != null)
+										.sorted((p1, p2) -> p2.getFinishDate().compareTo(p1.getFinishDate()))
+										.findFirst()
+										.map(obj -> obj.getFinishDate())
+										.get();
+								
+								//Seta data de fechamento
+								model.setClosingDate(finishDate);
+
 								boolean result = registrationDao.update(model);
 
 								if (result) {
-									bubbleSuccess("Matrícula editada com sucesso");
-									closeRegistration();
-									cancelInvoices();
+									bubbleSuccess("Matrícula encerrada com sucesso");
+									cancelInvoices(model);
+									closeFormForClosedRegistration(finishDate);
 								} else {
 									bubbleError("Houve um erro ao editar matrícula");
 								}
 							}
 						} 
 						// Caso não tenham sido encerradas todas as modalidades, procede com o update normalmente.
-						else {						
+						else {
 							boolean result = registrationDao.update(model);
 	
 							if (result) {
@@ -326,8 +327,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 									//para forçar o carregamento do relacionamentos do model
 									model = registrationDao.findById(selectedModel.getRegistrationCode(), true);
 									
-									AssignModelSelected(model);
-										
+									assignModelToForm(model);	
 								}
 							} catch (SQLException error) {
 								bubbleError("Erro ao recuperar matrícula");
@@ -373,19 +373,13 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		});
 	}
 	
-	public void AssignModelSelected(RegistrationModel model) {
+	public void assignModelToForm(RegistrationModel model) {
 		// Remove a mensagem de encerramento de matrícula.
 		getContentPane().remove(labelCloseRegistration);
 		getContentPane().repaint();
 		
 		//Verificar se todas as modalidades foram encerradas.
-		boolean modalitiesFinished = true;
-		List<RegistrationModalityModel> modalitiesList = model.getModalities();
-		for(int i = 0; i < modalitiesList.size(); i++) {
-			if(modalitiesList.get(i).getFinishDate() == null) {
-				modalitiesFinished = false;
-			}
-		}									
+		boolean modalitiesFinished = isAllModalitiesFinished(model.getModalities());								
 		
 		//Seta dados do model para os campos
 		txfMatricula.setText(model.getRegistrationCode().toString());
@@ -408,13 +402,17 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		);
 
 		if(modalitiesFinished) {
-			closeRegistration();
+			closeFormForClosedRegistration(model.getClosingDate());
 		} else {
 			// Seta form para modo Edição
 			setFormMode(UPDATE_MODE);
 
 			// Ativa campos
 			enableComponents(formFields);
+			
+			// Desabilita campo aluno, pois não é permitido alterar aluno da matrícula
+			txfAlunoDescricao.setEnabled(false);
+			txfAluno.setEnabled(false);
 
 			// Ativa botão salvar
 			btnSalvar.setEnabled(true);
@@ -423,6 +421,13 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			btnRemover.setEnabled(true);
 		}								
 	}
+	
+	private boolean isAllModalitiesFinished(List<RegistrationModalityModel> modalitiesList) {
+		return modalitiesList.stream()
+				.filter(obj -> obj.getFinishDate() != null)
+				.count() == modalitiesList.size();
+	}
+	
 	private List<RegistrationModalityModel> mapRegistrationModalitiesPojoToRegistrationModalitiesModel(List<RegistrationModality> registrationModalityList) {
 		 return registrationModalityList.stream()
 				.map(pojo -> { 
@@ -644,27 +649,8 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		return true;
 	}
 	
-	// Exibe a mensagem com a data de encerramento da matrícula e desabilita os campos.
-	private void closeRegistration() {
-		List<RegistrationModalityModel> modalitiesList = model.getModalities();
-		Date finishDate = null;
-		for(int i = 0; i < modalitiesList.size(); i++) {
-			if( i == 0) {
-				finishDate = modalitiesList.get(i).getFinishDate();
-			} else if(modalitiesList.get(i).getFinishDate().compareTo(finishDate) > 0) {
-				finishDate = modalitiesList.get(i).getFinishDate();
-			}
-		}
-		
-		// Insere a data de encerramento na tabela de matrículas.
-		try {
-			RegistrationModel registrationModel = registrationDao.findById(model.getRegistrationCode());
-			registrationModel.setClosingDate(finishDate);
-			registrationDao.update(registrationModel);
-		} catch (SQLException error) {
-			error.printStackTrace();
-		}
-		
+	// Desabilita os campos.
+	private void closeFormForClosedRegistration(Date finishDate) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");		
 		labelCloseRegistration.setText("Matrícula encerrada em: " + dateFormat.format(finishDate));
 		labelCloseRegistration.setBounds(170, 55, 200, 25);	
@@ -678,15 +664,14 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	}
 	
 	// Cancela as faturas futuras relacionadas a matrícula cancelada.
-	private void cancelInvoices() {
+	@SuppressWarnings("deprecation")
+	private void cancelInvoices(RegistrationModel model) {
 		try {
 			List<InvoicesRegistrationModel> invoicesList = invoicesRegistrationDAO.getByRegistrationCode(model.getRegistrationCode());
 			Date currentDate = new Date();
-			@SuppressWarnings("deprecation")
 			int currentMonth = currentDate.getMonth();
 			
 			for(int i = 0; i < invoicesList.size(); i++) {
-				@SuppressWarnings("deprecation")
 				int invoiceMonth = invoicesList.get(i).getDueDate().getMonth();
 				if(invoiceMonth > currentMonth) {
 					invoicesList.get(i).setCancellationDate(currentDate);
@@ -694,18 +679,8 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 				}
 			}			
 		} catch (SQLException error) {
+			bubbleError("Houve um erro ao cancelar faturas");
 			error.printStackTrace();
 		}
-	}
-	
-	public void addFormFieldsOnlyView() {		
-		formFields.add(txfAluno);
-		formFields.add(txfAlunoDescricao);
-		formFields.add(txfVencFatura);
-		formFields.add(btnAddModalidade);
-		formFields.add(btnAdicionar);
-		formFields.add(btnBuscar);    
-		formFields.add(btnRemover);
-		formFields.add(btnSalvar);
 	}
 }
