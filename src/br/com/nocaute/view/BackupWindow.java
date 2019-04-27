@@ -103,7 +103,7 @@ public class BackupWindow extends AbstractWindowFrame {
 					return;
 				}
 
-				initBackupRestore(radioBtnBackup.isSelected());
+				initBackupRestore();
 			}
 		});
 	}
@@ -213,17 +213,17 @@ public class BackupWindow extends AbstractWindowFrame {
 		filter = null;
 	}
 
-	private void initBackupRestore(boolean isBackup) {
+	private void initBackupRestore() {
 		// TODO: realizar restore
 		final String Backup = "start pg_dump -h localhost -p 5432 -U %2 -w --column-inserts --attribute-inserts -a -F c -b -v -f %pathNocaute% master\r\n";
 		final String Restore = "start pg_restore -h localhost -p 5432 -U %2 -d master -v %pathNocaute%\r\n";
 		
 		String bat = 
 		"@echo off\r\n" + 
-		"set pathNocaute=" + txfPath.getText() + (isBackup ? "\\Backup" + getDateTime() + ".nocaute\r\n" : "\r\n") +
+		"set pathNocaute=" + txfPath.getText() + (radioBtnBackup.isSelected() ? "\\Backup" + getDateTime() + ".nocaute\r\n" : "\r\n") +
 		"set PGPASSWORD=%2\r\n" + 
 		"set path=C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin;%path%\r\n" + 
-		(isBackup ? Backup : Restore) +
+		(radioBtnBackup.isSelected() ? Backup : Restore) +
 		"/MIN\r\n" +
 		"set path=%path_old%\r\n" + "set path_old=\r\n" + 
 		"set PGPASSWORD=\r\n" + 
@@ -242,7 +242,11 @@ public class BackupWindow extends AbstractWindowFrame {
 				// Aguarda até ser finalizado.
 				file.delete();
 				
-				bubbleSuccess("Backup realizado com sucesso!" + txfPath.getText());
+				if(radioBtnBackup.isSelected()) {
+					bubbleSuccess("Backup salvo com sucesso! \nArquivo: Backup" + getDateTime() + ".nocaute");
+				}else {
+					bubbleSuccess("Restore realizado com sucesso!");
+				}
 				
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
