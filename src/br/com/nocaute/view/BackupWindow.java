@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -43,7 +45,7 @@ public class BackupWindow extends AbstractWindowFrame {
 
 	public BackupWindow(JDesktopPane desktop) {
 
-	 super("Backup e Restore", 650, 310, desktop);
+		super("Backup e Restore", 650, 310, desktop);
 		this.desktop = desktop;
 
 		setFrameIcon(MasterImage.backup_restore_16x16);
@@ -91,10 +93,14 @@ public class BackupWindow extends AbstractWindowFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				if (!validateOpenWindows()) {
-					bubbleError("Feche todas as janelas do sistema para realizar o backup!");
+					bubbleError("Feche todas as janelas do sistema para realizar o backup ou restore!");
+					return;
+				}else if(txfPath.getText().contains(" ")) {
+					bubbleError("Informe o caminho do backup ou restore!");
+					return;
 				}
 
-				initBackup();
+				initBackupRestore(radioBtnBackup.isSelected());
 			}
 		});
 	}
@@ -192,7 +198,7 @@ public class BackupWindow extends AbstractWindowFrame {
 
 			if (!filePath.exists() || !filePath.getPath().endsWith(".nocaute")) {
 				bubbleError("Caminho ou arquivo inválido!");
-				fileChooserRestore(); //Recursividade para manter a janela filechooser aberta
+				fileChooserRestore(); // Recursividade para manter a janela filechooser aberta
 				return;
 			}
 
@@ -200,12 +206,42 @@ public class BackupWindow extends AbstractWindowFrame {
 		} else {
 			bubbleWarning("Restore Cancelado!");
 		}
-		
+
 		filter = null;
 	}
 
-	private void initBackup() {
-		// TODO: realizar backup
+	private void initBackupRestore(boolean isBackup) {
+		// TODO: realizar restore
+		
+		if (isBackup) {
+			String bat = 
+			"@echo off\r\n" + 
+			"set caminhoBackup="+ txfPath.getText()  + "\\teste.nocaute\r\n" + 
+			"set PGPASSWORD=%2\r\n" + "set path=C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin;%path%\r\n" + 
+			"start pg_dump -h localhost -p 5432 -U %1 -w -F c -b -v -f %caminhoBackup% master\r\n" + 
+			"set path=%path_old%\r\n" + "set path_old=\r\n" + 
+			"set PGPASSWORD=\r\n" + 
+			"exit";
+			
+			FileWriter filewriter;
+			try {
+				File file = new File(System.getProperty("user.home") + "\\desktop\\backup.bat");
+				filewriter = new FileWriter(file);
+				filewriter.write(bat);
+				filewriter.close();
+
+				//Executa o arquivo bat
+				Process lo_process = Runtime.getRuntime().exec("C:\\teste\\backup.bat admin admin");
+				lo_process.waitFor();
+				// Aguarda até ser finalizado.
+				file.delete();
+				bubbleSuccess("Backup realizado com sucesso!" + txfPath.getText());
+				
+			} catch (IOException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	private boolean validateOpenWindows() {
