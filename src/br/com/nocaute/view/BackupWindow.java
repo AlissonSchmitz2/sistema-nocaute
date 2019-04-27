@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -212,36 +215,45 @@ public class BackupWindow extends AbstractWindowFrame {
 
 	private void initBackupRestore(boolean isBackup) {
 		// TODO: realizar restore
+		final String Backup = "start pg_dump -h localhost -p 5432 -U %2 -w --column-inserts --attribute-inserts -a -F c -b -v -f %pathNocaute% master\r\n";
+		final String Restore = "start pg_restore -h localhost -p 5432 -U %2 -d master -v %pathNocaute%\r\n";
 		
-		if (isBackup) {
-			String bat = 
-			"@echo off\r\n" + 
-			"set caminhoBackup="+ txfPath.getText()  + "\\teste.nocaute\r\n" + 
-			"set PGPASSWORD=%2\r\n" + "set path=C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin;%path%\r\n" + 
-			"start pg_dump -h localhost -p 5432 -U %1 -w -F c -b -v -f %caminhoBackup% master\r\n" + 
-			"set path=%path_old%\r\n" + "set path_old=\r\n" + 
-			"set PGPASSWORD=\r\n" + 
-			"exit";
+		String bat = 
+		"@echo off\r\n" + 
+		"set pathNocaute=" + txfPath.getText() + (isBackup ? "\\Backup" + getDateTime() + ".nocaute\r\n" : "\r\n") +
+		"set PGPASSWORD=%2\r\n" + 
+		"set path=C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin;%path%\r\n" + 
+		(isBackup ? Backup : Restore) +
+		"/MIN\r\n" +
+		"set path=%path_old%\r\n" + "set path_old=\r\n" + 
+		"set PGPASSWORD=\r\n" + 
+		"exit";
 			
 			FileWriter filewriter;
 			try {
-				File file = new File(System.getProperty("user.home") + "\\desktop\\backup.bat");
+				File file = new File(System.getProperty("user.home") + "\\desktop\\nocaute.bat");
 				filewriter = new FileWriter(file);
 				filewriter.write(bat);
 				filewriter.close();
 
 				//Executa o arquivo bat
-				Process lo_process = Runtime.getRuntime().exec("C:\\teste\\backup.bat admin admin");
+				Process lo_process = Runtime.getRuntime().exec(System.getProperty("user.home") + "\\desktop\\nocaute.bat admin admin");
 				lo_process.waitFor();
 				// Aguarda até ser finalizado.
 				file.delete();
+				
 				bubbleSuccess("Backup realizado com sucesso!" + txfPath.getText());
 				
 			} catch (IOException | InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
 
+	}
+	
+	private String getDateTime() {
+		DateFormat dateFormat = new SimpleDateFormat("HHmmss_yyyy_MM_dd");
+		Date date = new Date();
+		return dateFormat.format(date);
 	}
 
 	private boolean validateOpenWindows() {
