@@ -610,8 +610,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						.getModel(jTablePayments.getSelectedRow());
 
 				String descricao = "";
-				for (int i = 0; i < model.getDiscountDescription().size(); i++) {
-					descricao += model.getDiscountDescription().get(i) + "\n";
+				for (int i = 0; i < model.getChangeDescription().size(); i++) {
+					descricao += model.getChangeDescription().get(i) + "\n";
 				}
 
 				JOptionPane.showMessageDialog(null, descricao);
