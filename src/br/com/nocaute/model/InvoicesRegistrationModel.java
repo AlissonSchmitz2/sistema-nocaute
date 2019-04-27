@@ -10,11 +10,12 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	private float valor;
 	private Date data_pagamento;
 	private Date data_cancelamento;
+	private Integer quantidade_modalidade;
 	
 	// Auxiliares
 	private boolean matricula_cancelada;
 	private boolean destacar_valor;
-	private List<String> descricao_desconto;
+	private List<String> descricao_alteracao;
 
 	/**
 	 * codigo_matricula
@@ -129,19 +130,35 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	}
 
 	/**
-	 * descricao_desconto
+	 * descricao_alteracao
 	 */
-	public List<String> getDiscountDescription() {
-		return descricao_desconto;
+	public List<String> getChangeDescription() {
+		return descricao_alteracao;
 	}
 
 	/**
-	 * descricao_desconto
+	 * descricao_alteracao
 	 * 
-	 * @param discountDescription
+	 * @param changeDescription
 	 */
-	public void setDiscountDescription(List<String> discountDescription) {
-		this.descricao_desconto = discountDescription;
+	public void setChangeDescription(List<String> changeDescription) {
+		this.descricao_alteracao = changeDescription;
 	}
 
+	/**
+	 * quantidade_modalidade
+	 */
+	public Integer getQuantityModality() {
+		return quantidade_modalidade;
+	}
+
+	/**
+	 * quantidade_modalidade
+	 * 
+	 * @param quantityModality
+	 */
+	public void setQuantityModality(Integer quantityModality) {
+		this.quantidade_modalidade = quantityModality;
+	}
+		
 }

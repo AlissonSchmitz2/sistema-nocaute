@@ -132,51 +132,96 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 								// Lista de modalidades relacionadas a um determinado codigo_matricula.
 								List<RegistrationModalityModel> modalitiesList = registrationModalityDAO
 										.getByRegistrationCode(registrationModel.getRegistrationCode());
-
+								
+								// Quantidade de modalidades de uma fatura.
+								Integer quantityModality = 0;
+								
 								// Calculos para recuperar o valor total da fatura.
-								BigDecimal valorAux;
-								float valorTotal = 0;
-								List<String> descricaoDesconto = new ArrayList<>();
+								BigDecimal auxValue;
+								float amount = 0;
+								List<String> changeDescription = new ArrayList<>();
 								for (int k = 0; k < modalitiesList.size(); k++) {
 									int currentMonth = currentDate.getMonth();
+									quantityModality++;		
 									
 									// Verifica se o aluno está matriculado na modadalide (dataFim não preenchida).
 									if (modalitiesList.get(k).getFinishDate() == null) {
 										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
-										valorAux = planModel.getMonthlyValue();
-										valorTotal += valorAux.floatValue();
+										auxValue = planModel.getMonthlyValue();
+										amount += auxValue.floatValue();
 									} 
 									// Caso não esteja, recupera o valor e monta a descriação do desconto.
 									else if(modalitiesList.get(k).getFinishDate().getMonth() >= currentMonth){
 										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
-										valorAux = planModel.getMonthlyValue();
+										auxValue = planModel.getMonthlyValue();
 										
 										ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
-										String descricao = "- R$" + valorAux + " -> Cancelamento da modalidade " + modalityModel.getName();
-										descricaoDesconto.add(descricao);
+										String descricao = "- R$" + auxValue + " -> Cancelamento da modalidade " + modalityModel.getName();
+										changeDescription.add(descricao);
 									}
 								}
-
+								
+								// Percorre todas as faturas recuperadas aplicando o desconto e a descrição necessária as faturas.
 								for (int j = 0; j < invoicesRegistrationList.size(); j++) {
-									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);
+									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);									
 
+									Integer oldQuantityModality = invoicesRegistrationModel.getQuantityModality();
 									int currentMonth = currentDate.getMonth();
 									int invoiceMonth = invoicesRegistrationModel.getDueDate().getMonth();
 
-									// Caso o mês da fatura seja maior que o mês atual e o valor total seja
-									// diferente do valor atual da fatura (modalidades alteradas), o valor da fatura
-									// será destacado e alterado.
-									if (invoiceMonth > currentMonth && invoicesRegistrationModel.getValue() > valorTotal
+									// Caso o mês da fatura seja maior que o mês atual, o valor total da fatura seja
+									// diferente da fatura gerada e o código de matrícula da fatura seja igual ao
+									// código da matrícula do aluno atual, atualiza o valor da fatura.
+									if (invoiceMonth > currentMonth && amount != invoicesRegistrationModel.getValue()
 											&& invoicesRegistrationModel.getRegistrationCode() == registrationModel
-													.getRegistrationCode()) {
+													.getRegistrationCode() && invoicesRegistrationModel.getPaymentDate() == null) {
 										// Seta novo valor da fatura.
-										invoicesRegistrationModel.setValue(valorTotal);
+										invoicesRegistrationModel.setValue(amount);
+									}	
+									
+									// Verifica se foi adicionada alguma nova modalidade.
+									if (invoiceMonth > currentMonth && invoicesRegistrationModel
+											.getRegistrationCode() == registrationModel.getRegistrationCode()
+											&& oldQuantityModality != quantityModality) {
+										Date lowerStartDate = new Date();
 										
+										// Recupera a menor das datas de inicio.
+										for (int k = 0; k < modalitiesList.size(); k++) {											
+											if(k == 0) {
+												lowerStartDate = modalitiesList.get(k).getStartDate();
+											} else if (lowerStartDate.compareTo(modalitiesList.get(k).getStartDate()) > 0) {
+												lowerStartDate = modalitiesList.get(k).getStartDate();
+											}
+										}
+										
+										// Recupera a descrição do aumento.
+										for (int k = 0; k < modalitiesList.size(); k++) {	
+											Date startDate = modalitiesList.get(k).getStartDate();
+											if ((startDate.compareTo(currentDate) > 0
+													|| startDate.compareTo(currentDate) == 0)
+													&& startDate.compareTo(lowerStartDate) > 0
+													&& modalitiesList.get(k).getFinishDate() == null) {											
+												PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
+												auxValue = planModel.getMonthlyValue();
+												
+												ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
+												String descricao = "+ R$" + auxValue + " -> Adição da modalidade " + modalityModel.getName();
+												changeDescription.add(descricao);												
+											}
+										}
+									}
+									
+									// Caso o mês da fatura seja maior que o mês atual e o array de descrição
+									// das alterações não estiver vazio, o valor da fatura
+									// será destacado e a descrição será aplicada.
+									if (invoiceMonth > currentMonth && changeDescription.size() > 0
+											&& invoicesRegistrationModel.getRegistrationCode() == registrationModel
+													.getRegistrationCode() && invoicesRegistrationModel.getPaymentDate() == null) {										
 										// Seta o destaque da fatura para true.										
 										invoicesRegistrationModel.setHighlightValue(true);
 										
 										// Seta a descrição do desconto da fatura.
-										invoicesRegistrationModel.setDiscountDescription(descricaoDesconto);
+										invoicesRegistrationModel.setChangeDescription(changeDescription);
 									}
 								}
 							}
@@ -286,8 +331,8 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 				InvoicesRegistrationModel model = ((PaymentsTableModel) jTablePayments.getModel()).getModel(jTablePayments.getSelectedRow());
 				
 				String descricao = "";
-            	for(int i = 0; i < model.getDiscountDescription().size(); i++){
-            		descricao += model.getDiscountDescription().get(i) + "\n";
+            	for(int i = 0; i < model.getChangeDescription().size(); i++){
+            		descricao += model.getChangeDescription().get(i) + "\n";
             	}
             	
                 JOptionPane.showMessageDialog(null, descricao);

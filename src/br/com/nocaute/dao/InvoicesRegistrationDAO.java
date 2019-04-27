@@ -25,7 +25,8 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 			"data_vencimento",
 			"valor",
 			"data_pagamento",
-			"data_cancelamento"
+			"data_cancelamento",
+			"quantidade_modalidade"
 	};
 	
 	Connection connection;
@@ -47,6 +48,7 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		setParam(pst, 3, model.getValue());
 		setParam(pst, 4, model.getPaymentDate());
 		setParam(pst, 5, model.getCancellationDate());
+		setParam(pst, 6, model.getQuantityModality());
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -205,6 +207,7 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		model.setValue(rst.getFloat("valor"));
 		model.setPaymentDate(rst.getDate("data_pagamento"));
 		model.setCancellationDate(rst.getDate("data_cancelamento"));
+		model.setQuantityModality(rst.getInt("quantidade_modalidade"));		
 
 		return model;
 	}
