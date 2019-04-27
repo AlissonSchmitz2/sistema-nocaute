@@ -106,7 +106,7 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 					// Auxiliar para verificar a existência da fatura.
-					boolean faturaExiste = false;
+					boolean invoiceExists = false;
 
 					// Percorre as faturas verificando a necessidade de inserir uma nova fatura para o aluno.
 					for (int k = 0; k < invoicesRegistrationsList.size(); k++) {
@@ -114,13 +114,13 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 
 						// Verifica se já existe uma fatura para a data informada.
 						if (dateFormat.format(dueDate).equals(dateFormat.format(model.getDueDate()))) {
-							faturaExiste = true;
+							invoiceExists = true;
 							break;
 						}
 					}
 
 					// Caso a fatura já exista passa para a próxima iteração do for.
-					if (faturaExiste) {
+					if (invoiceExists) {
 						continue;
 					}
 
@@ -128,20 +128,24 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 					List<RegistrationModalityModel> modalitiesList = registrationModalityDAO
 							.getByRegistrationCode(registrationCode);
 
+					// Quantidade de modalidades de uma fatura.
+					Integer quantityModality = 0;
+					
 					// Calculos para recuperar o valor total da fatura.
-					BigDecimal valorFatura;
-					float valorTotal = 0;
+					BigDecimal invoiceValue;
+					float amount = 0;
 					for (int j = 0; j < modalitiesList.size(); j++) {
+						quantityModality++;
 						// Verifica se o aluno está matriculado na modadalide (dataFim não preenchida).
 						if (modalitiesList.get(j).getFinishDate() == null) {
 							planModel = planDAO.findById(modalitiesList.get(j).getPlanId());
-							valorFatura = planModel.getMonthlyValue();
-							valorTotal += valorFatura.floatValue();
+							invoiceValue = planModel.getMonthlyValue();
+							amount += invoiceValue.floatValue();
 						}
 					}
 					
 					// Caso o valor total seja igual a 0, significa que a matrícula do aluno foi cancelada, então não gera a fatura.
-					if(valorTotal == 0) {
+					if(amount == 0) {
 						continue;
 					}
 
@@ -149,7 +153,8 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 					invoicesRegistrationModel = new InvoicesRegistrationModel();
 					invoicesRegistrationModel.setRegistrationCode(registrationCode);
 					invoicesRegistrationModel.setDueDate(dueDate);
-					invoicesRegistrationModel.setValue(valorTotal);
+					invoicesRegistrationModel.setValue(amount);
+					invoicesRegistrationModel.setQuantityModality(quantityModality);
 
 					// Insere a fatura no banco de dados.
 					invoicesRegistrationDAO.insert(invoicesRegistrationModel);
