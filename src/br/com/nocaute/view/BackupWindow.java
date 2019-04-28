@@ -40,6 +40,7 @@ public class BackupWindow extends AbstractWindowFrame {
 	private int returnPath;
 	private File filePath;
 	private JDesktopPane desktop;
+	private boolean pathValidate;
 
 	// Painel
 	private JPanel panel;
@@ -81,6 +82,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				txfPath.setText("Caminho do Backup.");
+				pathValidate = false;
 			}
 		});
 
@@ -88,6 +90,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				txfPath.setText("Arquivo de Restore.");
+				pathValidate = false;
 			}
 		});
 
@@ -98,7 +101,7 @@ public class BackupWindow extends AbstractWindowFrame {
 				if (!validateOpenWindows()) {
 					bubbleError("Feche todas as janelas do sistema para realizar o backup ou restore!");
 					return;
-				}else if(txfPath.getText().contains(" ")) {
+				}else if(!pathValidate) {
 					bubbleError("Informe o caminho do backup ou restore!");
 					return;
 				}
@@ -180,6 +183,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 
 			txfPath.setText(filePath.getPath());
+			pathValidate = true;
 		} else {
 			bubbleWarning("Backup Cancelado!");
 		}
@@ -206,6 +210,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 
 			txfPath.setText(filePath.getPath());
+			pathValidate = true;
 		} else {
 			bubbleWarning("Restore Cancelado!");
 		}
