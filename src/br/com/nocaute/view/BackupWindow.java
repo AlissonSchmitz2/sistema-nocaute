@@ -5,9 +5,9 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -23,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import br.com.nocaute.image.MasterImage;
@@ -46,6 +48,7 @@ public class BackupWindow extends AbstractWindowFrame {
 	private JPanel panel;
 	private ButtonGroup btnGroup;
 	private JRadioButton radioBtnBackup, radioBtnRestore;
+	private Object obj;
 
 	public BackupWindow(JDesktopPane desktop) {
 
@@ -101,7 +104,7 @@ public class BackupWindow extends AbstractWindowFrame {
 				if (!validateOpenWindows()) {
 					bubbleError("Feche todas as janelas do sistema para realizar o backup ou restore!");
 					return;
-				}else if(!pathValidate) {
+				} else if (!pathValidate) {
 					bubbleError("Informe o caminho do backup ou restore!");
 					return;
 				}
@@ -219,46 +222,46 @@ public class BackupWindow extends AbstractWindowFrame {
 	}
 
 	private void initBackupRestore() {
-		// TODO: realizar restore
-		final String Backup = "start pg_dump -h localhost -p 5432 -U %2 -w --column-inserts --attribute-inserts -a -F c -b -v -f %pathNocaute% master\r\n";
-		final String Restore = "start pg_restore -h localhost -p 5432 -U %2 -d master -v %pathNocaute%\r\n";
-		
-		String bat = 
-		"@echo off\r\n" + 
-		"set pathNocaute=" + txfPath.getText() + (radioBtnBackup.isSelected() ? "\\Backup" + getDateTime() + ".nocaute\r\n" : "\r\n") +
-		"set PGPASSWORD=%2\r\n" + 
-		"set path=C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin;%path%\r\n" + 
-		(radioBtnBackup.isSelected() ? Backup : Restore) +
-		"/MIN\r\n" +
-		"set path=%path_old%\r\n" + "set path_old=\r\n" + 
-		"set PGPASSWORD=\r\n" + 
-		"exit";
-			
-			FileWriter filewriter;
-			try {
-				File file = new File(System.getProperty("user.home") + "\\desktop\\nocaute.bat");
-				filewriter = new FileWriter(file);
-				filewriter.write(bat);
-				filewriter.close();
+		ProcessBuilder pb_backup = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin\\pg_dump.exe",
+				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "--column-inserts", "--attribute-inserts", "-a",
+				"-F", "c", "-b", "-v", "-f", txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
 
-				//Executa o arquivo bat
-				Process lo_process = Runtime.getRuntime().exec(System.getProperty("user.home") + "\\desktop\\nocaute.bat admin admin");
-				lo_process.waitFor();
-				// Aguarda até ser finalizado.
-				file.delete();
+		ProcessBuilder pb_restore = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin\\pg_restore.exe",
+				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
+
+		if (radioBtnBackup.isSelected()) {
+			obj = pb_backup;
+		} else {
+			obj = pb_restore;
+		}
+
+		try {
+			Process p = null;
+			String linha = "";
+
+			((ProcessBuilder) obj).environment().put("PGPASSWORD", "admin");
+			((ProcessBuilder) obj).redirectErrorStream(true);
+			p = ((ProcessBuilder) obj).start();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			while ((linha = reader.readLine()) != null) {
+				System.out.println(linha);
 				
-				if(radioBtnBackup.isSelected()) {
-					bubbleSuccess("Backup salvo com sucesso! \nArquivo: Backup" + getDateTime() + ".nocaute");
-				}else {
-					bubbleSuccess("Restore realizado com sucesso!");
-				}
-				
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
+			}
+			reader.close();
+
+			if (radioBtnBackup.isSelected()) {
+				bubbleSuccess("Backup realizado com sucesso!");
+			} else {
+				bubbleSuccess("Restore realizado com sucesso!");
 			}
 
+		} catch (Exception e) {
+			System.out.println("Não foi possível efetuar o backup");
+		}
+
 	}
-	
+
 	private String getDateTime() {
 		DateFormat dateFormat = new SimpleDateFormat("HHmmss_yyyy_MM_dd");
 		Date date = new Date();
