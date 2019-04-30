@@ -1,6 +1,6 @@
-ALTER TABLE faturas_matriculas ADD COLUMN quantidade_modalidade INTEGER;
+TRUNCATE assiduidade CASCADE;
+TRUNCATE faturas_matriculas CASCADE;
+TRUNCATE matriculas_modalidades CASCADE;
+TRUNCATE matriculas CASCADE;
 
-TRUNCATE assiduidade;
-TRUNCATE faturas_matriculas;
-TRUNCATE matriculas_modalidades;
-TRUNCATE matriculas;
+ALTER TABLE faturas_matriculas ADD COLUMN quantidade_modalidade INTEGER;
