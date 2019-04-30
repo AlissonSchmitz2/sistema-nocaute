@@ -1,6 +1,6 @@
-DELETE FROM assiduidade;
-DELETE FROM faturas_matriculas;
-DELETE FROM matriculas_modalidades;
-DELETE FROM matriculas;
+ALTER TABLE faturas_matriculas ADD COLUMN quantidade_modalidade INTEGER;
 
-ALTER TABLE public.faturas_matriculas ADD COLUMN quantidade_modalidade INTEGER;
+TRUNCATE assiduidade;
+TRUNCATE faturas_matriculas;
+TRUNCATE matriculas_modalidades;
+TRUNCATE matriculas;
