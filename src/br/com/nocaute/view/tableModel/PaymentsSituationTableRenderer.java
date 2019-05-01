@@ -2,7 +2,6 @@ package br.com.nocaute.view.tableModel;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;

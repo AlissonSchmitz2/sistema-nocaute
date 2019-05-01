@@ -93,7 +93,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private AssiduityModel assiduityModel = new AssiduityModel();
 
 	private List<AssiduityModel> assiduityList = new ArrayList<AssiduityModel>();
-
+	private List<InvoicesRegistrationModel> invoicesList;
+	
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
 	private InvoicesRegistrationDAO invoicesDao = null;
@@ -146,12 +147,13 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
 						bubbleWarning("Nenhum aluno foi encontrado!");
-						txfStudent.setText("");
-
+						txfStudent        .setText("");
+					    txfCodMatriculate .setText("");
+						
 						clearTables();
 
-						btnDataStudent.setEnabled(false);
-						btnDataMatriculate.setEnabled(false);
+						btnDataStudent     .setEnabled(false);
+						btnDataMatriculate .setEnabled(false);
 
 						setSituationColor(0);
 					}
@@ -297,8 +299,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				studentRegistrationModalitiesTableModel.addModelsList(
 						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
 
+				
 				//Insere os dados de pagamento do aluno na TableModel de pagamento.
-				List<InvoicesRegistrationModel> invoicesModel = invoicesDao
+				invoicesList = invoicesDao
 						.getByRegistrationCode(registrationModel.getRegistrationCode());
 				paymentsSituationTableModel
 						.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
@@ -314,7 +317,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
 						.collect(Collectors.toList()));
 
-				int situation = verificateSituation(invoicesModel);
+				int situation = verificateSituation(invoicesList);
 				setSituationColor(situation);
 
 				btnDataStudent.setEnabled(true);
@@ -331,14 +334,18 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	}
 
 	public int verificateSituation(List<InvoicesRegistrationModel> listModel) {
+		int situation = 1;
+		
 		for (InvoicesRegistrationModel invoices : listModel) {
 			if (invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
 					|| invoices.getCancellationDate().toString().isEmpty())) {
-				return 2;
+				situation = 2;
+			}else {
+				situation = 1;
 			}
 		}
 
-		return 1;
+		return situation;
 	}
 
 	private void setSituationColor(int stateSituation) {
@@ -465,6 +472,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						try {
 							if (invoicesDao.update(selectedModel)) {
 								bubbleSuccess("Fatura atualizada com sucesso");
+								verificateSituation(invoicesList);
 							}
 
 							// Atualiza a tabela.
@@ -609,12 +617,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				InvoicesRegistrationModel model = ((PaymentsSituationTableModel) jTablePayments.getModel())
 						.getModel(jTablePayments.getSelectedRow());
 
-				String descricao = "";
-				for (int i = 0; i < model.getChangeDescription().size(); i++) {
-					descricao += model.getChangeDescription().get(i) + "\n";
-				}
+				//String descricao = "";
+				//for (int i = 0; i < model.getDiscountDescription().size(); i++) {
+				//	descricao += model.getDiscountDescription().get(i) + "\n";
+				//}
 
-				JOptionPane.showMessageDialog(null, descricao);
+				//JOptionPane.showMessageDialog(null, descricao);
 			}
 		});
 		jMenuItemDetails.setEnabled(detailsEnable);
