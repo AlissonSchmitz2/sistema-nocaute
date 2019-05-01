@@ -16,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -24,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import br.com.nocaute.image.MasterImage;
@@ -43,6 +41,9 @@ public class BackupWindow extends AbstractWindowFrame {
 	private File filePath;
 	private JDesktopPane desktop;
 	private boolean pathValidate;
+	
+	// Auxiliares
+	private File pathPostgres = null;
 
 	// Painel
 	private JPanel panel;
@@ -222,7 +223,20 @@ public class BackupWindow extends AbstractWindowFrame {
 	}
 
 	private void initBackupRestore() {
-		ProcessBuilder pb_backup = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin\\pg_dump.exe",
+		
+		//Desabilita o botão após iniciar
+		btnInit.setEnabled(false);
+		
+		//Verifica se o PostgreSQL está instalado na pasta de 32 ou 64 bits
+		if(getPathPostgres(System.getenv("ProgramFiles")) != null) {
+			pathPostgres = getPathPostgres(System.getenv("ProgramFiles"));
+		}else if(getPathPostgres(System.getenv("ProgramFiles(X86)")) != null){
+			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
+		}else {
+			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
+		}
+
+		ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe",
 				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "--column-inserts", "--attribute-inserts", "-a",
 				"-F", "c", "-b", "-v", "-f", txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
 
@@ -246,9 +260,9 @@ public class BackupWindow extends AbstractWindowFrame {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			while ((linha = reader.readLine()) != null) {
 				System.out.println(linha);
-				
 			}
 			reader.close();
+			btnInit.setEnabled(true);
 
 			if (radioBtnBackup.isSelected()) {
 				bubbleSuccess("Backup realizado com sucesso!");
@@ -257,9 +271,28 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Não foi possível efetuar o backup");
+			bubbleError("Não foi possível efetuar o backup ou restore!");
 		}
 
+	}
+	
+	private File getPathPostgres(String programFiles) {
+		//Últimas versões do PostgreSQL
+		String[] versions = {"9.0", "9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "10", "11"};
+		File path = null;
+		
+		
+		for(String version: versions){
+			path = new File(programFiles +  "\\PostgreSQL\\" + version);
+			
+			//Verifica se o diretório de instalação existe
+			if(path.exists()) {
+				return path;
+			}
+			
+		}
+		
+		return null;
 	}
 
 	private String getDateTime() {
