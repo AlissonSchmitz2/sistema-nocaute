@@ -41,7 +41,7 @@ public class BackupWindow extends AbstractWindowFrame {
 	private File filePath;
 	private JDesktopPane desktop;
 	private boolean pathValidate;
-	
+
 	// Auxiliares
 	private File pathPostgres = null;
 
@@ -55,7 +55,7 @@ public class BackupWindow extends AbstractWindowFrame {
 
 		super("Backup e Restore", 650, 310, desktop);
 		this.desktop = desktop;
-
+		
 		setFrameIcon(MasterImage.backup_restore_16x16);
 		setIconifiable(false);
 
@@ -223,25 +223,25 @@ public class BackupWindow extends AbstractWindowFrame {
 	}
 
 	private void initBackupRestore() {
-		
-		//Desabilita o botão após iniciar
+
+		// Desabilita o botão após iniciar
 		btnInit.setEnabled(false);
-		
-		//Verifica se o PostgreSQL está instalado na pasta de 32 ou 64 bits
-		if(getPathPostgres(System.getenv("ProgramFiles")) != null) {
+
+		// Verifica se o PostgreSQL está instalado na pasta de 32 ou 64 bits
+		if (getPathPostgres(System.getenv("ProgramFiles")) != null) {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles"));
-		}else if(getPathPostgres(System.getenv("ProgramFiles(X86)")) != null){
+		} else if (getPathPostgres(System.getenv("ProgramFiles(X86)")) != null) {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
-		}else {
+		} else {
 			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
 		}
 
-		ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe",
-				"-h", "localhost", "-p", "5432", "-U", "admin", "--column-inserts", "--attribute-inserts", "-a",
-				"-F", "c", "-b", "-v", "-f", txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
+		ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe", "-h",
+				"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
+				txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
 
-		ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore.exe",
-				"-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
+		ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore.exe", "-h",
+				"localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
 
 		if (radioBtnBackup.isSelected()) {
 			obj = pb_backup;
@@ -258,10 +258,12 @@ public class BackupWindow extends AbstractWindowFrame {
 			p = ((ProcessBuilder) obj).start();
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
 			while ((linha = reader.readLine()) != null) {
 				System.out.println(linha);
 			}
 			reader.close();
+
 			btnInit.setEnabled(true);
 
 			if (radioBtnBackup.isSelected()) {
@@ -270,6 +272,7 @@ public class BackupWindow extends AbstractWindowFrame {
 				bubbleSuccess("Restore realizado com sucesso!");
 			}
 
+
 		} catch (Exception e) {
 			bubbleError("Não foi possível efetuar o backup ou restore!");
 		}
@@ -277,21 +280,20 @@ public class BackupWindow extends AbstractWindowFrame {
 	}
 	
 	private File getPathPostgres(String programFiles) {
-		//Últimas versões do PostgreSQL
-		String[] versions = {"9.0", "9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "10", "11"};
+		// Últimas versões do PostgreSQL
+		String[] versions = { "9.0", "9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "10", "11" };
 		File path = null;
-		
-		
-		for(String version: versions){
-			path = new File(programFiles +  "\\PostgreSQL\\" + version);
-			
-			//Verifica se o diretório de instalação existe
-			if(path.exists()) {
+
+		for (String version : versions) {
+			path = new File(programFiles + "\\PostgreSQL\\" + version);
+
+			// Verifica se o diretório de instalação existe
+			if (path.exists()) {
 				return path;
 			}
-			
+
 		}
-		
+
 		return null;
 	}
 
