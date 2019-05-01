@@ -5,9 +5,9 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,11 +40,16 @@ public class BackupWindow extends AbstractWindowFrame {
 	private int returnPath;
 	private File filePath;
 	private JDesktopPane desktop;
+	private boolean pathValidate;
+	
+	// Auxiliares
+	private File pathPostgres = null;
 
 	// Painel
 	private JPanel panel;
 	private ButtonGroup btnGroup;
 	private JRadioButton radioBtnBackup, radioBtnRestore;
+	private Object obj;
 
 	public BackupWindow(JDesktopPane desktop) {
 
@@ -81,6 +86,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				txfPath.setText("Caminho do Backup.");
+				pathValidate = false;
 			}
 		});
 
@@ -88,6 +94,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				txfPath.setText("Arquivo de Restore.");
+				pathValidate = false;
 			}
 		});
 
@@ -98,7 +105,7 @@ public class BackupWindow extends AbstractWindowFrame {
 				if (!validateOpenWindows()) {
 					bubbleError("Feche todas as janelas do sistema para realizar o backup ou restore!");
 					return;
-				}else if(txfPath.getText().contains(" ")) {
+				} else if (!pathValidate) {
 					bubbleError("Informe o caminho do backup ou restore!");
 					return;
 				}
@@ -180,6 +187,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 
 			txfPath.setText(filePath.getPath());
+			pathValidate = true;
 		} else {
 			bubbleWarning("Backup Cancelado!");
 		}
@@ -206,6 +214,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 
 			txfPath.setText(filePath.getPath());
+			pathValidate = true;
 		} else {
 			bubbleWarning("Restore Cancelado!");
 		}
@@ -214,46 +223,78 @@ public class BackupWindow extends AbstractWindowFrame {
 	}
 
 	private void initBackupRestore() {
-		// TODO: realizar restore
-		final String Backup = "start pg_dump -h localhost -p 5432 -U %2 -w --column-inserts --attribute-inserts -a -F c -b -v -f %pathNocaute% master\r\n";
-		final String Restore = "start pg_restore -h localhost -p 5432 -U %2 -d master -v %pathNocaute%\r\n";
 		
-		String bat = 
-		"@echo off\r\n" + 
-		"set pathNocaute=" + txfPath.getText() + (radioBtnBackup.isSelected() ? "\\Backup" + getDateTime() + ".nocaute\r\n" : "\r\n") +
-		"set PGPASSWORD=%2\r\n" + 
-		"set path=C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin;%path%\r\n" + 
-		(radioBtnBackup.isSelected() ? Backup : Restore) +
-		"/MIN\r\n" +
-		"set path=%path_old%\r\n" + "set path_old=\r\n" + 
-		"set PGPASSWORD=\r\n" + 
-		"exit";
-			
-			FileWriter filewriter;
-			try {
-				File file = new File(System.getProperty("user.home") + "\\desktop\\nocaute.bat");
-				filewriter = new FileWriter(file);
-				filewriter.write(bat);
-				filewriter.close();
+		//Desabilita o botão após iniciar
+		btnInit.setEnabled(false);
+		
+		//Verifica se o PostgreSQL está instalado na pasta de 32 ou 64 bits
+		if(getPathPostgres(System.getenv("ProgramFiles")) != null) {
+			pathPostgres = getPathPostgres(System.getenv("ProgramFiles"));
+		}else if(getPathPostgres(System.getenv("ProgramFiles(X86)")) != null){
+			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
+		}else {
+			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
+		}
 
-				//Executa o arquivo bat
-				Process lo_process = Runtime.getRuntime().exec(System.getProperty("user.home") + "\\desktop\\nocaute.bat admin admin");
-				lo_process.waitFor();
-				// Aguarda até ser finalizado.
-				file.delete();
-				
-				if(radioBtnBackup.isSelected()) {
-					bubbleSuccess("Backup salvo com sucesso! \nArquivo: Backup" + getDateTime() + ".nocaute");
-				}else {
-					bubbleSuccess("Restore realizado com sucesso!");
-				}
-				
-			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
+		ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe",
+				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "--column-inserts", "--attribute-inserts", "-a",
+				"-F", "c", "-b", "-v", "-f", txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
+
+		ProcessBuilder pb_restore = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin\\pg_restore.exe",
+				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
+
+		if (radioBtnBackup.isSelected()) {
+			obj = pb_backup;
+		} else {
+			obj = pb_restore;
+		}
+
+		try {
+			Process p = null;
+			String linha = "";
+
+			((ProcessBuilder) obj).environment().put("PGPASSWORD", "admin");
+			((ProcessBuilder) obj).redirectErrorStream(true);
+			p = ((ProcessBuilder) obj).start();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			while ((linha = reader.readLine()) != null) {
+				System.out.println(linha);
 			}
+			reader.close();
+			btnInit.setEnabled(true);
+
+			if (radioBtnBackup.isSelected()) {
+				bubbleSuccess("Backup realizado com sucesso!");
+			} else {
+				bubbleSuccess("Restore realizado com sucesso!");
+			}
+
+		} catch (Exception e) {
+			bubbleError("Não foi possível efetuar o backup ou restore!");
+		}
 
 	}
 	
+	private File getPathPostgres(String programFiles) {
+		//Últimas versões do PostgreSQL
+		String[] versions = {"9.0", "9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "10", "11"};
+		File path = null;
+		
+		
+		for(String version: versions){
+			path = new File(programFiles +  "\\PostgreSQL\\" + version);
+			
+			//Verifica se o diretório de instalação existe
+			if(path.exists()) {
+				return path;
+			}
+			
+		}
+		
+		return null;
+	}
+
 	private String getDateTime() {
 		DateFormat dateFormat = new SimpleDateFormat("HHmmss_yyyy_MM_dd");
 		Date date = new Date();

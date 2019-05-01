@@ -11,12 +11,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,8 +36,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import br.com.nocaute.dao.AssiduityDAO;
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
@@ -59,11 +54,8 @@ import br.com.nocaute.pojos.RegistrationModality;
 import br.com.nocaute.util.JNumberFormatField;
 import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AssiduityTableModel;
-import br.com.nocaute.view.tableModel.AttendanceTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableRenderer;
-import br.com.nocaute.view.tableModel.PaymentsTableModel;
-import br.com.nocaute.view.tableModel.PaymentsTableRenderer;
 import br.com.nocaute.view.tableModel.StudentRegistrationModalitiesTableModel;
 
 public class ControlStudentFormWindow extends AbstractGridWindow {

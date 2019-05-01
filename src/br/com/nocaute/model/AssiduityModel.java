@@ -1,6 +1,5 @@
 package br.com.nocaute.model;
 
-import java.util.Date;
 import java.sql.Timestamp;
 
 public class AssiduityModel extends AbstractModel{
