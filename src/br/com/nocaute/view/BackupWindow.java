@@ -237,11 +237,11 @@ public class BackupWindow extends AbstractWindowFrame {
 		}
 
 		ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe",
-				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "--column-inserts", "--attribute-inserts", "-a",
+				"-h", "localhost", "-p", "5432", "-U", "admin", "--column-inserts", "--attribute-inserts", "-a",
 				"-F", "c", "-b", "-v", "-f", txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
 
-		ProcessBuilder pb_restore = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.0\\bin\\pg_restore.exe",
-				"-i", "-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
+		ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore.exe",
+				"-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
 
 		if (radioBtnBackup.isSelected()) {
 			obj = pb_backup;
