@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import br.com.nocaute.database.ConnectionFactory;
 import br.com.nocaute.image.MasterImage;
 
 public class BackupWindow extends AbstractWindowFrame {
@@ -45,17 +48,19 @@ public class BackupWindow extends AbstractWindowFrame {
 	// Auxiliares
 	private File pathPostgres = null;
 
+	private Connection CONNECTION;
+
 	// Painel
 	private JPanel panel;
 	private ButtonGroup btnGroup;
 	private JRadioButton radioBtnBackup, radioBtnRestore;
-	private Object obj;
 
-	public BackupWindow(JDesktopPane desktop) {
+	public BackupWindow(JDesktopPane desktop, Connection CONNECTION) {
 
 		super("Backup e Restore", 650, 310, desktop);
 		this.desktop = desktop;
-		
+		this.CONNECTION = CONNECTION;
+
 		setFrameIcon(MasterImage.backup_restore_16x16);
 		setIconifiable(false);
 
@@ -224,7 +229,7 @@ public class BackupWindow extends AbstractWindowFrame {
 
 	private void initBackupRestore() {
 
-		// Desabilita o botão após iniciar
+		// Desabilita o botão ao iniciar
 		btnInit.setEnabled(false);
 
 		// Verifica se o PostgreSQL está instalado na pasta de 32 ou 64 bits
@@ -234,51 +239,86 @@ public class BackupWindow extends AbstractWindowFrame {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
 		} else {
 			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
+			return;
 		}
-
-		ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe", "-h",
-				"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
-				txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
-
-		ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore.exe", "-h",
-				"localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
 
 		if (radioBtnBackup.isSelected()) {
-			obj = pb_backup;
-		} else {
-			obj = pb_restore;
+			ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe", "-h",
+					"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
+					txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
+			
+			startProcess(pb_backup);
+			bubbleSuccess("Backup realizado com sucesso!");
+			btnInit.setEnabled(true);
+			
+		} else { //Restore
+			
+			// Desconecta as 2 sessões do banco de dados
+			try {
+				CONNECTION.close();
+				closedConnection();
+			} catch (SQLException e1) {
+				bubbleError("Problema ao fechar conexões com o banco de dados!");
+				return;
+			}
+			
+			//Apaga
+			ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb.exe", "-h",
+					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
+			if(startProcess(dropdb) == 0) {
+				return;
+			}
+			
+			//Cria
+			ProcessBuilder createdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\createdb.exe", "-h",
+					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
+			startProcess(createdb);
+			
+			//Restaura
+			 ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath()
+					 + "\\bin\\pg_restore.exe", "-h", "localhost", "-p", "5432", "-U", "admin",
+					 "-d", "master", "-v", txfPath.getText());
+			 startProcess(pb_restore);
+			 
+			 bubbleSuccess("Restore realizado com sucesso!");
+			 btnInit.setEnabled(true);
+			 
+			 //Abre a conexão do banco novamente
+			 CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
+			 openConnection();
 		}
 
+	}
+	
+	private int startProcess(ProcessBuilder processBuilder) {
 		try {
 			Process p = null;
 			String linha = "";
 
-			((ProcessBuilder) obj).environment().put("PGPASSWORD", "admin");
-			((ProcessBuilder) obj).redirectErrorStream(true);
-			p = ((ProcessBuilder) obj).start();
+			processBuilder.environment().put("PGPASSWORD", "admin");
+			processBuilder.redirectErrorStream(true);
+			p = processBuilder.start();
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 			while ((linha = reader.readLine()) != null) {
 				System.out.println(linha);
+				if (linha.contains("remoção do banco de dados falhou")) {
+					bubbleError("É necessário fechar a conexão no gerenciador do banco de dados!");
+					btnInit.setEnabled(true);
+					return 0;
+				}
 			}
 			reader.close();
-
-			btnInit.setEnabled(true);
-
-			if (radioBtnBackup.isSelected()) {
-				bubbleSuccess("Backup realizado com sucesso!");
-			} else {
-				bubbleSuccess("Restore realizado com sucesso!");
-			}
-
-
 		} catch (Exception e) {
 			bubbleError("Não foi possível efetuar o backup ou restore!");
+			btnInit.setEnabled(true);
+			return 0;
 		}
 
+		return 1;
 	}
-	
+
 	private File getPathPostgres(String programFiles) {
 		// Últimas versões do PostgreSQL
 		String[] versions = { "9.0", "9.1", "9.2", "9.3", "9.4", "9.5", "9.6", "10", "11" };

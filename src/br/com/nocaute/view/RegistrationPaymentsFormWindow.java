@@ -284,7 +284,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 	}
 
 	private void loadGrid() {
-		tableModel = new PaymentsTableModel();
+		tableModel = new PaymentsTableModel(CONNECTION);
 		jTablePayments = new JTable(tableModel);
 
 		// Habilita a seleção por linha

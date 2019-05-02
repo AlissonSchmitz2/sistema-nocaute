@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,10 +65,13 @@ public class Window extends JFrame {
 
 	private UserModel userLogged;
 	
-	public Window(UserModel userLogged) {
+	private Connection CONNECTION;
+	
+	public Window(UserModel userLogged, Connection CONNECTION) {
 		super();
 		
 		this.userLogged = userLogged;
+		this.CONNECTION = CONNECTION;
 		
 		desktop = new JDesktopPane();
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -428,7 +432,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameBackupWindow = new BackupWindow(desktop);
+				frameBackupWindow = new BackupWindow(desktop, CONNECTION);
 				abrirFrame(frameBackupWindow);
 			}
 		});
