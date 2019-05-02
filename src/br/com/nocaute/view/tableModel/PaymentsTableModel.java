@@ -1,5 +1,6 @@
 package br.com.nocaute.view.tableModel;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -7,7 +8,6 @@ import java.util.Date;
 
 import br.com.nocaute.dao.RegistrationDAO;
 import br.com.nocaute.dao.StudentDAO;
-import br.com.nocaute.database.ConnectionFactory;
 import br.com.nocaute.model.InvoicesRegistrationModel;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
@@ -19,12 +19,12 @@ public class PaymentsTableModel extends AbstractTableModel<InvoicesRegistrationM
 	private RegistrationDAO registrationDAO;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		
-	public PaymentsTableModel() {
+	public PaymentsTableModel(Connection CONNECTION) {
 		super(new String[] { "Matrícula", "Aluno", "Vencimento", "Valor", "Pagamento", "Cancelamento" });
 		
 		try {
-			studentDAO = new StudentDAO(ConnectionFactory.getConnection("master", "admin", "admin"));
-			registrationDAO = new RegistrationDAO(ConnectionFactory.getConnection("master", "admin", "admin"));
+			studentDAO = new StudentDAO(CONNECTION);
+			registrationDAO = new RegistrationDAO(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}

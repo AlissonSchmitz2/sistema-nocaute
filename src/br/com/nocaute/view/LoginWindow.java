@@ -117,7 +117,7 @@ public class LoginWindow extends JDialog {
 	}
 
 	private void startSystem(UserModel model) {
-		new Window(model).setVisible(true);
+		new Window(model, CONNECTION).setVisible(true);
 		dispose();
 	}
 
