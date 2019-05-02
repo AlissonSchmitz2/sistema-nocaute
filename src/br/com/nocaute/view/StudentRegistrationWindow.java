@@ -88,8 +88,10 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 		
 		createComponents();
 		
-		btnAdicionar.setEnabled(false);
-		btnBuscar.setEnabled(false);
+		btnAdicionar .setEnabled(false);
+		btnBuscar    .setEnabled(false);
+		btnRemover   .setEnabled(false);
+		btnSalvar    .setEnabled(false);
 		
 		assignModelToForm(model);
 		

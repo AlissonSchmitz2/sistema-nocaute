@@ -19,7 +19,7 @@ public class PaymentsSituationTableRenderer extends DefaultTableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {
-		// Recupera o model e acordo com a linha da tabela.
+		// Recupera o model de acordo com a linha da tabela.
 		InvoicesRegistrationModel model = ((PaymentsSituationTableModel) table.getModel()).getModel(row);
 		
 		JLabel celula = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

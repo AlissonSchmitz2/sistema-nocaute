@@ -56,6 +56,7 @@ import br.com.nocaute.util.MasterMonthChooser;
 import br.com.nocaute.view.tableModel.AssiduityTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableModel;
 import br.com.nocaute.view.tableModel.PaymentsSituationTableRenderer;
+import br.com.nocaute.view.tableModel.PaymentsTableModel;
 import br.com.nocaute.view.tableModel.StudentRegistrationModalitiesTableModel;
 
 public class ControlStudentFormWindow extends AbstractGridWindow {
@@ -86,7 +87,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	private List<AssiduityModel> assiduityList = new ArrayList<AssiduityModel>();
 	private List<InvoicesRegistrationModel> invoicesList;
-	
+
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
 	private InvoicesRegistrationDAO invoicesDao = null;
@@ -139,13 +140,13 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
 						bubbleWarning("Nenhum aluno foi encontrado!");
-						txfStudent        .setText("");
-					    txfCodMatriculate .setText("");
-						
+						txfStudent.setText("");
+						txfCodMatriculate.setText("");
+
 						clearTables();
 
-						btnDataStudent     .setEnabled(false);
-						btnDataMatriculate .setEnabled(false);
+						btnDataStudent.setEnabled(false);
+						btnDataMatriculate.setEnabled(false);
 
 						setSituationColor(0);
 					}
@@ -286,19 +287,17 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 				clearTables();
 
-				//Insere os dados da matricula na TableModel de matriculas.
+				// Insere os dados da matricula na TableModel de matriculas.
 				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
 				studentRegistrationModalitiesTableModel.addModelsList(
 						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
 
-				
-				//Insere os dados de pagamento do aluno na TableModel de pagamento.
-				invoicesList = invoicesDao
-						.getByRegistrationCode(registrationModel.getRegistrationCode());
+				// Insere os dados de pagamento do aluno na TableModel de pagamento.
+				invoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
 				paymentsSituationTableModel
 						.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
 
-				//Inicia processo de assiduidade do aluno.
+				// Inicia processo de assiduidade do aluno.
 				assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
 				assiduityModel.setInputDate(getDateTime());
 
@@ -327,12 +326,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	public int verificateSituation(List<InvoicesRegistrationModel> listModel) {
 		int situation = 1;
-		
+ 
 		for (InvoicesRegistrationModel invoices : listModel) {
 			if (invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
 					|| invoices.getCancellationDate().toString().isEmpty())) {
 				situation = 2;
-			}else {
+			} else {
 				situation = 1;
 			}
 		}
@@ -404,7 +403,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private void createGridSituationPayments() {
 		paymentsSituationTableModel = new PaymentsSituationTableModel();
 		jTablePayments = new JTable(paymentsSituationTableModel);
-		//jTablePayments.setDefaultRenderer(Object.class, renderer);
+		// jTablePayments.setDefaultRenderer(Object.class, renderer);
 
 		// Habilita a seleção por linha
 		jTablePayments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -452,8 +451,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemPayInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
-						.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
 
 				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja realizar o pagamento da fatura?");
 
@@ -464,11 +462,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						try {
 							if (invoicesDao.update(selectedModel)) {
 								bubbleSuccess("Fatura atualizada com sucesso");
-								verificateSituation(invoicesList);
-							}
-
+								searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
+							}			
 							// Atualiza a tabela.
 							paymentsSituationTableModel.fireTableDataChanged();
+							
+							verificateSituation(invoicesList);
 						} catch (SQLException error) {
 							error.printStackTrace();
 						}
@@ -483,8 +482,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemCancelInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
-						.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
 
 				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja cancelar a fatura?");
 
@@ -495,6 +493,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						try {
 							if (invoicesDao.update(selectedModel)) {
 								bubbleSuccess("Fatura atualizada com sucesso");
+								searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 							}
 
 							// Atualiza a tabela.
@@ -513,8 +512,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemReopenInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
-						.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
 
 				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja reabrir a fatura?");
 
@@ -527,6 +525,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 							try {
 								if (invoicesDao.update(selectedModel)) {
 									bubbleSuccess("Fatura atualizada com sucesso");
+									searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 								}
 
 								// Atualiza a tabela.
@@ -548,8 +547,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemUpdateValueInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
-						.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
 
 				if (selectedModel.getCancellationDate() == null && selectedModel.getPaymentDate() == null) {
 					JDialog valueDialog = new JDialog();
@@ -586,8 +584,10 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 								if (invoicesDao.update(selectedModel)) {
 									bubbleSuccess("Fatura atualizada com sucesso");
 									valueDialog.dispose();
+									
+									searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 								}
-
+								
 								// Atualiza a tabela.
 								paymentsSituationTableModel.fireTableDataChanged();
 							} catch (SQLException error) {
@@ -606,15 +606,15 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemDetails.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel model = ((PaymentsSituationTableModel) jTablePayments.getModel())
+				InvoicesRegistrationModel model = ((PaymentsTableModel) jTablePayments.getModel())
 						.getModel(jTablePayments.getSelectedRow());
 
-				//String descricao = "";
-				//for (int i = 0; i < model.getDiscountDescription().size(); i++) {
-				//	descricao += model.getDiscountDescription().get(i) + "\n";
-				//}
+				String descricao = "";
+				for (int i = 0; i < model.getChangeDescription().size(); i++) {
+					descricao += model.getChangeDescription().get(i) + "\n";
+				}
 
-				//JOptionPane.showMessageDialog(null, descricao);
+				JOptionPane.showMessageDialog(null, descricao);
 			}
 		});
 		jMenuItemDetails.setEnabled(detailsEnable);
