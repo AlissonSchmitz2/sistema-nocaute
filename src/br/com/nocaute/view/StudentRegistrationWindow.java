@@ -11,6 +11,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -77,6 +78,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	
 	private JDesktopPane desktop;
 	private boolean isOnlyView = false;
+	private Connection CONNECTION;
 	
 	public StudentRegistrationWindow(JDesktopPane desktop, RegistrationModel model) {
 		super("Matricular Aluno", 450, 380, desktop, false);
@@ -98,11 +100,12 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	    disableComponents(formFields); 
 	}
 	
-	public StudentRegistrationWindow(JDesktopPane desktop) {
+	public StudentRegistrationWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Matricular Aluno", 450, 380, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
 
 		this.desktop = desktop;
+		this.CONNECTION = CONNECTION;
 		
 		try {
 			this.registrationDao = new RegistrationDAO(CONNECTION);
@@ -330,7 +333,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchRegistrationWindow == null) {
-					searchRegistrationWindow = new ListRegistrationsWindow(desktop);
+					searchRegistrationWindow = new ListRegistrationsWindow(desktop, CONNECTION);
 
 					searchRegistrationWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
@@ -363,7 +366,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (studentRegistrationAddModalitiesWindow == null) {
-					studentRegistrationAddModalitiesWindow = new StudentRegistrationAddModalitiesWindow(desktop);
+					studentRegistrationAddModalitiesWindow = new StudentRegistrationAddModalitiesWindow(desktop, CONNECTION);
 
 					studentRegistrationAddModalitiesWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
@@ -522,7 +525,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	
 	private void openSearchStudentWindow() {
 		if (searchStudentWindow == null) {
-			searchStudentWindow = new ListStudentsWindow(desktop);
+			searchStudentWindow = new ListStudentsWindow(desktop, CONNECTION);
 
 			searchStudentWindow.addInternalFrameListener(new InternalFrameListener() {
 				@Override
@@ -649,7 +652,7 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	            		int selectedRow = jTableRegistration.getSelectedRow();
 	            		
 	            		RegistrationModality selectedModel = studentRegistrationModalitiesTableModel.getModel(selectedRow);
-						studentRegistrationAddModalitiesWindow = new StudentRegistrationAddModalitiesWindow(desktop, selectedModel);
+						studentRegistrationAddModalitiesWindow = new StudentRegistrationAddModalitiesWindow(desktop, selectedModel, CONNECTION);
 
 						studentRegistrationAddModalitiesWindow.addInternalFrameListener(new InternalFrameListener() {
 							@Override

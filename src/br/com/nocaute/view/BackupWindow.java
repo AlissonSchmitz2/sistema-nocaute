@@ -19,6 +19,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,8 +28,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import br.com.nocaute.database.ConnectionFactory;
 import br.com.nocaute.image.MasterImage;
+import br.com.nocaute.model.UserModel;
 
 public class BackupWindow extends AbstractWindowFrame {
 
@@ -47,6 +48,8 @@ public class BackupWindow extends AbstractWindowFrame {
 
 	// Auxiliares
 	private File pathPostgres = null;
+	private JFrame Window;
+	//private UserModel userLogged;
 
 	private Connection CONNECTION;
 
@@ -55,11 +58,13 @@ public class BackupWindow extends AbstractWindowFrame {
 	private ButtonGroup btnGroup;
 	private JRadioButton radioBtnBackup, radioBtnRestore;
 
-	public BackupWindow(JDesktopPane desktop, Connection CONNECTION) {
+	public BackupWindow(JDesktopPane desktop, Connection CONNECTION, JFrame Window/*, UserModel userLogged*/) {
 
 		super("Backup e Restore", 650, 310, desktop);
 		this.desktop = desktop;
 		this.CONNECTION = CONNECTION;
+		this.Window = Window;
+		//this.userLogged = userLogged;
 
 		setFrameIcon(MasterImage.backup_restore_16x16);
 		setIconifiable(false);
@@ -253,10 +258,9 @@ public class BackupWindow extends AbstractWindowFrame {
 			
 		} else { //Restore
 			
-			// Desconecta as 2 sessões do banco de dados
+			// Desconecta a sessão do banco de dados
 			try {
 				CONNECTION.close();
-				closedConnection();
 			} catch (SQLException e1) {
 				bubbleError("Problema ao fechar conexões com o banco de dados!");
 				return;
@@ -282,10 +286,12 @@ public class BackupWindow extends AbstractWindowFrame {
 			 
 			 bubbleSuccess("Restore realizado com sucesso!");
 			 btnInit.setEnabled(true);
+
+			 bubbleSuccess("O Sistema será reiniciado!");
 			 
-			 //Abre a conexão do banco novamente
-			 CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
-			 openConnection();
+			 Window.dispose();
+			 new LoginWindow().setVisible(true);;
+			 
 		}
 
 	}

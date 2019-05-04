@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	private ModalityDAO modalityDao;
 	private GraduationDAO graduationDao;
 	private PlanDAO planDao;
+	private Connection CONNECTION;
 	
 	private RegistrationModality selectedRegistrationModality;
 	private RegistrationModality registrationModalityToEdition;
@@ -49,19 +51,21 @@ public class StudentRegistrationAddModalitiesWindow extends AbstractWindowFrame 
 	private JComboBox<Graduation> cbxGraduacao = new JComboBox<Graduation>();
 	private JComboBox<Plan> cbxPlano = new JComboBox<Plan>();
 
-	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop) {
+	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Adicionar Modalidades", 300, 225, desktop);
 		
 		setIconifiable(false);
+		this.CONNECTION = CONNECTION;
 		
 		constructor(desktop);
 	}
 	
-	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop, RegistrationModality modality) {
+	public StudentRegistrationAddModalitiesWindow(JDesktopPane desktop, RegistrationModality modality, Connection CONNECTION) {
 		super("Adicionar Modalidades", 300, 225, desktop);
 		
 		//Remover a opção de minimizar
 		setIconifiable(false);
+		this.CONNECTION = CONNECTION;
 		
 		//Atribui a modalidade vinda pelo construtor a modalidade selecionda
 		registrationModalityToEdition = modality;

@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -33,7 +34,7 @@ public class ListRegistrationsWindow extends AbstractGridWindow {
 	private RegistrationsTableModel tableModel;
 	private JTable jTableModels;
 	
-	public ListRegistrationsWindow(JDesktopPane desktop) {
+	public ListRegistrationsWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Matrículas", 445, 310, desktop, true);
 		
 		setFrameIcon(MasterImage.student_16x16);

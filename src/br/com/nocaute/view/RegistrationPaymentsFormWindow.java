@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -74,7 +75,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 	// Data atual
 	private Date currentDate = new Date();
 
-	public RegistrationPaymentsFormWindow(JDesktopPane desktop) {
+	public RegistrationPaymentsFormWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Pagamentos de Faturas", 610, 380, desktop, false);
 		setFrameIcon(MasterImage.financial_16x16);
 		
@@ -84,6 +85,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 			registrationModalityDAO = new RegistrationModalityDAO(CONNECTION);
 			planDAO = new PlanDAO(CONNECTION);
 			modalityDAO = new ModalityDAO(CONNECTION);
+			tableModel = new PaymentsTableModel(CONNECTION);
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
@@ -284,7 +286,6 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 	}
 
 	private void loadGrid() {
-		tableModel = new PaymentsTableModel(CONNECTION);
 		jTablePayments = new JTable(tableModel);
 
 		// Habilita a seleção por linha

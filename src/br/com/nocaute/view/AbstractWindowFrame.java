@@ -6,8 +6,6 @@ import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyVetoException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +20,6 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 import com.toedter.calendar.JDateChooser;
 
-import br.com.nocaute.database.ConnectionFactory;
-
 public abstract class AbstractWindowFrame extends JInternalFrame {
 	private static final long serialVersionUID = -9124809980962961247L;
 	
@@ -31,8 +27,6 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	protected static final String UPDATE_MODE = "update";
 	private String formMode = CREATE_MODE;
 	protected SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
-	
-	public static Connection CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
 
 	public AbstractWindowFrame(String nameWindow, int width, int height, JDesktopPane desktop) {
 		super(nameWindow, false, true, false, false);
@@ -42,7 +36,7 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 		setBackground(new Color(239, 239, 239));
 		setSize(width, height);
 		setIconifiable(true);
-
+		
 		// Abrir janela centralizada
 		setLocation((desktop.getWidth() - this.getSize().width) / 2, (desktop.getHeight() - this.getSize().height) / 2);
 		
@@ -99,18 +93,6 @@ public abstract class AbstractWindowFrame extends JInternalFrame {
 	
 	protected void setFormMode(String mode) {
 		formMode = mode;
-	}
-	
-	protected void closedConnection() {
-		try {
-			CONNECTION.close();
-		} catch (SQLException e) {
-			bubbleError("Erro ao fechar conexão!");
-		}
-	}
-	
-	protected void openConnection() {
-		CONNECTION = ConnectionFactory.getConnection("master", "admin", "admin");
 	}
 	
 	protected void disableComponents(List<Component> components) {

@@ -3,6 +3,7 @@ package br.com.nocaute.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 	// Recupera a data atual.
 	Date currentDate = new Date();
 
-	public GeneratePaymentsWindow(JDesktopPane desktop) {
+	public GeneratePaymentsWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Gerar Faturas", 270, 120, desktop);
 		setFrameIcon(MasterImage.new_16x16);
 

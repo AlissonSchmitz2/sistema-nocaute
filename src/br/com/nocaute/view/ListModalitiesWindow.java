@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 	private ModalitiesTableModel tableModel;
 	private JTable jTableModels;
 	
-	public ListModalitiesWindow(JDesktopPane desktop) {
+	public ListModalitiesWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Modalidades", 445, 310, desktop, true);
 		
 		setFrameIcon(MasterImage.student_16x16);

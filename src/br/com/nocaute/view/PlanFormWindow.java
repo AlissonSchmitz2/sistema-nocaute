@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +46,15 @@ public class PlanFormWindow extends AbstractToolbar {
 	private JNumberFormatField txfValor;
 
 	private JDesktopPane desktop;
+	private Connection CONNECTION;
 	
-	public PlanFormWindow(JDesktopPane desktop, UserModel userLogged) {
+	public PlanFormWindow(JDesktopPane desktop, UserModel userLogged, Connection CONNECTION) {
 		super("Planos", 450, 165, desktop, false);
 		setFrameIcon(MasterImage.financial_16x16);
 		
 		this.desktop = desktop;
 		this.userLogged = userLogged;
+		this.CONNECTION = CONNECTION;
 
 		try {
 			planDao = new PlanDAO(CONNECTION);
@@ -188,7 +191,7 @@ public class PlanFormWindow extends AbstractToolbar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchPlanWindow == null) {
-					searchPlanWindow = new ListPlansWindow(desktop);
+					searchPlanWindow = new ListPlansWindow(desktop, CONNECTION);
 
 					searchPlanWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override

@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +54,15 @@ public class ModalityFormWindow extends AbstractToolbar{
 	private JTable jTableGraduacoes;
 	
 	private JDesktopPane desktop;
+	private Connection CONNECTION;
 	
-	public ModalityFormWindow(JDesktopPane desktop, UserModel userLogged) {
+	public ModalityFormWindow(JDesktopPane desktop, UserModel userLogged, Connection CONNECTION) {
 			super("Modalidades e Graduações", 450, 335, desktop, false);
 			setFrameIcon(MasterImage.student_16x16);
 			
 			this.desktop = desktop;
 			this.userLogged = userLogged;
+			this.CONNECTION = CONNECTION;
 			
 			try {
 				modalityDAO = new ModalityDAO(CONNECTION);
@@ -151,8 +154,9 @@ public class ModalityFormWindow extends AbstractToolbar{
 						}
 					}
 				} catch (SQLException error) {
-					bubbleError(error.getMessage());
-					error.printStackTrace();
+					bubbleError("Essa modalidade possui registro em outras partes do sistema e não pode ser excluída!");
+					return;
+					//error.printStackTrace();
 				}
 			}
 		});
@@ -257,7 +261,7 @@ public class ModalityFormWindow extends AbstractToolbar{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchModalityWindow == null) {
-					searchModalityWindow = new ListModalitiesWindow(desktop);
+					searchModalityWindow = new ListModalitiesWindow(desktop, CONNECTION);
 					
 					searchModalityWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override

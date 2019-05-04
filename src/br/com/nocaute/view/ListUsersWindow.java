@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -33,7 +34,7 @@ public class ListUsersWindow extends AbstractGridWindow {
 	private UsersTableModel tableModel;
 	private JTable jTableModels;
 
-	public ListUsersWindow(JDesktopPane desktop) {
+	public ListUsersWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Usuários", 445, 310, desktop, true);
 
 		setFrameIcon(MasterImage.user_16x16);
