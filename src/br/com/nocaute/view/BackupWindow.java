@@ -242,6 +242,9 @@ public class BackupWindow extends AbstractWindowFrame {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles"));
 		} else if (getPathPostgres(System.getenv("ProgramFiles(X86)")) != null) {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
+		} else if(pathPostgres == null) {
+			//Linux
+			pathPostgres = new File("\\usr");
 		} else {
 			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
 			return;
@@ -283,6 +286,9 @@ public class BackupWindow extends AbstractWindowFrame {
 					 + "\\bin\\pg_restore.exe", "-h", "localhost", "-p", "5432", "-U", "admin",
 					 "-d", "master", "-v", txfPath.getText());
 			 startProcess(pb_restore);
+			 
+			 //TODO:
+			 //LOADER
 			 
 			 bubbleSuccess("Restore realizado com sucesso!");
 			 btnInit.setEnabled(true);
