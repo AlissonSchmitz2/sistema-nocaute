@@ -11,6 +11,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -99,6 +100,47 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 	    btnSalvar    .setEnabled(false);
 		
 	    disableComponents(formFields); 
+	}
+	
+	public StudentRegistrationWindow(JDesktopPane desktop, StudentModel model, Connection CONNECTION) {
+		super("Matricular Aluno", 450, 380, desktop, false);
+		
+		setFrameIcon(MasterImage.student_16x16);
+
+		this.desktop = desktop;
+		this.CONNECTION = CONNECTION;
+		
+		try {
+			this.registrationDao = new RegistrationDAO(CONNECTION);
+			this.invoicesRegistrationDAO = new InvoicesRegistrationDAO(CONNECTION);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		this.desktop    = desktop;
+		this.isOnlyView = true;
+		
+		createComponents();
+		
+		btnAdicionar .setEnabled(false);
+		btnBuscar    .setEnabled(false);
+	
+		assignStudentModelToForm(model);
+		disableComponents(formFields);
+		
+		btnSalvar        .setEnabled(true)  ;
+		btnAddModalidade .setEnabled(true)  ;
+		txfVencFatura    .setEnabled(true)  ;
+		btnRemover       .setEnabled(false) ;		
+		
+		this.model.setStudent(model);
+		this.model.setStudentCode(model.getCode());
+		
+		// Seta as ações esperadas para cada botão
+		setButtonsActions();
+				
+		//Key events
+		registerKeyEvent();
 	}
 	
 	public StudentRegistrationWindow(JDesktopPane desktop, Connection CONNECTION) {
@@ -307,6 +349,15 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 						if (insertedModel != null) {
 							bubbleSuccess("Aluno matriculado com sucesso");
 
+							if(isOnlyView) {
+								// Fecha a janela
+								try {
+									setClosed(true);
+								} catch (PropertyVetoException erro) {
+									erro.printStackTrace();
+								}
+							}
+							
 							// Atribui o model recém criado ao model
 							model = insertedModel;
 							
@@ -315,9 +366,10 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 
 							// Seta form para edição
 							setFormMode(UPDATE_MODE);
-
+							
+							
 							// Ativa botão Remover
-							btnRemover.setEnabled(true);
+					        btnRemover.setEnabled(true);
 						} else {
 							bubbleError("Houve um erro ao matricular aluno");
 						}
@@ -484,6 +536,21 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			// Ativa botão remover
 			btnRemover.setEnabled(true);
 		}								
+	}
+	
+	public void assignStudentModelToForm(StudentModel model) {
+		// Remove a mensagem de encerramento de matrícula.
+				getContentPane().remove(labelCloseRegistration);
+				getContentPane().repaint();
+				
+				//Remover botão reativar matrícula
+				btnUnlockRegistration.setVisible(false);
+															
+				//Seta dados na grid
+				studentRegistrationModalitiesTableModel.clear();
+				
+				txfAluno.setText(model.getCode().toString());
+				txfAlunoDescricao.setText(model.getName());				
 	}
 	
 	private boolean isAllModalitiesFinished(List<RegistrationModalityModel> modalitiesList) {

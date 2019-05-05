@@ -301,7 +301,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				// Insere os dados de pagamento do aluno na TableModel de pagamento.
 				invoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
 				
-				if(invoicesList.get(0) instanceof InvoicesRegistrationModel) {
+				if(!invoicesList.isEmpty()) {
 					paymentsSituationTableModel
 					.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
 				}
@@ -327,12 +327,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				
 				} else {
 					Object[] options = { "Sim", "Não" };
-					int resultOptions = JOptionPane.showOptionDialog(null, "A aluno/a "+studentModel.getName()+" não possui matricula, deseja realizar a matricula deste aluno?",
+					int resultOptions = JOptionPane.showOptionDialog(null, "Aluno/a "+studentModel.getName()+" não possui matricula, deseja realizar a matricula deste aluno?",
 							"Usuario não matriculado", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
 							options[0]);
 
 					if (resultOptions == 0) {
-						frameStudentRegistrationForm = new StudentRegistrationWindow(desktop,CONNECTION);
+						frameStudentRegistrationForm = new StudentRegistrationWindow(desktop, studentModel, CONNECTION);
 						abrirFrame(frameStudentRegistrationForm);
 						
 					} else {
@@ -354,6 +354,10 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	public int verificateSituation(List<InvoicesRegistrationModel> listModel) {
 		int situation = 1;
  
+		if(listModel.isEmpty()) {
+			situation = 2;
+		}
+		
 		for (InvoicesRegistrationModel invoices : listModel) {
 			if (invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
 					|| invoices.getCancellationDate().toString().isEmpty())) {
