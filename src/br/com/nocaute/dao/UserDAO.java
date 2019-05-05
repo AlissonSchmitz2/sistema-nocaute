@@ -144,9 +144,9 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 	
 	public boolean createUser(UserModel model) throws SQLException {
 		
-		String query  =   "create	role		"+ model.getUser() +
+		String query  =   "create	role		" + model.getUser() +
 				"	with		login" +
-				"			encrypted password		'"+ new String(model.getPassword())  +"'"+
+				"			encrypted password		'" + new String(model.getPassword())  +"'"+
 				"			in role				admin";
 	
 		PreparedStatement pst = connection.prepareStatement(query);

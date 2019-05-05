@@ -8,8 +8,9 @@ import javax.swing.plaf.FontUIResource;
 
 public class Main {
 
-	public static void main(String[] args) {
 
+	public static void main(String[] args) {
+		
 		// Muda o Layout da janela para o padrão do Windows
 		try {
 			boolean hasWindowLookAndFeel = false;

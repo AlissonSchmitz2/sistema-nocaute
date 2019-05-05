@@ -97,7 +97,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
 	private static int height = screenRect.height;// area total da altura tirando subtraindo o menu iniciar
 	private static int width = screenRect.width;// area total da altura tirando subtraindo o menu iniciar
-
+	
 	private StudentFormWindow frameStudentForm;
 	private StudentRegistrationWindow frameStudentRegistrationForm;
 
@@ -105,16 +105,18 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	private Date currentDate = new Date();
 
+	
+
 	public ControlStudentFormWindow(JDesktopPane desktop) {
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
-
+		
 		this.desktop = desktop;
-
+		
 		try {
-			studentDao = new StudentDAO(CONNECTION);
-			registrationDao = new RegistrationDAO(CONNECTION);
-			invoicesDao = new InvoicesRegistrationDAO(CONNECTION);
-			assiduityDao = new AssiduityDAO(CONNECTION);
+			studentDao 		= new StudentDAO              (CONNECTION) ;
+			registrationDao = new RegistrationDAO		  (CONNECTION) ;
+			invoicesDao     = new InvoicesRegistrationDAO (CONNECTION) ;
+			assiduityDao    = new AssiduityDAO            (CONNECTION) ;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -289,14 +291,18 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 				// Insere os dados da matricula na TableModel de matriculas.
 				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
-				studentRegistrationModalitiesTableModel.addModelsList(
-						mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
-
+				if(registrationModel instanceof RegistrationModel) {
+					studentRegistrationModalitiesTableModel.addModelsList(
+							mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
+				
 				// Insere os dados de pagamento do aluno na TableModel de pagamento.
 				invoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
-				paymentsSituationTableModel
-						.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
-
+				
+				if(invoicesList.get(0) instanceof InvoicesRegistrationModel) {
+					paymentsSituationTableModel
+					.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
+				}
+				
 				// Inicia processo de assiduidade do aluno.
 				assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
 				assiduityModel.setInputDate(getDateTime());
@@ -307,7 +313,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				assiduityTableModel.addModelsList(assiduityList.stream()
 						.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
 						.collect(Collectors.toList()));
-
+				
 				int situation = verificateSituation(invoicesList);
 				setSituationColor(situation);
 
@@ -315,12 +321,30 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				btnDataMatriculate.setEnabled(true);
 
 				return true;
+				
+				} else {
+					Object[] options = { "Sim", "Não" };
+					int resultOptions = JOptionPane.showOptionDialog(null, "A aluno/a "+studentModel.getName()+" não possui matricula, deseja realizar a matricula deste aluno?",
+							"Usuario não matriculado", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+							options[0]);
+
+					if (resultOptions == 0) {
+						frameStudentRegistrationForm = new StudentRegistrationWindow(desktop);
+						abrirFrame(frameStudentRegistrationForm);
+						
+					} else {
+						txfCodMatriculate.setText("");
+						txfStudent.setText("");
+					}
+					
+					return true;
+				}
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+									
 		return false;
 	}
 
@@ -462,6 +486,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						try {
 							if (invoicesDao.update(selectedModel)) {
 								bubbleSuccess("Fatura atualizada com sucesso");
+								
+								//Busca os dados do alunos
 								searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 							}			
 							// Atualiza a tabela.
