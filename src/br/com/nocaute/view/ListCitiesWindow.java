@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -32,7 +33,7 @@ public class ListCitiesWindow extends AbstractGridWindow {
 	private CitiesTableModel tableModel;
 	private JTable jTableModels;
 
-	public ListCitiesWindow(JDesktopPane desktop) {
+	public ListCitiesWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Cidades", 445, 310, desktop, true);
 
 		try {

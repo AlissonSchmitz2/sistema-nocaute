@@ -46,6 +46,12 @@ public final class MasterImage extends ImageIcon{
 	public static final MasterImage
 	new_alternative_16x16 = LoadImage("16x16/novo_alternativo.png");
 	
+	public static final MasterImage
+	information_16x16 = LoadImage("16x16/informacao.png");
+	
+	public static final MasterImage
+	exit_16x16 = LoadImage("16x16/sair.png");
+	
 	//22x22
 	public static final MasterImage
 	search_22x22 = LoadImage("22x22/localizar.png");

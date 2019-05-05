@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -33,7 +34,7 @@ public class ListStudentsWindow extends AbstractGridWindow {
 	private StudentsTableModel tableModel;
 	private JTable jTableModels;
 
-	public ListStudentsWindow(JDesktopPane desktop) {
+	public ListStudentsWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Alunos", 445, 310, desktop, true);
 		
 		setFrameIcon(MasterImage.student_16x16);

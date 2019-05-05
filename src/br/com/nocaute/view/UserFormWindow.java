@@ -3,6 +3,7 @@ package br.com.nocaute.view;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +37,14 @@ public class UserFormWindow extends AbstractToolbar {
 	private JComboBox<String> cbxPerfil;
 
 	JDesktopPane desktop;
+	private Connection CONNECTION;
 
-	public UserFormWindow(JDesktopPane desktop) {
+	public UserFormWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Usuários", 455, 200, desktop, false);
 		setFrameIcon(MasterImage.user_16x16);
 
 		this.desktop = desktop;
+		this.CONNECTION = CONNECTION;
 
 		try {
 			userDao = new UserDAO(CONNECTION);
@@ -133,7 +136,7 @@ public class UserFormWindow extends AbstractToolbar {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchUsersWindow == null) {
-					searchUsersWindow = new ListUsersWindow(desktop);
+					searchUsersWindow = new ListUsersWindow(desktop, CONNECTION);
 
 					searchUsersWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
@@ -277,7 +280,7 @@ public class UserFormWindow extends AbstractToolbar {
 
 		if ((new String(txfSenha.getPassword()).isEmpty() || new String(txfSenha.getPassword()) == null)
 				&& txfSenha.isEnabled()) {
-			bubbleWarning("Informe uma senha para usuario!");
+			bubbleWarning("Informe uma senha para usuário!");
 			return false;
 		}
 

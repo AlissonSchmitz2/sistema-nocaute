@@ -14,7 +14,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -151,7 +150,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameUserForm = new UserFormWindow(desktop);
+				frameUserForm = new UserFormWindow(desktop, CONNECTION);
 				abrirFrame(frameUserForm);
 			}
 		});
@@ -161,8 +160,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemSair() {
 		JMenuItem menuItem = new JMenuItem("Sair");
-		ImageIcon img_sair = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/16x16/sair.png"));
-		menuItem.setIcon(img_sair);
+		menuItem.setIcon(MasterImage.exit_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		menuItem.addActionListener(new ActionListener() {
@@ -198,7 +196,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentForm = new StudentFormWindow(desktop,userLogged);
+				frameStudentForm = new StudentFormWindow(desktop,userLogged, CONNECTION);
 				abrirFrame(frameStudentForm);
 			}
 		});
@@ -216,7 +214,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameModalitiesForm = new ModalityFormWindow(desktop,userLogged);
+				frameModalitiesForm = new ModalityFormWindow(desktop,userLogged, CONNECTION);
 				abrirFrame(frameModalitiesForm);
 			}
 		});
@@ -234,7 +232,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				framePlansForm = new PlanFormWindow(desktop,userLogged);
+				framePlansForm = new PlanFormWindow(desktop,userLogged, CONNECTION);
 				abrirFrame(framePlansForm);
 			}
 		});
@@ -277,7 +275,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop);
+				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop, CONNECTION);
 				abrirFrame(frameStudentRegistrationForm);
 			}
 		});
@@ -295,7 +293,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameGeneratePaymentsForm = new GeneratePaymentsWindow(desktop);
+				frameGeneratePaymentsForm = new GeneratePaymentsWindow(desktop, CONNECTION);
 				abrirFrame(frameGeneratePaymentsForm);
 			}
 		});
@@ -314,7 +312,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameListPaymentsForm = new ListPaymentsWindow(desktop);
+				frameListPaymentsForm = new ListPaymentsWindow(desktop, CONNECTION);
 				abrirFrame(frameListPaymentsForm);
 			}
 		});
@@ -332,7 +330,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameRegistrationPaymentsForm = new RegistrationPaymentsFormWindow(desktop);
+				frameRegistrationPaymentsForm = new RegistrationPaymentsFormWindow(desktop, CONNECTION);
 				abrirFrame(frameRegistrationPaymentsForm);
 			}
 		});
@@ -432,7 +430,7 @@ public class Window extends JFrame {
 		
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameBackupWindow = new BackupWindow(desktop, CONNECTION);
+				frameBackupWindow = new BackupWindow(desktop, CONNECTION, Window.this);
 				abrirFrame(frameBackupWindow);
 			}
 		});
@@ -452,8 +450,7 @@ public class Window extends JFrame {
 
 	private JMenuItem getMenuItemSobre() {
 		JMenuItem menuItem = new JMenuItem("Sobre");
-		ImageIcon iconSobre = new ImageIcon(this.getClass().getResource("/br/com/nocaute/image/16x16/informacao.png"));
-		menuItem.setIcon(iconSobre);
+		menuItem.setIcon(MasterImage.information_16x16);
 		menuItem.setFont(getDefaultFont());
 
 		menuItem.addActionListener(new ActionListener() {
@@ -468,7 +465,7 @@ public class Window extends JFrame {
 	}
 	
 	private void startingControlStudent() {
-		frameControlStudentForm = new ControlStudentFormWindow(desktop);
+		frameControlStudentForm = new ControlStudentFormWindow(desktop, CONNECTION);
 		abrirFrame(frameControlStudentForm);
 	}
 

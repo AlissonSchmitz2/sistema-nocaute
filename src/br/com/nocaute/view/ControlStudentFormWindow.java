@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -102,16 +103,18 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private StudentRegistrationWindow frameStudentRegistrationForm;
 
 	private JDesktopPane desktop;
+	private Connection CONNECTION;
 
 	private Date currentDate = new Date();
 
-	
+	public ControlStudentFormWindow(JDesktopPane desktop, Connection CONNECTION) {
 
-	public ControlStudentFormWindow(JDesktopPane desktop) {
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
 		
 		this.desktop = desktop;
-		
+
+		this.CONNECTION = CONNECTION;
+
 		try {
 			studentDao 		= new StudentDAO              (CONNECTION) ;
 			registrationDao = new RegistrationDAO		  (CONNECTION) ;
@@ -158,7 +161,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		btnDataStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentForm = new StudentFormWindow(desktop, studentModel);
+				frameStudentForm = new StudentFormWindow(desktop, studentModel, CONNECTION);
 				abrirFrame(frameStudentForm);
 			}
 		});
@@ -329,7 +332,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 							options[0]);
 
 					if (resultOptions == 0) {
-						frameStudentRegistrationForm = new StudentRegistrationWindow(desktop);
+						frameStudentRegistrationForm = new StudentRegistrationWindow(desktop,CONNECTION);
 						abrirFrame(frameStudentRegistrationForm);
 						
 					} else {

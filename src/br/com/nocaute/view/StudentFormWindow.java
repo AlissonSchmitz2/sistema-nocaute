@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -69,12 +70,14 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 	private JTabbedPane tabelPane;
 
 	private JDesktopPane desktop;
+	private Connection CONNECTION;
 
-	public StudentFormWindow(JDesktopPane desktop, StudentModel model) {
+	public StudentFormWindow(JDesktopPane desktop, StudentModel model, Connection CONNECTION) {
 		super("Cadastro de Alunos", 450, 460, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
 		
 		this.desktop = desktop;
+		this.CONNECTION = CONNECTION;
 		
 		createComponents();
 		
@@ -91,12 +94,13 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 		
 	}
 	
-	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged) {	
+	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged, Connection CONNECTION) {	
 		super("Cadastro de Alunos", 450, 460, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
 
 		this.userLogged = userLogged;
 		this.desktop = desktop;
+		this.CONNECTION = CONNECTION;
 
 		try {
 			studentDao = new StudentDAO(CONNECTION);
@@ -263,7 +267,7 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchStudentWindow == null) {
-					searchStudentWindow = new ListStudentsWindow(desktop);
+					searchStudentWindow = new ListStudentsWindow(desktop, CONNECTION);
 
 					searchStudentWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
@@ -348,7 +352,7 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 
 	private void openSearchCityWindow() {
 		if (searchCityWindow == null) {
-			searchCityWindow = new ListCitiesWindow(desktop);
+			searchCityWindow = new ListCitiesWindow(desktop, CONNECTION);
 
 			searchCityWindow.addInternalFrameListener(new InternalFrameListener() {
 				@Override
