@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,6 +124,28 @@ public class AssiduityDAO extends AbstractDAO<CityModel>
 		}
 
 		return null;
+	}
+	
+	public boolean isFirstAssiduity(Timestamp date, int registrationCode) throws SQLException {
+		
+		String query = "SELECT count(*) 		"
+				+      "  from assiduidade		"
+				+      "where codigo_matricula = ? and DATE_PART('DAY', data_entrada) = DATE_PART('DAY', CURRENT_TIMESTAMP)"
+				;
+		
+		PreparedStatement pst = connection.prepareStatement(query);
+	
+		setParam(pst, 1, registrationCode);
+	
+		ResultSet rst = pst.executeQuery();
+	
+		if(rst.next()) {
+			if(rst.getInt("count") > 0) {
+				return false;
+			}
+		}
+	
+		return true;
 	}
 
 	/**

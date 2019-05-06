@@ -45,6 +45,7 @@ import br.com.nocaute.dao.StudentDAO;
 import br.com.nocaute.image.MasterImage;
 import br.com.nocaute.model.AssiduityModel;
 import br.com.nocaute.model.InvoicesRegistrationModel;
+import br.com.nocaute.model.ModalityModel;
 import br.com.nocaute.model.RegistrationModalityModel;
 import br.com.nocaute.model.RegistrationModel;
 import br.com.nocaute.model.StudentModel;
@@ -88,6 +89,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 	private List<AssiduityModel> assiduityList = new ArrayList<AssiduityModel>();
 	private List<InvoicesRegistrationModel> invoicesList;
+	private List<RegistrationModality> modalityList;
 
 	private StudentDAO studentDao = null;
 	private RegistrationDAO registrationDao = null;
@@ -154,7 +156,11 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						btnDataMatriculate.setEnabled(false);
 
 						setSituationColor(0);
+					}else {
+						
 					}
+					//TODO:Habilitar para atualizar o controle de alunos quando houver alguma modificação.
+					//setThread();
 				}
 			}
 		});
@@ -294,7 +300,9 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 				// Insere os dados da matricula na TableModel de matriculas.
 				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
+				
 				if(registrationModel instanceof RegistrationModel) {
+					modalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
 					studentRegistrationModalitiesTableModel.addModelsList(
 							mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
 				
@@ -309,8 +317,11 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 				// Inicia processo de assiduidade do aluno.
 				assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
 				assiduityModel.setInputDate(getDateTime());
-
-				assiduityModel = assiduityDao.insert(assiduityModel);
+							
+				if(assiduityDao.isFirstAssiduity(getDateTime(),registrationModel.getRegistrationCode())) {
+					assiduityModel = assiduityDao.insert(assiduityModel);
+				}
+				
 				assiduityList = assiduityDao.search(String.valueOf(assiduityModel.getRegistrationCode()));
 
 				assiduityTableModel.addModelsList(assiduityList.stream()
@@ -472,6 +483,63 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		grid.setVisible(true);
 
 		add(grid);
+	}
+	
+	public void setThread() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					while (!Thread.currentThread().isInterrupted()) {
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							throw e;
+						}
+						if(hasChangeData()) {
+							searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	
+	public boolean hasChangeData() throws SQLException {
+		List<InvoicesRegistrationModel> newInvoicesList = new ArrayList<InvoicesRegistrationModel>();
+		List<RegistrationModality> newModalityList = new ArrayList<RegistrationModality>();
+		
+		newInvoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
+		newModalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
+		
+		//Verifica se foi adicionado ou removida algum plano
+		if(newInvoicesList.size() != invoicesList.size()) {
+			System.out.println("Mudou");
+			return true;
+		}
+		
+		System.out.println(String.valueOf(newModalityList.size()) + "----" + String.valueOf(modalityList.size()));
+		
+		//Verifica se foi adicionado ou removida alguma modalidade
+		if(newModalityList.size() != modalityList.size()) {
+			System.out.println("Mudou");
+			return true;
+		}
+		
+		for(int i = 0;i < invoicesList.size();i++) {
+			//InvoicesRegistrationModel model = invoicesDao.findById(invoicesList.get(i).getRegistrationCode());
+			
+			//if(model.getValue() != invoicesList.get(i).getValue()) {
+		    //  System.out.println("Mudou");
+			//	return true;
+			//}
+		}
+			
+		return false;
+		//mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
 	}
 
 	// Cria e atribui as ações aos menus exibidos com o clique direito.
@@ -664,5 +732,5 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		return jPopupMenu;
 	}
-
+	
 }
