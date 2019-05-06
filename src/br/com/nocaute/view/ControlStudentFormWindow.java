@@ -500,6 +500,10 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						if(hasChangeData()) {
 							searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 						}
+						assiduityTableModel.clear();
+						assiduityTableModel.addModelsList(assiduityList.stream()
+								.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
+								.collect(Collectors.toList()));
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
