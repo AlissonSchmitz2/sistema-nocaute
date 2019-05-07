@@ -138,7 +138,7 @@ public class BackupWindow extends AbstractWindowFrame {
 		label.setBounds(70, 50, 520, 25);
 		label.setForeground(Color.red);
 		getContentPane().add(label);
-
+		
 		label = new JLabel("- O Sistema será reiniciado após finalizar o restore.");
 		label.setHorizontalAlignment(JLabel.CENTER);
 		label.setBounds(70, 65, 520, 25);
@@ -237,11 +237,15 @@ public class BackupWindow extends AbstractWindowFrame {
 
 		filter = null;
 	}
-
-	/*
-	 * private void sleep(int time) { try { TimeUnit.SECONDS.sleep(time); } catch
-	 * (InterruptedException e) { e.printStackTrace(); } }
-	 */
+/*
+	private void sleep(int time) {
+		try {
+			TimeUnit.SECONDS.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	*/
 	private void initBackupRestore() {
 
 		// Desabilita o botão ao iniciar
@@ -252,27 +256,29 @@ public class BackupWindow extends AbstractWindowFrame {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles"));
 		} else if (getPathPostgres(System.getenv("ProgramFiles(X86)")) != null) {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
-		} else {
+		} else if(pathPostgres == null) {
+			//Linux
+			pathPostgres = new File("\\usr");
+		}else {
 			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
 			return;
 		}
-
+		
 		if (radioBtnBackup.isSelected()) {
-			// DialogLoading = new DialogLoadingFormWindow("Realizando backup, por favor
-			// aguarde.");
-
-			// sleep(15);
-
-			ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe", "-h",
+			//DialogLoading = new DialogLoadingFormWindow("Realizando backup, por favor aguarde.");
+			
+			//sleep(15);
+			
+			ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump", "-h",
 					"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
 					txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
 
 			startProcess(pb_backup);
 
-			// DialogLoading.setCloseLoading(true);
-
-			// sleep(5);
-
+			//DialogLoading.setCloseLoading(true);
+			
+			//sleep(5);
+			
 			bubbleSuccess("Backup realizado com sucesso!");
 			btnInit.setEnabled(true);
 
@@ -285,10 +291,9 @@ public class BackupWindow extends AbstractWindowFrame {
 				return;
 			}
 
-			// DialogLoading = new DialogLoadingFormWindow("Realizando restore, por favor
-			// aguarde.");
+			//DialogLoading = new DialogLoadingFormWindow("Realizando restore, por favor aguarde.");
 
-			ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb.exe", "-h",
+			ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb", "-h",
 					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
 			if (!startProcess(dropdb)) {
 				DialogLoading.setCloseLoading(true);
@@ -296,19 +301,19 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 
 			// Cria
-			ProcessBuilder createdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\createdb.exe", "-h",
+			ProcessBuilder createdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\createdb", "-h",
 					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
 			startProcess(createdb);
 
 			// Restaura
-			ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore.exe",
+			ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore",
 					"-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
 			startProcess(pb_restore);
+			
+			//DialogLoading.setCloseLoading(true);
 
-			// DialogLoading.setCloseLoading(true);
-
-			// sleep(5);
-
+			//sleep(5);
+			
 			bubbleSuccess("Restore realizado com sucesso!");
 			btnInit.setEnabled(true);
 
@@ -316,12 +321,11 @@ public class BackupWindow extends AbstractWindowFrame {
 
 			Window.dispose();
 
-			// DialogLoading = new DialogLoadingFormWindow("Aguarde enquanto o sistema é
-			// reiniciado.");
+			//DialogLoading = new DialogLoadingFormWindow("Aguarde enquanto o sistema é reiniciado.");
 
-			// sleep(20);
-			// DialogLoading.setCloseLoading(true);
-			// sleep(10);
+			//sleep(20);
+			//DialogLoading.setCloseLoading(true);
+			//sleep(10);
 			new LoginWindow().setVisible(true);
 
 		}
