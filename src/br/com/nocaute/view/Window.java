@@ -455,9 +455,9 @@ public class Window extends JFrame {
 
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Sistema desenvolvido por:\n\nAlisson Schmitz\n"
+				JOptionPane.showMessageDialog(null, "Desenvolvimento:\n\nAlisson Schmitz\n"
 						+ "Edvaldo da Rosa\nGiovane Santiago\nTúlio Borges\n" + "Wilian Hendler"
-						, "Informação", 0, MasterImage.information_32x32);
+						, "Informação", 0, MasterImage.loading);
 			}
 		});
 

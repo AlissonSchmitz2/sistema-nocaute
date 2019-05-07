@@ -12,7 +12,7 @@ public final class MasterImage extends ImageIcon{
 	//16x16
 	public static final MasterImage
 	search_16x16 = LoadImage("16x16/localizar.png");
-
+	
 	public static final MasterImage
 	user_16x16 = LoadImage("16x16/user.png");
 	
@@ -75,6 +75,10 @@ public final class MasterImage extends ImageIcon{
 	
 	public static final MasterImage
 	WallpaperHome = LoadImage("wallpaperHome.png");
+	
+	public static final MasterImage
+	loading = LoadImage("loading.gif");
+	
 
 	private MasterImage(final String titulo) {
 		super(MasterImage.class.getResource(titulo));
@@ -84,7 +88,7 @@ public final class MasterImage extends ImageIcon{
 	 * Carrega a imagem de acordo com o texto passado por
 	 * parametro.
 	 * @param tituloIcone
-	 * @return
+	 * @return ImageIcon
 	 */
 	
 	public static MasterImage LoadImage(final String tituloIcone) {
