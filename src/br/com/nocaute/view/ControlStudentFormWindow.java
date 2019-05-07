@@ -100,7 +100,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private static Rectangle screenRect = ge.getMaximumWindowBounds();
 	private static int height = screenRect.height;// area total da altura tirando subtraindo o menu iniciar
 	private static int width = screenRect.width;// area total da altura tirando subtraindo o menu iniciar
-	
+
 	private StudentFormWindow frameStudentForm;
 	private StudentRegistrationWindow frameStudentRegistrationForm;
 
@@ -112,16 +112,16 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	public ControlStudentFormWindow(JDesktopPane desktop, Connection CONNECTION) {
 
 		super("Controle de Alunos", width / 2 + 100, height - 150, desktop, false);
-		
+
 		this.desktop = desktop;
 
 		this.CONNECTION = CONNECTION;
 
 		try {
-			studentDao 		= new StudentDAO              (CONNECTION) ;
-			registrationDao = new RegistrationDAO		  (CONNECTION) ;
-			invoicesDao     = new InvoicesRegistrationDAO (CONNECTION) ;
-			assiduityDao    = new AssiduityDAO            (CONNECTION) ;
+			studentDao = new StudentDAO(CONNECTION);
+			registrationDao = new RegistrationDAO(CONNECTION);
+			invoicesDao = new InvoicesRegistrationDAO(CONNECTION);
+			assiduityDao = new AssiduityDAO(CONNECTION);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -156,11 +156,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						btnDataMatriculate.setEnabled(false);
 
 						setSituationColor(0);
-					}else {
-						
+					} else {
+
 					}
-					//TODO:Habilitar para atualizar o controle de alunos quando houver alguma modificação.
-					//setThread();
+					// TODO:Habilitar para atualizar o controle de alunos quando houver alguma
+					// modificação.
+					// setThread();
 				}
 			}
 		});
@@ -300,57 +301,61 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 				// Insere os dados da matricula na TableModel de matriculas.
 				registrationModel = registrationDao.findByStudentId(studentModel.getCode(), true);
-				
-				if(registrationModel instanceof RegistrationModel) {
-					modalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
-					studentRegistrationModalitiesTableModel.addModelsList(
-							mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities()));
-				
-				// Insere os dados de pagamento do aluno na TableModel de pagamento.
-				invoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
-				
-				if(!invoicesList.isEmpty()) {
-					paymentsSituationTableModel
-					.addModelsList(invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
-				}
-				
-				// Inicia processo de assiduidade do aluno.
-				assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
-				assiduityModel.setInputDate(getDateTime());
-							
-				if(assiduityDao.isFirstAssiduity(getDateTime(),registrationModel.getRegistrationCode())) {
-					assiduityModel = assiduityDao.insert(assiduityModel);
-				}
-				
-				assiduityList = assiduityDao.search(String.valueOf(assiduityModel.getRegistrationCode()));
 
-				assiduityTableModel.addModelsList(assiduityList.stream()
-						.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
-						.collect(Collectors.toList()));
-				
-				int situation = verificateSituation(invoicesList);
-				setSituationColor(situation);
+				if (registrationModel instanceof RegistrationModel) {
+					modalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(
+							registrationModel.getModalities());
+					studentRegistrationModalitiesTableModel
+							.addModelsList(mapRegistrationModalitiesModelToRegistrationModalitiesPojo(
+									registrationModel.getModalities()));
 
-				btnDataStudent.setEnabled(true);
-				btnDataMatriculate.setEnabled(true);
+					// Insere os dados de pagamento do aluno na TableModel de pagamento.
+					invoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
 
-				return true;
-				
+					if (!invoicesList.isEmpty()) {
+						paymentsSituationTableModel.addModelsList(
+								invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode()));
+					}
+
+					// Inicia processo de assiduidade do aluno.
+					assiduityModel.setRegistrationCode(registrationModel.getRegistrationCode());
+					assiduityModel.setInputDate(getDateTime());
+
+					if (assiduityDao.isFirstAssiduity(getDateTime(), registrationModel.getRegistrationCode())) {
+						assiduityModel = assiduityDao.insert(assiduityModel);
+					}
+
+					assiduityList = assiduityDao.search(String.valueOf(assiduityModel.getRegistrationCode()));
+
+					assiduityTableModel.addModelsList(assiduityList.stream()
+							.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
+							.collect(Collectors.toList()));
+
+					int situation = verificateSituation(invoicesList);
+					setSituationColor(situation);
+
+					btnDataStudent.setEnabled(true);
+					btnDataMatriculate.setEnabled(true);
+
+					return true;
+
 				} else {
 					Object[] options = { "Sim", "Não" };
-					int resultOptions = JOptionPane.showOptionDialog(null, "Aluno/a "+studentModel.getName()+" não possui matricula, deseja realizar a matricula deste aluno?",
-							"Usuario não matriculado", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
-							options[0]);
+					int resultOptions = JOptionPane.showOptionDialog(null,
+							"Aluno/a " + studentModel.getName()
+									+ " não possui matricula, deseja realizar a matricula deste aluno?",
+							"Usuario não matriculado", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							options, options[0]);
 
 					if (resultOptions == 0) {
 						frameStudentRegistrationForm = new StudentRegistrationWindow(desktop, studentModel, CONNECTION);
 						abrirFrame(frameStudentRegistrationForm);
-						
+
 					} else {
 						txfCodMatriculate.setText("");
 						txfStudent.setText("");
 					}
-					
+
 					return true;
 				}
 			}
@@ -358,17 +363,17 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-									
+
 		return false;
 	}
 
 	public int verificateSituation(List<InvoicesRegistrationModel> listModel) {
 		int situation = 1;
- 
-		if(listModel.isEmpty()) {
+
+		if (listModel.isEmpty()) {
 			situation = 2;
 		}
-		
+
 		for (InvoicesRegistrationModel invoices : listModel) {
 			if (invoices.getPaymentDate() != null && (invoices.getCancellationDate() == null
 					|| invoices.getCancellationDate().toString().isEmpty())) {
@@ -484,7 +489,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		add(grid);
 	}
-	
+
 	public void setThread() {
 		new Thread(new Runnable() {
 
@@ -497,7 +502,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						} catch (InterruptedException e) {
 							throw e;
 						}
-						if(hasChangeData()) {
+						if (hasChangeData()) {
 							searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 						}
 						assiduityTableModel.clear();
@@ -511,39 +516,40 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			}
 		}).start();
 	}
-	
+
 	public boolean hasChangeData() throws SQLException {
 		List<InvoicesRegistrationModel> newInvoicesList = new ArrayList<InvoicesRegistrationModel>();
 		List<RegistrationModality> newModalityList = new ArrayList<RegistrationModality>();
-		
+
 		newInvoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
 		newModalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
-		
-		//Verifica se foi adicionado ou removida algum plano
-		if(newInvoicesList.size() != invoicesList.size()) {
+
+		// Verifica se foi adicionado ou removida algum plano
+		if (newInvoicesList.size() != invoicesList.size()) {
 			System.out.println("Mudou");
 			return true;
 		}
-		
+
 		System.out.println(String.valueOf(newModalityList.size()) + "----" + String.valueOf(modalityList.size()));
-		
-		//Verifica se foi adicionado ou removida alguma modalidade
-		if(newModalityList.size() != modalityList.size()) {
+
+		// Verifica se foi adicionado ou removida alguma modalidade
+		if (newModalityList.size() != modalityList.size()) {
 			System.out.println("Mudou");
 			return true;
 		}
-		
-		for(int i = 0;i < invoicesList.size();i++) {
-			//InvoicesRegistrationModel model = invoicesDao.findById(invoicesList.get(i).getRegistrationCode());
-			
-			//if(model.getValue() != invoicesList.get(i).getValue()) {
-		    //  System.out.println("Mudou");
-			//	return true;
-			//}
+
+		for (int i = 0; i < invoicesList.size(); i++) {
+			// InvoicesRegistrationModel model =
+			// invoicesDao.findById(invoicesList.get(i).getRegistrationCode());
+
+			// if(model.getValue() != invoicesList.get(i).getValue()) {
+			// System.out.println("Mudou");
+			// return true;
+			// }
 		}
-			
+
 		return false;
-		//mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
+		// mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
 	}
 
 	// Cria e atribui as ações aos menus exibidos com o clique direito.
@@ -554,7 +560,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemPayInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
 
 				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja realizar o pagamento da fatura?");
 
@@ -565,13 +572,13 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						try {
 							if (invoicesDao.update(selectedModel)) {
 								bubbleSuccess("Fatura atualizada com sucesso");
-								
-								//Busca os dados do alunos
+
+								// Busca os dados do alunos
 								searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
-							}			
+							}
 							// Atualiza a tabela.
 							paymentsSituationTableModel.fireTableDataChanged();
-							
+
 							verificateSituation(invoicesList);
 						} catch (SQLException error) {
 							error.printStackTrace();
@@ -587,7 +594,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemCancelInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
 
 				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja cancelar a fatura?");
 
@@ -617,7 +625,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemReopenInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
 
 				int selectedOption = JOptionPane.showConfirmDialog(null, "Deseja reabrir a fatura?");
 
@@ -652,7 +661,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		jMenuItemUpdateValueInvoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel.getModel(jTablePayments.getSelectedRow());
+				InvoicesRegistrationModel selectedModel = paymentsSituationTableModel
+						.getModel(jTablePayments.getSelectedRow());
 
 				if (selectedModel.getCancellationDate() == null && selectedModel.getPaymentDate() == null) {
 					JDialog valueDialog = new JDialog();
@@ -689,10 +699,10 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 								if (invoicesDao.update(selectedModel)) {
 									bubbleSuccess("Fatura atualizada com sucesso");
 									valueDialog.dispose();
-									
+
 									searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 								}
-								
+
 								// Atualiza a tabela.
 								paymentsSituationTableModel.fireTableDataChanged();
 							} catch (SQLException error) {
@@ -736,5 +746,5 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		return jPopupMenu;
 	}
-	
+
 }
