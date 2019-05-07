@@ -37,13 +37,13 @@ public class PaymentsSituationTableModel extends AbstractTableModel<InvoicesRegi
 	protected Object getObjectValueAt(int columnIndex, InvoicesRegistrationModel model) {
 		String valueObject = null;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-       
+
 		switch (columnIndex) {
 		case 0:
 			valueObject = dateFormat.format(model.getDueDate());
 			break;
 		case 1:
-			valueObject = String.valueOf(NumberFormat.getCurrencyInstance().format( model.getValue()));
+			valueObject = String.valueOf(NumberFormat.getCurrencyInstance().format(model.getValue()));
 			break;
 		case 2:
 			if (model.getPaymentDate() != null) {
@@ -58,7 +58,7 @@ public class PaymentsSituationTableModel extends AbstractTableModel<InvoicesRegi
 		default:
 			System.err.println("Índice da coluna inválido");
 		}
-		
+
 		return valueObject;
 	}
 

@@ -31,7 +31,7 @@ import br.com.nocaute.model.UserModel;
 public class Window extends JFrame {
 	private static final long serialVersionUID = 3283754083146407662L;
 
-	//Janelas do Menu
+	// Janelas do Menu
 	private ControlStudentFormWindow frameControlStudentForm;
 	private UserFormWindow frameUserForm;
 	private StudentFormWindow frameStudentForm;
@@ -55,7 +55,7 @@ public class Window extends JFrame {
 	private JMenu menuRelatoriosFaturas;
 	private JMenu menuUtilitarios;
 	private JMenu menuAjuda;
-	
+
 	private JLabel wallpaper;
 
 	private JSeparator separador;
@@ -63,31 +63,31 @@ public class Window extends JFrame {
 	private JDesktopPane desktop;
 
 	private UserModel userLogged;
-	
+
 	private Connection CONNECTION;
-	
+
 	public Window(UserModel userLogged, Connection CONNECTION) {
 		super();
-		
+
 		this.userLogged = userLogged;
 		this.CONNECTION = CONNECTION;
-		
+
 		desktop = new JDesktopPane();
 		desktop.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		desktop.setVisible(true);
 		setContentPane(desktop);
-		
+
 		setIconImage(MasterImage.yingyang_16x16.getImage());
-		
+
 		startingWindow();
 
-		//TODO: Wallpaper do sistema
+		// TODO: Wallpaper do sistema
 		wallpaper = new JLabel(MasterImage.WallpaperHome);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		wallpaper.setBounds(0, -50, screenSize.width, screenSize.height - 110);
 		getContentPane().add(wallpaper);
-		
+
 		// Full screen
 		setExtendedState(Frame.MAXIMIZED_BOTH);
 
@@ -135,7 +135,7 @@ public class Window extends JFrame {
 		menuSistema.add(getMenuItemUsuarios());
 		menuSistema.add(separador);
 		menuSistema.add(getMenuItemSair());
-		
+
 		return menuSistema;
 	}
 
@@ -147,7 +147,7 @@ public class Window extends JFrame {
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
 		protectMenuItemBasedFinancialUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameUserForm = new UserFormWindow(desktop, CONNECTION);
@@ -191,12 +191,12 @@ public class Window extends JFrame {
 		menuItem.setFont(getDefaultFont());
 
 		protectMenuItemBasedFinancialUser(menuItem);
-		
+
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameStudentForm = new StudentFormWindow(desktop,userLogged, CONNECTION);
+				frameStudentForm = new StudentFormWindow(desktop, userLogged, CONNECTION);
 				abrirFrame(frameStudentForm);
 			}
 		});
@@ -208,13 +208,13 @@ public class Window extends JFrame {
 		JMenuItem menuItem = new JMenuItem("Modalidades");
 		menuItem.setIcon(MasterImage.student_16x16);
 		menuItem.setFont(getDefaultFont());
-		
+
 		protectMenuItemBasedEnrollUser(menuItem);
 		protectMenuItemBasedFinancialUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frameModalitiesForm = new ModalityFormWindow(desktop,userLogged, CONNECTION);
+				frameModalitiesForm = new ModalityFormWindow(desktop, userLogged, CONNECTION);
 				abrirFrame(frameModalitiesForm);
 			}
 		});
@@ -229,10 +229,10 @@ public class Window extends JFrame {
 
 		protectMenuItemBasedEnrollUser(menuItem);
 		protectMenuItemBasedFinancialUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				framePlansForm = new PlanFormWindow(desktop,userLogged, CONNECTION);
+				framePlansForm = new PlanFormWindow(desktop, userLogged, CONNECTION);
 				abrirFrame(framePlansForm);
 			}
 		});
@@ -272,7 +272,7 @@ public class Window extends JFrame {
 
 		protectMenuItemBasedFinancialUser(menuItem);
 		protectMenuItemBasedRegisterUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameStudentRegistrationForm = new StudentRegistrationWindow(desktop, CONNECTION);
@@ -290,7 +290,7 @@ public class Window extends JFrame {
 
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameGeneratePaymentsForm = new GeneratePaymentsWindow(desktop, CONNECTION);
@@ -309,7 +309,7 @@ public class Window extends JFrame {
 		protectMenuItemBasedFinancialUser(menuItem);
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameListPaymentsForm = new ListPaymentsWindow(desktop, CONNECTION);
@@ -327,7 +327,7 @@ public class Window extends JFrame {
 
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameRegistrationPaymentsForm = new RegistrationPaymentsFormWindow(desktop, CONNECTION);
@@ -364,7 +364,7 @@ public class Window extends JFrame {
 		protectMenuItemBasedFinancialUser(menuItem);
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameReportRegistrationForm = new ReportRegistrationFormWindow(desktop);
@@ -383,7 +383,7 @@ public class Window extends JFrame {
 		protectMenuItemBasedFinancialUser(menuItem);
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameReportPaymentsOpenForm = new ReportPaymentsOpenFormWindow(desktop);
@@ -402,7 +402,7 @@ public class Window extends JFrame {
 		protectMenuItemBasedFinancialUser(menuItem);
 		protectMenuItemBasedRegisterUser(menuItem);
 		protectMenuItemBasedEnrollUser(menuItem);
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameReportPaymentsPayForm = new ReportPaymentsPayFormWindow(desktop);
@@ -422,12 +422,12 @@ public class Window extends JFrame {
 
 		return menuUtilitarios;
 	}
-	
+
 	private JMenuItem getMenuItemBackup() {
 		JMenuItem menuItem = new JMenuItem("Backup e Restore");
 		menuItem.setIcon(MasterImage.backup_restore_16x16);
 		menuItem.setFont(getDefaultFont());
-		
+
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameBackupWindow = new BackupWindow(desktop, CONNECTION, Window.this);
@@ -456,14 +456,13 @@ public class Window extends JFrame {
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(null, "Desenvolvimento:\n\nAlisson Schmitz\n"
-						+ "Edvaldo da Rosa\nGiovane Santiago\nTúlio Borges\n" + "Wilian Hendler"
-						, "Informação", 0, MasterImage.loading);
+						+ "Edvaldo da Rosa\nGiovane Santiago\nTúlio Borges\n" + "Wilian Hendler", "Informação", 0, MasterImage.loading);
 			}
 		});
 
 		return menuItem;
 	}
-	
+
 	private void startingControlStudent() {
 		frameControlStudentForm = new ControlStudentFormWindow(desktop, CONNECTION);
 		abrirFrame(frameControlStudentForm);
@@ -475,10 +474,10 @@ public class Window extends JFrame {
 
 		// Percorre todos os frames adicionados
 		for (JInternalFrame addedFrame : desktop.getAllFrames()) {
-		
-			//Se o frame adiconado ja estiver
+
+			// Se o frame adiconado ja estiver
 			if (addedFrame.getClass().toString().equalsIgnoreCase(frame.getClass().toString())) {
-				//Remove janelas duplicadas
+				// Remove janelas duplicadas
 				addedFrame.moveToFront();
 				frameAlreadyExists = true;
 			}
@@ -498,21 +497,21 @@ public class Window extends JFrame {
 					null);
 		}
 	}
-	
+
 	private void protectMenuItemBasedRegisterUser(JMenuItem menuItem) {
-		if(userLogged.hasProfileRegister()) {
+		if (userLogged.hasProfileRegister()) {
 			menuItem.setEnabled(false);
 		}
 	}
-	
+
 	private void protectMenuItemBasedEnrollUser(JMenuItem menuItem) {
-		if(userLogged.hasProfileEnroll()) {
+		if (userLogged.hasProfileEnroll()) {
 			menuItem.setEnabled(false);
 		}
 	}
-	
+
 	private void protectMenuItemBasedFinancialUser(JMenuItem menuItem) {
-		if(userLogged.hasProfileFinancial()) {
+		if (userLogged.hasProfileFinancial()) {
 			menuItem.setEnabled(false);
 		}
 	}

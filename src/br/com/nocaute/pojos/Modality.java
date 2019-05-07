@@ -3,12 +3,12 @@ package br.com.nocaute.pojos;
 public class Modality {
 	private Integer id;
 	private String name;
-	
-	 public Modality(Integer id, String name) {
-    	setId(id);
-    	setName(name);
-    }
-	 
+
+	public Modality(Integer id, String name) {
+		setId(id);
+		setName(name);
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -26,7 +26,7 @@ public class Modality {
 	}
 
 	@Override
-    public String toString() {
-        return this.name;
-    }
+	public String toString() {
+		return this.name;
+	}
 }

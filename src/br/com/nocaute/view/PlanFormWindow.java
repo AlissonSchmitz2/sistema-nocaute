@@ -28,14 +28,14 @@ import br.com.nocaute.view.comboModel.GenericComboModel;
 
 public class PlanFormWindow extends AbstractToolbar {
 	private static final long serialVersionUID = 5227409767477555089L;
-	
+
 	private PlanDAO planDao;
 	private ModalityDAO modalityDao;
 	private UserModel userLogged = new UserModel();
 	private PlanModel model = new PlanModel();
-	
+
 	private ListPlansWindow searchPlanWindow;
-	
+
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
 
@@ -47,11 +47,11 @@ public class PlanFormWindow extends AbstractToolbar {
 
 	private JDesktopPane desktop;
 	private Connection CONNECTION;
-	
+
 	public PlanFormWindow(JDesktopPane desktop, UserModel userLogged, Connection CONNECTION) {
 		super("Planos", 450, 165, desktop, false);
 		setFrameIcon(MasterImage.financial_16x16);
-		
+
 		this.desktop = desktop;
 		this.userLogged = userLogged;
 		this.CONNECTION = CONNECTION;
@@ -62,19 +62,19 @@ public class PlanFormWindow extends AbstractToolbar {
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
-		
+
 		createComponents();
-		
-		//Caso for usuario cadastral, desabilita ações de buscar e editar.
+
+		// Caso for usuario cadastral, desabilita ações de buscar e editar.
 		disableButtonForRegisterUser();
-		
+
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
-		
+
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 	}
-	
+
 	protected void setButtonsActions() {
 		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
@@ -143,13 +143,13 @@ public class PlanFormWindow extends AbstractToolbar {
 				if (!validateFields()) {
 					return;
 				}
-				
+
 				Modality selectedModality = (Modality) cbxModalidade.getSelectedItem();
-				
+
 				model.setModalityId(selectedModality.getId());
 				model.setName(txfPlano.getText());
 				model.setMonthlyValue(new BigDecimal(txfValor.getValue().doubleValue()));
-				
+
 				try {
 					// EDIÇÃO CADASTRO
 					if (isEditing()) {
@@ -210,7 +210,7 @@ public class PlanFormWindow extends AbstractToolbar {
 								if (model.getModality() != null) {
 									int modalityCounter = 0;
 									try {
-										for (ModalityModel modality  : modalityDao.selectAll()) {
+										for (ModalityModel modality : modalityDao.selectAll()) {
 											modalityCounter++;
 
 											if (model.getModalityId() == modality.getModalityId()) {
@@ -243,23 +243,23 @@ public class PlanFormWindow extends AbstractToolbar {
 			}
 		});
 	}
-	
+
 	private boolean validateFields() {
-		if(cbxModalidade.getSelectedIndex() == 0) {
+		if (cbxModalidade.getSelectedIndex() == 0) {
 			bubbleWarning("Selecione a modalidade!");
 			return false;
 		}
-		
-		if(txfPlano.getText().isEmpty() || txfPlano.getText() == null) {
+
+		if (txfPlano.getText().isEmpty() || txfPlano.getText() == null) {
 			bubbleWarning("Informe o nome do plano!");
 			return false;
 		}
-		
-		if(txfValor.getText().equals("R$ 0,00")) {
+
+		if (txfValor.getText().equals("R$ 0,00")) {
 			bubbleWarning("Digite um valor para o plano!");
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -272,7 +272,7 @@ public class PlanFormWindow extends AbstractToolbar {
 		// Cria uma lista com opções
 		List<Modality> modalitiesList = new ArrayList<>();
 		modalitiesList.add(new Modality(null, "-- Selecione --"));
-		
+
 		try {
 			modalityDao.selectAll().forEach(modality -> modalitiesList.add(new Modality(modality.getModalityId(), modality.getName())));
 		} catch (SQLException e) {
@@ -283,7 +283,7 @@ public class PlanFormWindow extends AbstractToolbar {
 		cbxModalidade.setModel(new GenericComboModel<Modality>(modalitiesList));
 		cbxModalidade.setBounds(70, 55, 355, 20);
 		cbxModalidade.setToolTipText("Informe a modalidade");
-		
+
 		getContentPane().add(cbxModalidade);
 		formFields.add(cbxModalidade);
 
@@ -308,11 +308,11 @@ public class PlanFormWindow extends AbstractToolbar {
 		getContentPane().add(txfValor);
 		formFields.add(txfValor);
 	}
-	
+
 	public void disableButtonForRegisterUser() {
-		if(userLogged.hasProfileRegister()) {
+		if (userLogged.hasProfileRegister()) {
 			formFields.add(btnBuscar);
 		}
 	}
-	
+
 }

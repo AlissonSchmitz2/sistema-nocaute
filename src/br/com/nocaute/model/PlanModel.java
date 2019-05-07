@@ -13,7 +13,7 @@ public class PlanModel extends AbstractModel {
 	 * Relacionamento
 	 */
 	private ModalityModel modality;
-	
+
 	/**
 	 * @return ModalityModel
 	 */

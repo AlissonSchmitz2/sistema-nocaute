@@ -38,7 +38,7 @@ public class ListUsersWindow extends AbstractGridWindow {
 		super("Usuários", 445, 310, desktop, true);
 
 		setFrameIcon(MasterImage.user_16x16);
-		
+
 		try {
 			dao = new UserDAO(CONNECTION);
 		} catch (Exception e) {
@@ -112,7 +112,7 @@ public class ListUsersWindow extends AbstractGridWindow {
 				if (me.getClickCount() == 2) {
 					// Atribui o model da linha clicada
 					selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
-					
+
 					// Fecha a janela
 					try {
 						setClosed(true);
@@ -131,24 +131,24 @@ public class ListUsersWindow extends AbstractGridWindow {
 		jTableModels.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
 				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-					//Atribui o model da linha selecionada
-	            	selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
-	            	
-	            	//Fecha a janela
-	            	try {
+					// Atribui o model da linha selecionada
+					selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
+
+					// Fecha a janela
+					try {
 						setClosed(true);
 					} catch (PropertyVetoException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			public void keyReleased(KeyEvent keyEvent) {
 			}
-			
+
 			public void keyTyped(KeyEvent keyEvent) {
 			}
-	    });
+		});
 
 		grid = new JScrollPane(jTableModels);
 		setLayout(null);

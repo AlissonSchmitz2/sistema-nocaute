@@ -3,12 +3,12 @@ package br.com.nocaute.pojos;
 public class Plan {
 	private Integer id;
 	private String name;
-	
-	 public Plan(Integer id, String name) {
-    	setId(id);
-    	setName(name);
-    }
-	 
+
+	public Plan(Integer id, String name) {
+		setId(id);
+		setName(name);
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -26,7 +26,7 @@ public class Plan {
 	}
 
 	@Override
-    public String toString() {
-        return this.name;
-    }
+	public String toString() {
+		return this.name;
+	}
 }

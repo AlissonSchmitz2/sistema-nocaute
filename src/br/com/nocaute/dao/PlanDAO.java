@@ -14,33 +14,33 @@ import br.com.nocaute.model.ModalityModel;
 
 public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<PlanModel> {
 	private static final String TABLE_NAME = "planos";
-	
+
 	private String columnId = "id_plano";
-	
+
 	private String defaultOrderBy = "plano ASC";
-	
+
 	private String[] defaultValuesToInsert = new String[] {
 			"DEFAULT"
 	};
-	
+
 	private String[] columnsToInsert = new String[] {
 			"id_plano",
 			"id_modalidade",
 			"plano",
 			"valor_mensal"
 	};
-	
+
 	private String[] columnsToUpdate = new String[] {
 			"id_modalidade",
 			"plano",
 			"valor_mensal"
 	};
-	
+
 	Connection connection;
-	
+
 	public PlanDAO(Connection connection) throws SQLException {
 		this.connection = connection;
-		
+
 		this.connection.setAutoCommit(false);
 	}
 
@@ -62,7 +62,7 @@ public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<Pl
 
 		return plansList;
 	}
-	
+
 	@Override
 	public List<PlanModel> search(String word) throws SQLException {
 		String query = "SELECT p.*, m.modalidade FROM " + TABLE_NAME
@@ -79,12 +79,12 @@ public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<Pl
 
 		while (rst.next()) {
 			PlanModel model = createModelFromResultSet(rst);
-			
+
 			if (Integer.valueOf(rst.getInt("id_modalidade")) != null) {
 				ModalityModel modality = new ModalityModel();
 				modality.setModalityId(rst.getInt("id_modalidade"));
 				modality.setName(rst.getString("modalidade"));
-				
+
 				model.setModality(modality);
 			}
 
@@ -110,11 +110,11 @@ public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<Pl
 
 		return model;
 	}
-	
+
 	public List<PlanModel> findByModalityId(Integer id) throws SQLException {
 		PlanModel model = null;
 		List<PlanModel> plansList = new ArrayList<>();
-		
+
 		String query = getFindByQuery(TABLE_NAME, "id_modalidade", "*", defaultOrderBy);
 		PreparedStatement pst = connection.prepareStatement(query);
 
@@ -221,5 +221,5 @@ public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<Pl
 
 		return model;
 	}
-	
+
 }

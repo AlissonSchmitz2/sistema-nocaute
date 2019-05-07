@@ -9,17 +9,17 @@ public class ReportRegistrationFormWindow extends AbstractReportWindowFrame {
 
 	public ReportRegistrationFormWindow(JDesktopPane desktop) {
 		super("Relatório de Matricula", desktop);
-		
+
 		// Seta as ações esperadas para cada botão
 		setButtonsActions();
 	}
 
 	protected void setButtonsActions() {
-		// Recuperar data do campo. Esse método é chamado 
+		// Recuperar data do campo. Esse método é chamado
 		// na primeira vez que executa o sistema
-		//SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy"); 
-		//String novaData = formatador.format(jDateChooser.getDate());
-		
+		// SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+		// String novaData = formatador.format(jDateChooser.getDate());
+
 		// Ação Processar relatorio
 		btnProcess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -27,5 +27,5 @@ public class ReportRegistrationFormWindow extends AbstractReportWindowFrame {
 			}
 		});
 	}
-	
+
 }

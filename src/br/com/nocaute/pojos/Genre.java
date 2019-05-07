@@ -2,31 +2,31 @@ package br.com.nocaute.pojos;
 
 public class Genre {
 	private String code;
-    private String description;
-    
-    public Genre(String code, String description) {
-    	setCode(code);
-    	setDescription(description);
-    }
+	private String description;
 
-    public String getCode() {
-        return code;
-    }
+	public Genre(String code, String description) {
+		setCode(code);
+		setDescription(description);
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    @Override
-    public String toString() {
-        return this.description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Override
+	public String toString() {
+		return this.description;
+	}
 }

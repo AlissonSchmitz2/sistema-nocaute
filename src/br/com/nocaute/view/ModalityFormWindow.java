@@ -30,9 +30,9 @@ import br.com.nocaute.model.UserModel;
 import br.com.nocaute.util.InternalFrameListener;
 import br.com.nocaute.view.tableModel.GraduationsTableModel;
 
-public class ModalityFormWindow extends AbstractToolbar{
+public class ModalityFormWindow extends AbstractToolbar {
 	private static final long serialVersionUID = 2362748482428107329L;
-	
+
 	private ModalityDAO modalityDAO;
 	private ModalityModel modalityModel = new ModalityModel();
 	private UserModel userLogged = new UserModel();
@@ -41,113 +41,113 @@ public class ModalityFormWindow extends AbstractToolbar{
 	private List<GraduationModel> graduationDeleteList = new ArrayList<>();
 	private List<GraduationModel> graduationAddList = new ArrayList<>();
 	private ListModalitiesWindow searchModalityWindow;
-	
+
 	// Guarda os fields em uma lista para facilitar manipulação em massa
 	private List<Component> formFields = new ArrayList<Component>();
-	
+
 	// Componentes
 	private JButton btnOk;
 	private JLabel label;
 	private JTextField txfModalidade, txfGraduacao;
-	
+
 	private GraduationsTableModel tableModel;
 	private JTable jTableGraduacoes;
-	
+
 	private JDesktopPane desktop;
 	private Connection CONNECTION;
-	
+
 	public ModalityFormWindow(JDesktopPane desktop, UserModel userLogged, Connection CONNECTION) {
-			super("Modalidades e Graduações", 450, 335, desktop, false);
-			setFrameIcon(MasterImage.student_16x16);
-			
-			this.desktop = desktop;
-			this.userLogged = userLogged;
-			this.CONNECTION = CONNECTION;
-			
-			try {
-				modalityDAO = new ModalityDAO(CONNECTION);
-				graduationDAO = new GraduationDAO(CONNECTION);
-			} catch (SQLException error) {
-				error.printStackTrace();
-			}
-			
-			createComponents();
-			
-			//Caso for usuario cadastral, desabilita ações de buscar e editar.
-			disableButtonForRegisterUser();
-			
-			// Por padrão campos são desabilitados ao iniciar
-			disableComponents(formFields);
-			
-			// Seta as ações esperadas para cada botão
-			setButtonsActions();
+		super("Modalidades e Graduações", 450, 335, desktop, false);
+		setFrameIcon(MasterImage.student_16x16);
+
+		this.desktop = desktop;
+		this.userLogged = userLogged;
+		this.CONNECTION = CONNECTION;
+
+		try {
+			modalityDAO = new ModalityDAO(CONNECTION);
+			graduationDAO = new GraduationDAO(CONNECTION);
+		} catch (SQLException error) {
+			error.printStackTrace();
 		}
-	
+
+		createComponents();
+
+		// Caso for usuario cadastral, desabilita ações de buscar e editar.
+		disableButtonForRegisterUser();
+
+		// Por padrão campos são desabilitados ao iniciar
+		disableComponents(formFields);
+
+		// Seta as ações esperadas para cada botão
+		setButtonsActions();
+	}
+
 	protected void setButtonsActions() {
-		//Ação Adicionar
+		// Ação Adicionar
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Seta form para modo Cadastro
+				// Seta form para modo Cadastro
 				setFormMode(CREATE_MODE);
-				
-				//Ativa campos
+
+				// Ativa campos
 				enableComponents(formFields);
-				
-				//Limpar dados dos campos
+
+				// Limpar dados dos campos
 				clearFormFields(formFields);
-				
-				//Limpar dados da Grid
+
+				// Limpar dados da Grid
 				tableModel.clear();
-				
-				//Cria nova entidade model
+
+				// Cria nova entidade model
 				modalityModel = new ModalityModel();
 				graduationList = new ArrayList<>();
-				
-				//Ativa botão salvar
+
+				// Ativa botão salvar
 				btnSalvar.setEnabled(true);
-				
-				//Desativa botão Remover
+
+				// Desativa botão Remover
 				btnRemover.setEnabled(false);
 			}
 		});
-		
-		//Ação Remover
+
+		// Ação Remover
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (isEditing()) {
-						
-						//Remove todas as graduações relacionadas a modalidade.
-						for(int i = 0; i < graduationList.size(); i++) {
+
+						// Remove todas as graduações relacionadas a modalidade.
+						for (int i = 0; i < graduationList.size(); i++) {
 							graduationDAO.delete(graduationList.get(i));
 						}
-						
-						//Remove a modalidade.
+
+						// Remove a modalidade.
 						boolean result = modalityDAO.delete(modalityModel);
-						
+
 						if (result) {
 							bubbleSuccess("Modalidade excluída com sucesso");
-							
-							//Seta form para modo Cadastro
+
+							// Seta form para modo Cadastro
 							setFormMode(CREATE_MODE);
-							
-							//Desativa campos
+
+							// Desativa campos
 							disableComponents(formFields);
-							
-							//Limpar dados dos campos
+
+							// Limpar dados dos campos
 							clearFormFields(formFields);
-							
-							//Cria nova entidade model
+
+							// Cria nova entidade model
 							modalityModel = new ModalityModel();
 							graduationList.clear();
-							
-							//Limpa a Grid.
+
+							// Limpa a Grid.
 							tableModel.clear();
-							
-							//Desativa botão salvar
+
+							// Desativa botão salvar
 							btnSalvar.setEnabled(false);
-							
-							//Desativa botão remover
+
+							// Desativa botão remover
 							btnRemover.setEnabled(false);
 						} else {
 							bubbleError("Houve um erro ao excluir a modalidade");
@@ -156,28 +156,28 @@ public class ModalityFormWindow extends AbstractToolbar{
 				} catch (SQLException error) {
 					bubbleError("Essa modalidade possui registro em outras partes do sistema e não pode ser excluída!");
 					return;
-					//error.printStackTrace();
+					// error.printStackTrace();
 				}
 			}
 		});
-		
-		//Ação Salvar
+
+		// Ação Salvar
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Verificar modalidades e graduações duplicadas.
-				if(!validateFields()) {
+				// TODO: Verificar modalidades e graduações duplicadas.
+				if (!validateFields()) {
 					return;
 				}
-				
+
 				modalityModel.setName(txfModalidade.getText());
-				
+
 				try {
-					//EDIÇÃO CADASTRO
+					// EDIÇÃO CADASTRO
 					if (isEditing()) {
-						
+
 						boolean result = modalityDAO.update(modalityModel);
-						
-						//Recupera o ID das graduações que foram removidas.
+
+						// Recupera o ID das graduações que foram removidas.
 						if (!graduationDeleteList.isEmpty()) {
 							for (int i = 0; i < graduationList.size(); i++) {
 								for (int j = 0; j < graduationDeleteList.size(); j++) {
@@ -185,65 +185,68 @@ public class ModalityFormWindow extends AbstractToolbar{
 											.equals(graduationList.get(i).getName())) {
 										graduationDeleteList.get(j)
 												.setGraduationId(graduationList.get(i).getGraduationId());
-										
-										//Deleta a graduação.
+
+										// Deleta a graduação.
 										graduationDAO.delete(graduationDeleteList.get(j));
 										graduationList.remove(i);
 									}
 								}
-							}							
+							}
 							graduationDeleteList.clear();
 						}
-						
-						//Caso tenha sido inserida outra graduação na Grid, adiciona ela ao banco de dados.
-						if(!graduationAddList.isEmpty()) {
-							for(int i = 0; i < graduationAddList.size(); i++) {
+
+						// Caso tenha sido inserida outra graduação na Grid, adiciona ela ao banco de
+						// dados.
+						if (!graduationAddList.isEmpty()) {
+							for (int i = 0; i < graduationAddList.size(); i++) {
 								GraduationModel graduationModel = graduationAddList.get(i);
-								
-								//Recupera o ID da modalidade cadastrada e insere a(s) graduação(ões) no banco de dados.
+
+								// Recupera o ID da modalidade cadastrada e insere a(s) graduação(ões) no banco
+								// de dados.
 								graduationModel.setModalityId(modalityModel.getModalityId());
 								GraduationModel graduationInsertedModel = graduationDAO.insert(graduationModel);
-								
-								//Atualiza a lista com os models recém criados.
-								graduationList.add(graduationInsertedModel);								
-							}							
+
+								// Atualiza a lista com os models recém criados.
+								graduationList.add(graduationInsertedModel);
+							}
 							graduationAddList.clear();
 						}
-						
+
 						if (result) {
 							bubbleSuccess("Modalidade editada com sucesso");
 						} else {
 							bubbleError("Houve um erro ao editar a modalidade");
 						}
-					//NOVO CADASTRO
+						// NOVO CADASTRO
 					} else {
-						//Insere a modalidade no banco de dados.
+						// Insere a modalidade no banco de dados.
 						ModalityModel modalityInsertedModel = modalityDAO.insert(modalityModel);
-						
+
 						if (modalityInsertedModel != null) {
-							//Recupera a lista de graduações.							
+							// Recupera a lista de graduações.
 							List<GraduationModel> graduationListAux = tableModel.getModelsList();
-							
-							for(int i = 0; i < graduationListAux.size(); i++) {
+
+							for (int i = 0; i < graduationListAux.size(); i++) {
 								GraduationModel graduationModel = graduationListAux.get(i);
-								
-								//Recupera o ID da modalidade cadastrada e insere a(s) graduação(ões) no banco de dados.
+
+								// Recupera o ID da modalidade cadastrada e insere a(s) graduação(ões) no banco
+								// de dados.
 								graduationModel.setModalityId(modalityInsertedModel.getModalityId());
 								GraduationModel graduationInsertedModel = graduationDAO.insert(graduationModel);
-								
-								//Atualiza a lista com os models recém criados.
-								graduationList.add(graduationInsertedModel);								
-							}	
-							
+
+								// Atualiza a lista com os models recém criados.
+								graduationList.add(graduationInsertedModel);
+							}
+
 							bubbleSuccess("Modalidade cadastrada com sucesso");
-							
-							//Atribui o model recém criado ao model
+
+							// Atribui o model recém criado ao model
 							modalityModel = modalityInsertedModel;
-							
-							//Seta form para edição
+
+							// Seta form para edição
 							setFormMode(UPDATE_MODE);
-							
-							//Ativa botão Remover
+
+							// Ativa botão Remover
 							btnRemover.setEnabled(true);
 						} else {
 							bubbleError("Houve um erro ao cadastrar a modalidade");
@@ -255,67 +258,67 @@ public class ModalityFormWindow extends AbstractToolbar{
 				}
 			}
 		});
-		
-		//Ação Buscar
+
+		// Ação Buscar
 		btnBuscar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (searchModalityWindow == null) {
 					searchModalityWindow = new ListModalitiesWindow(desktop, CONNECTION);
-					
+
 					searchModalityWindow.addInternalFrameListener(new InternalFrameListener() {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
 							ModalityModel selectedModalityModel = ((ListModalitiesWindow) e.getInternalFrame()).getSelectedModel();
 							List<GraduationModel> selectedGraduationList = ((ListModalitiesWindow) e.getInternalFrame()).getGraduationList();
-							
+
 							if (selectedModalityModel != null && selectedGraduationList != null) {
-								//Atribui o model selecionado
+								// Atribui o model selecionado
 								modalityModel = selectedModalityModel;
 								graduationList = selectedGraduationList;
-								
-								//Adiciona as graduações a Grid.
+
+								// Adiciona as graduações a Grid.
 								tableModel.clear();
 								tableModel.addModelsList(graduationList);
-																
-								//Seta dados do model para os campos
+
+								// Seta dados do model para os campos
 								txfModalidade.setText(selectedModalityModel.getName());
-								
-								//Seta form para modo Edição
+
+								// Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
-								
-								//Ativa campos
+
+								// Ativa campos
 								enableComponents(formFields);
-								
-								//Ativa botão salvar
+
+								// Ativa botão salvar
 								btnSalvar.setEnabled(true);
-								
-								//Ativa botão remover
+
+								// Ativa botão remover
 								btnRemover.setEnabled(true);
 							}
-							
-							//Reseta janela
+
+							// Reseta janela
 							searchModalityWindow = null;
 						}
 					});
 				}
 			}
 		});
-		
-		//Ação adicionar graduação a Grid.
+
+		// Ação adicionar graduação a Grid.
 		btnOk.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!txfGraduacao.getText().isEmpty()) {		
+				if (!txfGraduacao.getText().isEmpty()) {
 					GraduationModel graduationModel = new GraduationModel();
 					graduationModel.setGraduationName(txfGraduacao.getText());
-					
-					//Caso esteja em modo de edição, adiciona a graduação a lista de novas adições.
+
+					// Caso esteja em modo de edição, adiciona a graduação a lista de novas adições.
 					if (isEditing()) {
 						graduationAddList.add(graduationModel);
 					}
-					
+
 					tableModel.addModel(graduationModel);
 					txfGraduacao.setText("");
 					txfGraduacao.requestFocus();
@@ -345,68 +348,69 @@ public class ModalityFormWindow extends AbstractToolbar{
 		txfGraduacao.setToolTipText("Digite a graduação");
 		txfGraduacao.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
-	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-	    		  btnOk.doClick();
-	    	  }
-	        }
+				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnOk.doClick();
+				}
+			}
 
-	        public void keyReleased(KeyEvent keyEvent) {
-	        }
+			public void keyReleased(KeyEvent keyEvent) {
+			}
 
-	        public void keyTyped(KeyEvent keyEvent) {
-	        }
+			public void keyTyped(KeyEvent keyEvent) {
+			}
 		});
 		getContentPane().add(txfGraduacao);
 		formFields.add(txfGraduacao);
 		txfGraduacao.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
-	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-	    		  btnOk.doClick();
-	    	  }
-	        }
+				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnOk.doClick();
+				}
+			}
 
-	        public void keyReleased(KeyEvent keyEvent) {
-	        }
+			public void keyReleased(KeyEvent keyEvent) {
+			}
 
-	        public void keyTyped(KeyEvent keyEvent) {
-	        }
-	    });
-		
+			public void keyTyped(KeyEvent keyEvent) {
+			}
+		});
+
 		btnOk = new JButton("OK", MasterImage.ok_13x13);
 		btnOk.setBounds(355, 77, 70, 25);
 		btnOk.setToolTipText("Clique aqui para confirmar");
-		getContentPane().add(btnOk);		
-		
+		getContentPane().add(btnOk);
+
 		createGrid();
-		
+
 		label = new JLabel("Duplo clique na linha da graduação para removê-la.");
 		label.setBounds(5, 280, 250, 25);
 		getContentPane().add(label);
 	}
-	
+
 	private void createGrid() {
 		tableModel = new GraduationsTableModel();
 		jTableGraduacoes = new JTable(tableModel);
 
 		jTableGraduacoes.addMouseListener(new MouseAdapter() {
 
-	        public void mouseClicked (MouseEvent me) {
-	            if (me.getClickCount() == 2) {
-	            	//Caso esteja em modo de edição, adiciona a graduação removida a lista de exclusão.
+			public void mouseClicked(MouseEvent me) {
+				if (me.getClickCount() == 2) {
+					// Caso esteja em modo de edição, adiciona a graduação removida a lista de
+					// exclusão.
 					if (isEditing()) {
 						graduationDeleteList.add(tableModel.getModel(jTableGraduacoes.getSelectedRow()));
 					}
-	            	
-	            	//Clique duplo na linha da graduação para removê-la.     	
-	            	tableModel.removeModel(jTableGraduacoes.getSelectedRow());   
-	            }
-	        }
-	    });
-		
+
+					// Clique duplo na linha da graduação para removê-la.
+					tableModel.removeModel(jTableGraduacoes.getSelectedRow());
+				}
+			}
+		});
+
 		// Habilita a seleção por linha
 		jTableGraduacoes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jTableGraduacoes.setDefaultRenderer(Object.class, renderer);
-		
+
 		grid = new JScrollPane(jTableGraduacoes);
 		setLayout(null);
 		resizeGrid(grid, 5, 110, 420, 170);
@@ -414,23 +418,23 @@ public class ModalityFormWindow extends AbstractToolbar{
 
 		add(grid);
 	}
-	
+
 	private boolean validateFields() {
-		if(txfModalidade.getText().isEmpty() || txfModalidade.getText() == null) {
+		if (txfModalidade.getText().isEmpty() || txfModalidade.getText() == null) {
 			bubbleWarning("Informe o nome da modalidade!");
 			return false;
 		}
-		
-		if(tableModel.isEmpty() || tableModel.getRowCount() == 0) {
+
+		if (tableModel.isEmpty() || tableModel.getRowCount() == 0) {
 			bubbleWarning("Você deve informar ao menos uma graduação para a modalidade.");
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public void disableButtonForRegisterUser() {
-		if(userLogged.hasProfileRegister()) {
+		if (userLogged.hasProfileRegister()) {
 			formFields.add(btnBuscar);
 		}
 	}

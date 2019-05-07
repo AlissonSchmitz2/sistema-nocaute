@@ -75,26 +75,26 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 	public StudentFormWindow(JDesktopPane desktop, StudentModel model, Connection CONNECTION) {
 		super("Cadastro de Alunos", 450, 460, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
-		
+
 		this.desktop = desktop;
 		this.CONNECTION = CONNECTION;
-		
+
 		createComponents();
-		
+
 		btnAdicionar.setEnabled(false);
 		btnBuscar.setEnabled(false);
-		
+
 		AssignModelSelected(model);
-		
-		//Enable false para todos os campos, tela somente de 
-		//visualização de dados através da tela de controle de alunos
+
+		// Enable false para todos os campos, tela somente de
+		// visualização de dados através da tela de controle de alunos
 		addFormFieldsOnlyView();
-		
-	    disableComponents(formFields);
-		
+
+		disableComponents(formFields);
+
 	}
-	
-	public StudentFormWindow(JDesktopPane desktop,UserModel userLogged, Connection CONNECTION) {	
+
+	public StudentFormWindow(JDesktopPane desktop, UserModel userLogged, Connection CONNECTION) {
 		super("Cadastro de Alunos", 450, 460, desktop, false);
 		setFrameIcon(MasterImage.student_16x16);
 
@@ -109,10 +109,10 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 		}
 
 		createComponents();
-		
-		//Caso for usuario cadastral, desabilita ações de buscar e editar.
+
+		// Caso for usuario cadastral, desabilita ações de buscar e editar.
 		disableButtonForRegisterUser();
-		
+
 		// Por padrão campos são desabilitados ao iniciar
 		disableComponents(formFields);
 
@@ -274,7 +274,7 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 						public void internalFrameClosed(InternalFrameEvent e) {
 							StudentModel selectedModel = ((ListStudentsWindow) e.getInternalFrame()).getSelectedModel();
 
-							if (selectedModel != null) {		
+							if (selectedModel != null) {
 								// Atribui o model selecionado
 								model = selectedModel;
 
@@ -303,7 +303,7 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 	}
 
 	public void AssignModelSelected(StudentModel model) {
-		
+
 		// Seta dados do model para os campos
 		txfAluno.setText(model.getName());
 		if (model.getBirthDate() != null) {
@@ -335,7 +335,7 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 			txfPais.setText(model.getCity().getCountry());
 		}
 	}
-	
+
 	@Override
 	public boolean postProcessKeyEvent(KeyEvent ke) {
 		// Abre tela seleção cidade ao clicar F9
@@ -632,15 +632,15 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 
 		return true;
 	}
-	
+
 	public void disableButtonForRegisterUser() {
-		if(userLogged.hasProfileRegister()) {
+		if (userLogged.hasProfileRegister()) {
 			formFields.add(btnBuscar);
 		}
 	}
-	
+
 	public void addFormFieldsOnlyView() {
-		
+
 		formFields.add(txfAluno);
 		formFields.add(cbxSexo);
 		formFields.add(jDateNascimento);
@@ -653,8 +653,8 @@ public class StudentFormWindow extends AbstractToolbar implements KeyEventPostPr
 		formFields.add(txfNumero);
 		formFields.add(txfObservacao);
 		formFields.add(txfAluno);
-	    formFields.add(txfTelefone);
-	    formFields.add(txfBairro);
-	    
+		formFields.add(txfTelefone);
+		formFields.add(txfBairro);
+
 	}
 }

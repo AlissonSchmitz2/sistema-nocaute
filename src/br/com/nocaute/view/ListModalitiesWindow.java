@@ -28,24 +28,24 @@ import br.com.nocaute.view.tableModel.ModalitiesTableModel;
 
 public class ListModalitiesWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = -8394745067091734288L;
-	
+
 	private ModalityDAO modalityDAO;
 	private ModalityModel selectedModel;
-	
+
 	private GraduationDAO graduationDAO;
 	private List<GraduationModel> graduationList;
-	
+
 	private JButton btnSearch;
 	private JTextField txfSearch;
-	
+
 	private ModalitiesTableModel tableModel;
 	private JTable jTableModels;
-	
+
 	public ListModalitiesWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Modalidades", 445, 310, desktop, true);
-		
+
 		setFrameIcon(MasterImage.student_16x16);
-		
+
 		try {
 			modalityDAO = new ModalityDAO(CONNECTION);
 			graduationDAO = new GraduationDAO(CONNECTION);
@@ -54,39 +54,39 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 		}
 
 		createComponents();
-		
+
 		txfSearch.requestFocusInWindow();
-		
+
 		setButtonsActions();
 	}
-	
+
 	public ModalityModel getSelectedModel() {
 		return selectedModel;
 	}
-	
-	public List<GraduationModel> getGraduationList(){
+
+	public List<GraduationModel> getGraduationList() {
 		graduationList = new ArrayList<>();
-		
-		if(selectedModel != null) {
+
+		if (selectedModel != null) {
 			try {
 				graduationList = graduationDAO.findByModalityId(selectedModel.getModalityId());
 			} catch (SQLException error) {
 				error.printStackTrace();
 			}
 		}
-		
+
 		return graduationList;
 	}
-	
+
 	private void setButtonsActions() {
-		//Ação Buscar
+		// Ação Buscar
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				loadGrid(txfSearch.getText());
 			}
 		});
 	}
-	
+
 	private void createComponents() {
 
 		txfSearch = new JTextField();
@@ -95,17 +95,17 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 		txfSearch.requestFocusInWindow();
 		txfSearch.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
-	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-	    		  loadGrid(txfSearch.getText());
-	    	  }
-	        }
+				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+					loadGrid(txfSearch.getText());
+				}
+			}
 
-	        public void keyReleased(KeyEvent keyEvent) {
-	        }
+			public void keyReleased(KeyEvent keyEvent) {
+			}
 
-	        public void keyTyped(KeyEvent keyEvent) {
-	        }
-	    });
+			public void keyTyped(KeyEvent keyEvent) {
+			}
+		});
 		getContentPane().add(txfSearch);
 
 		btnSearch = new JButton("Buscar");
@@ -114,27 +114,27 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 
 		createGrid();
 	}
-	
+
 	private void createGrid() {
 		tableModel = new ModalitiesTableModel();
 		jTableModels = new JTable(tableModel);
-		
+
 		jTableModels.addMouseListener(new MouseAdapter() {
 
-	        public void mouseClicked (MouseEvent me) {
-	            if (me.getClickCount() == 2) {
-	            	//Atribui o model da linha clicada
-	            	selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
-	            	
-	            	//Fecha a janela
-	            	try {
+			public void mouseClicked(MouseEvent me) {
+				if (me.getClickCount() == 2) {
+					// Atribui o model da linha clicada
+					selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
+
+					// Fecha a janela
+					try {
 						setClosed(true);
 					} catch (PropertyVetoException e) {
 						e.printStackTrace();
 					}
-	            }
-	        }
-	    });
+				}
+			}
+		});
 
 		// Habilita a seleção por linha
 		jTableModels.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -142,36 +142,36 @@ public class ListModalitiesWindow extends AbstractGridWindow {
 		jTableModels.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
 				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-					//Atribui o model da linha selecionada
-	            	selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
-	            	
-	            	//Fecha a janela
-	            	try {
+					// Atribui o model da linha selecionada
+					selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
+
+					// Fecha a janela
+					try {
 						setClosed(true);
 					} catch (PropertyVetoException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			public void keyReleased(KeyEvent keyEvent) {
 			}
-			
+
 			public void keyTyped(KeyEvent keyEvent) {
 			}
-	    });
-		
+		});
+
 		grid = new JScrollPane(jTableModels);
 		setLayout(null);
 		resizeGrid(grid, 5, 40, 420, 230);
 		grid.setVisible(true);
-		
+
 		add(grid);
 	}
-	
+
 	private void loadGrid(String word) {
 		tableModel.clear();
-		
+
 		try {
 			tableModel.addModelsList(modalityDAO.search(word));
 		} catch (SQLException e1) {

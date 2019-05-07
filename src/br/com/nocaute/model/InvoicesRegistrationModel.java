@@ -11,7 +11,7 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	private Date data_pagamento;
 	private Date data_cancelamento;
 	private Integer quantidade_modalidade;
-	
+
 	// Auxiliares
 	private boolean matricula_cancelada;
 	private boolean destacar_valor;
@@ -160,5 +160,5 @@ public class InvoicesRegistrationModel extends AbstractModel {
 	public void setQuantityModality(Integer quantityModality) {
 		this.quantidade_modalidade = quantityModality;
 	}
-		
+
 }

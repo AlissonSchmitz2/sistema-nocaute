@@ -24,7 +24,7 @@ public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 	protected JLabel label;
 	// Refatorar para padrao
 	protected JComboBox<String> cbxType;
-	
+
 	protected JDateChooser jDateChooserDe = null, jDateChooserAte = null;
 	protected JPanel panel;
 
@@ -35,16 +35,16 @@ public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 		createComponents();
 	}
 
-	protected abstract void setButtonsActions(); 
+	protected abstract void setButtonsActions();
 
 	private void createComponents() {
-		
+
 		panel = new JPanel();
 		panel.setBounds(new Rectangle(25, 15, 150, 110));
 		panel.setBackground(Color.WHITE);
 		panel.setLayout(null);
 		TitledBorder border = BorderFactory.createTitledBorder("Período");
-		border.setTitleJustification(2); //Justificar texto no centro
+		border.setTitleJustification(2); // Justificar texto no centro
 		panel.setBorder(border);
 		getContentPane().add(panel);
 
@@ -78,5 +78,5 @@ public abstract class AbstractReportWindowFrame extends AbstractWindowFrame {
 		getContentPane().add(btnProcess);
 
 	}
-	
+
 }

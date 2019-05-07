@@ -16,13 +16,14 @@ public class RegistrationModel extends AbstractModel {
 	 */
 	private StudentModel student;
 	private List<RegistrationModalityModel> modalities;
-	
+
 	/**
 	 * @return StudentModel
 	 */
 	public StudentModel getStudent() {
 		return student;
 	}
+
 	/**
 	 * @param StudentModel student
 	 */
@@ -36,13 +37,14 @@ public class RegistrationModel extends AbstractModel {
 	public List<RegistrationModalityModel> getModalities() {
 		return modalities;
 	}
+
 	/**
 	 * @param List<RegistrationModalityModel> modalities
 	 */
 	public void setModalities(List<RegistrationModalityModel> modalities) {
 		this.modalities = modalities;
 	}
-	
+
 	/**
 	 * Outros atributos
 	 */

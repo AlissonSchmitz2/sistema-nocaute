@@ -13,42 +13,42 @@ import br.com.nocaute.model.CityModel;
 
 public class CityDAO extends AbstractDAO<CityModel> implements Selectable<CityModel>, Searchable<CityModel> {
 	private static final String TABLE_NAME = "cidades";
-	
+
 	private String columnId = "id_cidade";
-	
+
 	private String defaultOrderBy = "cidade";
-	
+
 	Connection connection;
-	
-	public CityDAO(Connection connection) throws SQLException{
+
+	public CityDAO(Connection connection) throws SQLException {
 		this.connection = connection;
-		
+
 		this.connection.setAutoCommit(false);
 	}
 
 	@Override
 	public List<CityModel> selectAll() throws SQLException {
 		String query = getSelectAllQuery(TABLE_NAME, "*", defaultOrderBy);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		List<CityModel> cityList = new ArrayList<CityModel>();
-		
+
 		ResultSet rst = pst.executeQuery();
-		
-		while(rst.next()) {
+
+		while (rst.next()) {
 			CityModel model = new CityModel();
 			model.setId(rst.getInt("id_cidade"));
 			model.setName(rst.getString("cidade"));
 			model.setState(rst.getString("estado"));
 			model.setCountry(rst.getString("pais"));
-			
+
 			cityList.add(model);
 		}
-		
+
 		return cityList;
 	}
-	
+
 	@Override
 	public List<CityModel> search(String word) throws SQLException {
 		String query = "SELECT * FROM " + TABLE_NAME
@@ -76,24 +76,24 @@ public class CityDAO extends AbstractDAO<CityModel> implements Selectable<CityMo
 	@Override
 	public CityModel findById(Integer id) throws SQLException {
 		CityModel model = null;
-		
+
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, id);
-		
+
 		ResultSet rst = pst.executeQuery();
-		
-		if(rst.next()) {
+
+		if (rst.next()) {
 			model = createModelFromResultSet(rst);
-			
+
 			return model;
 		}
-		
+
 		return null;
 	}
-		
+
 	/**
 	 * Cria um objeto Model a partir do resultado obtido no banco de dados
 	 * 
@@ -112,4 +112,3 @@ public class CityDAO extends AbstractDAO<CityModel> implements Selectable<CityMo
 		return model;
 	}
 }
-

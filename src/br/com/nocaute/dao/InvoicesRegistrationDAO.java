@@ -11,15 +11,15 @@ import java.util.List;
 import br.com.nocaute.dao.contracts.Selectable;
 import br.com.nocaute.model.InvoicesRegistrationModel;
 
-public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationModel>  implements Selectable<InvoicesRegistrationModel>{	
+public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationModel> implements Selectable<InvoicesRegistrationModel> {
 	private static final String TABLE_NAME = "faturas_matriculas";
-	
+
 	private String columnId = "codigo_matricula";
-	
+
 	private String defaultOrderBy = "codigo_matricula ASC";
-	
+
 	private String[] defaultValuesToInsert = new String[] {};
-	
+
 	private String[] columnsToInsert = new String[] {
 			"codigo_matricula",
 			"data_vencimento",
@@ -28,15 +28,15 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 			"data_cancelamento",
 			"quantidade_modalidade"
 	};
-	
+
 	Connection connection;
-	
-	public InvoicesRegistrationDAO(Connection connection) throws SQLException{
+
+	public InvoicesRegistrationDAO(Connection connection) throws SQLException {
 		this.connection = connection;
-		
+
 		this.connection.setAutoCommit(false);
 	}
-		
+
 	public InvoicesRegistrationModel insert(InvoicesRegistrationModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
 
@@ -62,7 +62,7 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 
 		return null;
 	}
-	
+
 	public boolean update(InvoicesRegistrationModel model) throws SQLException {
 		String query = "UPDATE " + TABLE_NAME + " SET valor = ?, data_pagamento = ?, data_cancelamento = ? WHERE codigo_matricula = ? AND data_vencimento = ?";
 
@@ -75,7 +75,7 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		// Identificador WHERE
 		setParam(pst, 4, model.getRegistrationCode());
 		setParam(pst, 5, model.getDueDate());
-		
+
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
@@ -85,7 +85,7 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 
 		return false;
 	}
-	
+
 	@Override
 	public List<InvoicesRegistrationModel> selectAll() throws SQLException {
 		String query = getSelectAllQuery(TABLE_NAME, "*", defaultOrderBy);
@@ -104,65 +104,67 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 
 		return invoicesRegistrationList;
 	}
-	
+
 	@Override
 	public InvoicesRegistrationModel findById(Integer id) throws SQLException {
 		InvoicesRegistrationModel model = null;
-		
+
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, id);
-		
+
 		ResultSet rst = pst.executeQuery();
-		
-		if(rst.next()) {
+
+		if (rst.next()) {
 			model = createModelFromResultSet(rst);
-			
+
 			return model;
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
-	 * Recupera a lista de faturas relacionadas a um determinado código de matrícula.
+	 * Recupera a lista de faturas relacionadas a um determinado código de
+	 * matrícula.
 	 * 
 	 * @param registrationCode
 	 * @return invoicesRegistrationList
 	 */
-	public List<InvoicesRegistrationModel> getByRegistrationCode(Integer registrationCode) throws SQLException {		
+	public List<InvoicesRegistrationModel> getByRegistrationCode(Integer registrationCode) throws SQLException {
 		String query = getFindByQuery(TABLE_NAME, columnId, "*", defaultOrderBy);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, registrationCode);
-		
+
 		List<InvoicesRegistrationModel> invoicesRegistrationList = new ArrayList<InvoicesRegistrationModel>();
-		
+
 		ResultSet rst = pst.executeQuery();
-		
-		while(rst.next()) {
+
+		while (rst.next()) {
 			InvoicesRegistrationModel model = createModelFromResultSet(rst);
-			
+
 			invoicesRegistrationList.add(model);
 		}
-		
+
 		return invoicesRegistrationList;
 	}
-	
+
 	/**
-	 * Recupera a lista de faturas entre duas datas de acordo com a situação da fatura.
+	 * Recupera a lista de faturas entre duas datas de acordo com a situação da
+	 * fatura.
 	 * 
 	 * @param startDate
 	 * @param finishDate
 	 * @param situation
 	 * @return invoicesRegistrationList
 	 */
-	public List<InvoicesRegistrationModel> searchInvoices(String startDate, String finishDate, String situation) throws SQLException{
+	public List<InvoicesRegistrationModel> searchInvoices(String startDate, String finishDate, String situation) throws SQLException {
 		String query = "";
-		
+
 		if (situation.equals("Todas")) {
 			query = "SELECT * FROM " + TABLE_NAME + " WHERE data_vencimento BETWEEN '" + startDate + "'" + " AND '"
 					+ finishDate + "'" + " ORDER BY " + defaultOrderBy;
@@ -178,20 +180,20 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		}
 
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		List<InvoicesRegistrationModel> invoicesRegistrationList = new ArrayList<InvoicesRegistrationModel>();
-				
+
 		ResultSet rst = pst.executeQuery();
-		
-		while(rst.next()) {
+
+		while (rst.next()) {
 			InvoicesRegistrationModel model = createModelFromResultSet(rst);
-			
+
 			invoicesRegistrationList.add(model);
 		}
-		
+
 		return invoicesRegistrationList;
 	}
-	
+
 	/**
 	 * Cria um objeto Model a partir do resultado obtido no banco de dados
 	 * 
@@ -207,7 +209,7 @@ public class InvoicesRegistrationDAO extends AbstractDAO<InvoicesRegistrationMod
 		model.setValue(rst.getFloat("valor"));
 		model.setPaymentDate(rst.getDate("data_pagamento"));
 		model.setCancellationDate(rst.getDate("data_cancelamento"));
-		model.setQuantityModality(rst.getInt("quantidade_modalidade"));		
+		model.setQuantityModality(rst.getInt("quantidade_modalidade"));
 
 		return model;
 	}

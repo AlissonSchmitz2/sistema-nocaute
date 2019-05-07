@@ -64,7 +64,7 @@ public class LoginWindow extends JDialog {
 				authUser();
 			}
 		});
-		
+
 		txfName.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -73,7 +73,7 @@ public class LoginWindow extends JDialog {
 				}
 			}
 		});
-		
+
 		txfPassword.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -83,12 +83,12 @@ public class LoginWindow extends JDialog {
 			}
 		});
 	}
-	
+
 	private void authUser() {
-		//TODO:Mudar modo com que é feito autenticação do usuario
+		// TODO:Mudar modo com que é feito autenticação do usuario
 		CONNECTION = ConnectionFactory.getConnection("master", txfName.getText(),
 				new String(txfPassword.getPassword()));
-		
+
 		UserDAO dao = null;
 		UserModel model = new UserModel();
 
@@ -103,15 +103,15 @@ public class LoginWindow extends JDialog {
 		if (model == null) {
 			if (txfName.getText().equals("admin") && new String(txfPassword.getPassword()).equals("admin")) {
 				model = new UserModel();
-				
+
 				model.setUser(txfName.getText());
 				model.setProfile("Completo");
 
 				startSystem(model);
-			}else {
+			} else {
 				return;
 			}
-		} else if(model instanceof UserModel){
+		} else if (model instanceof UserModel) {
 			startSystem(model);
 		}
 	}

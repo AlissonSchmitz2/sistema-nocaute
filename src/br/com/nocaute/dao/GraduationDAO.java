@@ -181,5 +181,5 @@ public class GraduationDAO extends AbstractCrudDAO<GraduationModel> {
 
 		return model;
 	}
-	
+
 }

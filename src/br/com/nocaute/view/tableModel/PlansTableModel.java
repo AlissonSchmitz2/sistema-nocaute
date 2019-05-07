@@ -12,19 +12,19 @@ public class PlansTableModel extends AbstractTableModel<PlanModel> {
 	@Override
 	protected void setObjectValueAt(int columnIndex, PlanModel model, Object aValue) {
 		switch (columnIndex) {
-			case 0:
-				model.setName(aValue.toString());
-			case 1:
-				//model.setModality(aValue.toString());
-			default:
-				System.err.println("Índice da coluna inválido");
+		case 0:
+			model.setName(aValue.toString());
+		case 1:
+			// model.setModality(aValue.toString());
+		default:
+			System.err.println("Índice da coluna inválido");
 		}
 	}
 
 	@Override
 	protected Object getObjectValueAt(int columnIndex, PlanModel model) {
 		String valueObject = null;
-		
+
 		switch (columnIndex) {
 		case 0:
 			valueObject = model.getName();

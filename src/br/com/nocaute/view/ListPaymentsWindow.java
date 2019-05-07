@@ -42,38 +42,38 @@ import br.com.nocaute.view.tableModel.PaymentsTableRenderer;
 
 public class ListPaymentsWindow extends AbstractGridWindow {
 	private static final long serialVersionUID = 3905054631992455187L;
-	
+
 	// Componentes
 	private JButton btnSearch;
 	private JLabel label;
 	private JDateChooser startDate;
 	private JDateChooser finishDate;
-	private JComboBox<String> cbxSituation; 	
+	private JComboBox<String> cbxSituation;
 	private PaymentsTableModel tableModel;
 	private JTable jTablePayments;
-	
+
 	// InvoicesRegistration
 	private InvoicesRegistrationDAO invoicesRegistrationDAO;
-	
+
 	// Registration Modalities
 	private RegistrationModalityDAO registrationModalityDAO;
-	
+
 	// Registration
 	private RegistrationDAO registrationDAO;
-	
+
 	// Plan
 	private PlanDAO planDAO;
-	
+
 	// Modality
 	private ModalityDAO modalityDAO;
-	
+
 	// Data atual
 	private Date currentDate = new Date();
 
 	public ListPaymentsWindow(JDesktopPane desktop, Connection CONNECTION) {
 		super("Consultar Faturas", 610, 380, desktop, false);
 		setFrameIcon(MasterImage.search_16x16);
-		
+
 		try {
 			invoicesRegistrationDAO = new InvoicesRegistrationDAO(CONNECTION);
 			registrationDAO = new RegistrationDAO(CONNECTION);
@@ -84,7 +84,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		} catch (SQLException error) {
 			error.printStackTrace();
 		}
-		
+
 		createComponents();
 
 		// Seta as ações esperadas para cada botão
@@ -108,7 +108,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 
 					tableModel.clear();
 
-					if(invoicesRegistrationList.isEmpty()) {
+					if (invoicesRegistrationList.isEmpty()) {
 						bubbleWarning("Nenhuma fatura foi encontrada");
 					} else {
 						// Recupera todas as matrículas.
@@ -134,38 +134,39 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 								// Lista de modalidades relacionadas a um determinado codigo_matricula.
 								List<RegistrationModalityModel> modalitiesList = registrationModalityDAO
 										.getByRegistrationCode(registrationModel.getRegistrationCode());
-								
+
 								// Quantidade de modalidades de uma fatura.
 								Integer quantityModality = 0;
-								
+
 								// Calculos para recuperar o valor total da fatura.
 								BigDecimal auxValue;
 								float amount = 0;
 								List<String> changeDescription = new ArrayList<>();
 								for (int k = 0; k < modalitiesList.size(); k++) {
 									int currentMonth = currentDate.getMonth();
-									quantityModality++;		
-									
+									quantityModality++;
+
 									// Verifica se o aluno está matriculado na modadalide (dataFim não preenchida).
 									if (modalitiesList.get(k).getFinishDate() == null) {
 										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
 										auxValue = planModel.getMonthlyValue();
 										amount += auxValue.floatValue();
-									} 
+									}
 									// Caso não esteja, recupera o valor e monta a descriação do desconto.
-									else if(modalitiesList.get(k).getFinishDate().getMonth() >= currentMonth){
+									else if (modalitiesList.get(k).getFinishDate().getMonth() >= currentMonth) {
 										PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
 										auxValue = planModel.getMonthlyValue();
-										
+
 										ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
 										String descricao = "- R$" + auxValue + " -> Cancelamento da modalidade " + modalityModel.getName();
 										changeDescription.add(descricao);
 									}
 								}
-								
-								// Percorre todas as faturas recuperadas aplicando o desconto e a descrição necessária as faturas.
+
+								// Percorre todas as faturas recuperadas aplicando o desconto e a descrição
+								// necessária as faturas.
 								for (int j = 0; j < invoicesRegistrationList.size(); j++) {
-									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);									
+									InvoicesRegistrationModel invoicesRegistrationModel = invoicesRegistrationList.get(j);
 
 									Integer oldQuantityModality = invoicesRegistrationModel.getQuantityModality();
 									int currentMonth = currentDate.getMonth();
@@ -176,52 +177,54 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 									// código da matrícula do aluno atual, atualiza o valor da fatura.
 									if (invoiceMonth > currentMonth && amount != invoicesRegistrationModel.getValue()
 											&& invoicesRegistrationModel.getRegistrationCode() == registrationModel
-													.getRegistrationCode() && invoicesRegistrationModel.getPaymentDate() == null) {
+													.getRegistrationCode()
+											&& invoicesRegistrationModel.getPaymentDate() == null) {
 										// Seta novo valor da fatura.
 										invoicesRegistrationModel.setValue(amount);
-									}	
-									
+									}
+
 									// Verifica se foi adicionada alguma nova modalidade.
 									if (invoiceMonth > currentMonth && invoicesRegistrationModel
 											.getRegistrationCode() == registrationModel.getRegistrationCode()
 											&& oldQuantityModality != quantityModality) {
 										Date lowerStartDate = new Date();
-										
+
 										// Recupera a menor das datas de inicio.
-										for (int k = 0; k < modalitiesList.size(); k++) {											
-											if(k == 0) {
+										for (int k = 0; k < modalitiesList.size(); k++) {
+											if (k == 0) {
 												lowerStartDate = modalitiesList.get(k).getStartDate();
 											} else if (lowerStartDate.compareTo(modalitiesList.get(k).getStartDate()) > 0) {
 												lowerStartDate = modalitiesList.get(k).getStartDate();
 											}
 										}
-										
+
 										// Recupera a descrição do aumento.
-										for (int k = 0; k < modalitiesList.size(); k++) {	
+										for (int k = 0; k < modalitiesList.size(); k++) {
 											Date startDate = modalitiesList.get(k).getStartDate();
 											if ((startDate.compareTo(currentDate) > 0
 													|| startDate.compareTo(currentDate) == 0)
 													&& startDate.compareTo(lowerStartDate) > 0
-													&& modalitiesList.get(k).getFinishDate() == null) {											
+													&& modalitiesList.get(k).getFinishDate() == null) {
 												PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
 												auxValue = planModel.getMonthlyValue();
-												
+
 												ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
 												String descricao = "+ R$" + auxValue + " -> Adição da modalidade " + modalityModel.getName();
-												changeDescription.add(descricao);												
+												changeDescription.add(descricao);
 											}
 										}
 									}
-									
+
 									// Caso o mês da fatura seja maior que o mês atual e o array de descrição
 									// das alterações não estiver vazio, o valor da fatura
 									// será destacado e a descrição será aplicada.
 									if (invoiceMonth > currentMonth && changeDescription.size() > 0
 											&& invoicesRegistrationModel.getRegistrationCode() == registrationModel
-													.getRegistrationCode() && invoicesRegistrationModel.getPaymentDate() == null) {										
-										// Seta o destaque da fatura para true.										
+													.getRegistrationCode()
+											&& invoicesRegistrationModel.getPaymentDate() == null) {
+										// Seta o destaque da fatura para true.
 										invoicesRegistrationModel.setHighlightValue(true);
-										
+
 										// Seta a descrição do desconto da fatura.
 										invoicesRegistrationModel.setChangeDescription(changeDescription);
 									}
@@ -231,7 +234,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 
 						// Adiciona as faturas a table.
 						tableModel.addModelsList(invoicesRegistrationList);
-					}										
+					}
 				} catch (SQLException error) {
 					error.printStackTrace();
 				}
@@ -240,7 +243,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 	}
 
 	private void createComponents() {
-		
+
 		label = new JLabel("De: ");
 		label.setBounds(5, 10, 50, 25);
 		getContentPane().add(label);
@@ -249,7 +252,7 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		startDate.setBounds(30, 10, 90, 20);
 		startDate.setDateFormatString("dd/MM/yyyy");
 		getContentPane().add(startDate);
-		
+
 		label = new JLabel("Até: ");
 		label.setBounds(130, 10, 50, 25);
 		getContentPane().add(label);
@@ -258,11 +261,11 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		finishDate.setBounds(160, 10, 90, 20);
 		finishDate.setDateFormatString("dd/MM/yyyy");
 		getContentPane().add(finishDate);
-		
+
 		label = new JLabel("Situação: ");
 		label.setBounds(260, 10, 50, 25);
 		getContentPane().add(label);
-		
+
 		cbxSituation = new JComboBox<String>();
 		cbxSituation.addItem("Todas");
 		cbxSituation.addItem("Em Aberto");
@@ -271,12 +274,11 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		cbxSituation.setBounds(315, 10, 150, 20);
 		cbxSituation.setToolTipText("Informe a situação");
 		getContentPane().add(cbxSituation);
-		
+
 		btnSearch = new JButton("Buscar", MasterImage.search_16x16);
 		btnSearch.setBounds(475, 6, 110, 27);
 		btnSearch.setToolTipText("Clique aqui para pesquisar as faturas");
 		getContentPane().add(btnSearch);
-
 
 		loadGrid();
 	}
@@ -290,27 +292,27 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 		jTablePayments.getColumnModel().getColumn(0).setMaxWidth(55);
 		jTablePayments.getColumnModel().getColumn(1).setPreferredWidth(155);
 		jTablePayments.getColumnModel().getColumn(3).setPreferredWidth(40);
-        
-        jTablePayments.addMouseListener(new MouseAdapter() {
+
+		jTablePayments.addMouseListener(new MouseAdapter() {
 
 			public void mouseClicked(MouseEvent me) {
 				// Se clicou com o botão direito do mouse na linha.
 				if ((me.getClickCount() == 1) && (me.getButton() == MouseEvent.BUTTON3)) {
 					InvoicesRegistrationModel model = ((PaymentsTableModel) jTablePayments.getModel()).getModel(jTablePayments.getSelectedRow());
 					// Caso a coluna esteja destacada, abre o popupmenu.
-					if(model.isHighlightValue()) {
+					if (model.isHighlightValue()) {
 						createPopupMenu().show(jTablePayments, me.getX(), me.getY());
-					}					
+					}
 				}
 			}
-			
+
 			@Override
-		    public void mousePressed(MouseEvent event) {
-		        // Seleciona a linha no ponto em que o mouse foi pressionado.
-		        Point point = event.getPoint();
-		        int currentRow = jTablePayments.rowAtPoint(point);
-		        jTablePayments.setRowSelectionInterval(currentRow, currentRow);
-		    }
+			public void mousePressed(MouseEvent event) {
+				// Seleciona a linha no ponto em que o mouse foi pressionado.
+				Point point = event.getPoint();
+				int currentRow = jTablePayments.rowAtPoint(point);
+				jTablePayments.setRowSelectionInterval(currentRow, currentRow);
+			}
 		});
 
 		grid = new JScrollPane(jTablePayments);
@@ -320,28 +322,28 @@ public class ListPaymentsWindow extends AbstractGridWindow {
 
 		add(grid);
 	}
-	
+
 	// Cria e atribui as ações aos menus exibidos com o clique direito.
 	private JPopupMenu createPopupMenu() {
 		JPopupMenu jPopupMenu = new JPopupMenu();
-		
+
 		JMenuItem jMenuItemDetails = new JMenuItem("Detalhes");
 		jMenuItemDetails.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				InvoicesRegistrationModel model = ((PaymentsTableModel) jTablePayments.getModel()).getModel(jTablePayments.getSelectedRow());
-				
+
 				String descricao = "";
-            	for(int i = 0; i < model.getChangeDescription().size(); i++){
-            		descricao += model.getChangeDescription().get(i) + "\n";
-            	}
-            	
-                JOptionPane.showMessageDialog(null, descricao);
+				for (int i = 0; i < model.getChangeDescription().size(); i++) {
+					descricao += model.getChangeDescription().get(i) + "\n";
+				}
+
+				JOptionPane.showMessageDialog(null, descricao);
 			}
 		});
-		
+
 		jPopupMenu.add(jMenuItemDetails);
-		
+
 		return jPopupMenu;
 	}
 }

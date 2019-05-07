@@ -19,13 +19,40 @@ public class StudentDAO extends AbstractCrudDAO<StudentModel> implements Searcha
 
 	private String defaultOrderBy = "aluno ASC";
 
-	private String[] columnsToInsert = new String[] { "codigo_aluno", "aluno", "data_nascimento", "sexo", "telefone",
-			"celular", "email", "observacao", "endereco", "numero", "complemento", "bairro", "id_cidade", "cep" };
+	private String[] columnsToInsert = new String[] {
+			"codigo_aluno",
+			"aluno",
+			"data_nascimento",
+			"sexo",
+			"telefone",
+			"celular",
+			"email",
+			"observacao",
+			"endereco",
+			"numero",
+			"complemento",
+			"bairro",
+			"id_cidade",
+			"cep"
+	};
 
 	private String[] defaultValuesToInsert = new String[] { "DEFAULT" };
 
-	private String[] columnsToUpdate = new String[] { "aluno", "data_nascimento", "sexo", "telefone", "celular",
-			"email", "observacao", "endereco", "numero", "complemento", "bairro", "id_cidade", "cep" };
+	private String[] columnsToUpdate = new String[] {
+			"aluno",
+			"data_nascimento",
+			"sexo",
+			"telefone",
+			"celular",
+			"email",
+			"observacao",
+			"endereco",
+			"numero",
+			"complemento",
+			"bairro",
+			"id_cidade",
+			"cep"
+	};
 
 	Connection connection;
 
@@ -53,7 +80,7 @@ public class StudentDAO extends AbstractCrudDAO<StudentModel> implements Searcha
 
 		return studentsList;
 	}
-	
+
 	@Override
 	public List<StudentModel> search(String word) throws SQLException {
 		String query = "";
@@ -84,14 +111,14 @@ public class StudentDAO extends AbstractCrudDAO<StudentModel> implements Searcha
 
 		while (rst.next()) {
 			StudentModel model = createModelFromResultSet(rst);
-			
+
 			if (Integer.valueOf(rst.getInt("id_cidade")) != null) {
 				CityModel city = new CityModel();
 				city.setId(rst.getInt("id_cidade"));
 				city.setName(rst.getString("cidade"));
 				city.setState(rst.getString("estado"));
 				city.setCountry(rst.getString("pais"));
-				
+
 				model.setCity(city);
 			}
 

@@ -6,23 +6,23 @@ public class InternalFrameListener implements javax.swing.event.InternalFrameLis
 	@Override
 	public void internalFrameClosed(InternalFrameEvent e) {
 	}
-	
+
 	@Override
 	public void internalFrameOpened(InternalFrameEvent e) {
 	}
-	
+
 	@Override
 	public void internalFrameIconified(InternalFrameEvent e) {
 	}
-	
+
 	@Override
 	public void internalFrameDeiconified(InternalFrameEvent e) {
 	}
-	
+
 	@Override
 	public void internalFrameDeactivated(InternalFrameEvent e) {
 	}
-	
+
 	@Override
 	public void internalFrameClosing(InternalFrameEvent e) {
 	}

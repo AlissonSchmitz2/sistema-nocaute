@@ -5,10 +5,10 @@ import java.sql.Timestamp;
 
 import br.com.nocaute.model.AssiduityModel;
 
-public class AssiduityTableModel extends AbstractTableModel<AssiduityModel>{
+public class AssiduityTableModel extends AbstractTableModel<AssiduityModel> {
 
 	public AssiduityTableModel() {
-		super(new String[] {"Assiduidade"});
+		super(new String[] { "Assiduidade" });
 	}
 
 	/**
@@ -44,5 +44,5 @@ public class AssiduityTableModel extends AbstractTableModel<AssiduityModel>{
 
 		return valueObject;
 	}
-	
+
 }

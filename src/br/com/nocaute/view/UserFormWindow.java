@@ -142,35 +142,34 @@ public class UserFormWindow extends AbstractToolbar {
 						@Override
 						public void internalFrameClosed(InternalFrameEvent e) {
 							UserModel selectedModel = ((ListUsersWindow) e.getInternalFrame()).getSelectedModel();
-								
+
 							if (selectedModel != null) {
 								// Atribui o model selecionado
 								model = selectedModel;
-								
+
 								txfUsuario.setText(model.getUser());
 								cbxPerfil.setSelectedItem(model.getProfile());
 
-								
 								txfSenha.setEnabled(false);
 								txfConfirmarSenha.setEnabled(false);
-								
+
 								// Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
 
 								// Ativa campos
 								enableComponents(formFields);
-								
-								if(model.getUser().equals("admin") == true) {
+
+								if (model.getUser().equals("admin") == true) {
 									cbxPerfil.setEnabled(false);
 								}
-								
+
 								// Ativa botão salvar
 								btnSalvar.setEnabled(true);
 
 								// Ativa botão remover
 								btnRemover.setEnabled(true);
 								txfUsuario.setEnabled(false);
-								
+
 								txfConfirmarSenha.setEnabled(false);
 								txfSenha.setEnabled(false);
 							}

@@ -8,13 +8,12 @@ import javax.swing.plaf.FontUIResource;
 
 public class Main {
 
-
 	public static void main(String[] args) {
-		
+
 		// Muda o Layout da janela para o padrão do Windows
 		try {
 			boolean hasWindowLookAndFeel = false;
-			
+
 			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				// Windows
 				if ("Windows".equals(info.getName())) {
@@ -23,11 +22,11 @@ public class Main {
 					break;
 				}
 			}
-			
-			//Alternativa para outros sistemas operacionais
+
+			// Alternativa para outros sistemas operacionais
 			if (!hasWindowLookAndFeel) {
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-				
+
 				setUIFont(new FontUIResource(Font.SANS_SERIF, Font.PLAIN, 11));
 			}
 		} catch (ClassNotFoundException ex) {
@@ -50,15 +49,15 @@ public class Main {
 			}
 		});
 	}
-	
-	public static void setUIFont (javax.swing.plaf.FontUIResource f){
-	    Enumeration<Object> keys = UIManager.getDefaults().keys();
-	    while (keys.hasMoreElements()) {
-	      Object key = keys.nextElement();
-	      Object value = UIManager.get (key);
-	      if (value instanceof FontUIResource)
-	        UIManager.put (key, f);
-	      }
-	    } 
+
+	public static void setUIFont(javax.swing.plaf.FontUIResource f) {
+		Enumeration<Object> keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof FontUIResource)
+				UIManager.put(key, f);
+		}
+	}
 
 }

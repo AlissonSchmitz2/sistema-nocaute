@@ -272,6 +272,6 @@ public class MasterMonthChooser extends JPanel {
 	 * executar alguma ação quando a data for alterada.
 	 */
 	public void ExecuteSomething() {
-		
+
 	}
 }

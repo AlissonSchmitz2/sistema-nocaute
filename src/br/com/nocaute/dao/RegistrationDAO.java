@@ -14,39 +14,39 @@ import br.com.nocaute.model.StudentModel;
 
 public class RegistrationDAO extends AbstractCrudDAO<RegistrationModel> implements Searchable<RegistrationModel> {
 
-private static final String TABLE_NAME = "matriculas";
-	
+	private static final String TABLE_NAME = "matriculas";
+
 	private String columnId = "codigo_matricula";
-	
+
 	private String defaultOrderBy = "codigo_matricula ASC";
-	
+
 	private String[] columnsToInsert = new String[] {
-		"codigo_matricula",
-		"codigo_aluno",
-		"data_matricula",
-		"dia_vencimento",
-		"data_encerramento"
+			"codigo_matricula",
+			"codigo_aluno",
+			"data_matricula",
+			"dia_vencimento",
+			"data_encerramento"
 	};
-	
+
 	private String[] defaultValuesToInsert = new String[] {
-		"DEFAULT"
+			"DEFAULT"
 	};
-	
+
 	private String[] columnsToUpdate = new String[] {
-		"data_matricula",
-		"dia_vencimento",
-		"data_encerramento"		
+			"data_matricula",
+			"dia_vencimento",
+			"data_encerramento"
 	};
-	
+
 	Connection connection;
-	
+
 	RegistrationModalityDAO registrationModalityDao;
-	
+
 	public RegistrationDAO(Connection connection) throws SQLException {
 		this.connection = connection;
-		
+
 		registrationModalityDao = new RegistrationModalityDAO(connection);
-		
+
 		this.connection.setAutoCommit(false);
 	}
 
@@ -68,7 +68,7 @@ private static final String TABLE_NAME = "matriculas";
 
 		return registrationsList;
 	}
-	
+
 	@Override
 	public List<RegistrationModel> search(String word) throws SQLException {
 		String query = "";
@@ -78,8 +78,7 @@ private static final String TABLE_NAME = "matriculas";
 			int code = Integer.parseInt(word);
 
 			query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
-					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE a.aluno ILIKE ? OR r.codigo_matricula=? ORDER BY a.aluno"
-	;
+					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE a.aluno ILIKE ? OR r.codigo_matricula=? ORDER BY a.aluno";
 			pst = connection.prepareStatement(query);
 
 			setParam(pst, 2, code);
@@ -98,13 +97,13 @@ private static final String TABLE_NAME = "matriculas";
 
 		while (rst.next()) {
 			RegistrationModel model = createModelFromResultSet(rst);
-			
+
 			if (Integer.valueOf(rst.getInt("codigo_aluno")) != null) {
 				StudentModel student = new StudentModel();
-				//Para o propósito de listagem, somente código e nome do aluno são suficientes
+				// Para o propósito de listagem, somente código e nome do aluno são suficientes
 				student.setCode(Integer.valueOf(rst.getInt("codigo_aluno")));
 				student.setName(rst.getString("aluno"));
-				
+
 				model.setStudent(student);
 			}
 
@@ -113,7 +112,7 @@ private static final String TABLE_NAME = "matriculas";
 
 		return registrationsList;
 	}
-	
+
 	@Override
 	public RegistrationModel findById(Integer id) throws SQLException {
 		RegistrationModel model = null;
@@ -130,7 +129,7 @@ private static final String TABLE_NAME = "matriculas";
 
 		return model;
 	}
-	
+
 	public RegistrationModel findById(Integer id, boolean loadModalities) throws SQLException {
 		RegistrationModel model = null;
 
@@ -143,18 +142,18 @@ private static final String TABLE_NAME = "matriculas";
 
 		if (rst.next()) {
 			model = createModelFromResultSet(rst);
-			
-			//Adiciona relacionamento Aluno
+
+			// Adiciona relacionamento Aluno
 			if (Integer.valueOf(rst.getInt("codigo_aluno")) != null) {
 				StudentModel student = new StudentModel();
-				//Para o propósito de listagem, somente código e nome do aluno são suficientes
+				// Para o propósito de listagem, somente código e nome do aluno são suficientes
 				student.setCode(Integer.valueOf(rst.getInt("codigo_aluno")));
 				student.setName(rst.getString("aluno"));
-				
+
 				model.setStudent(student);
 			}
-			
-			//Adiciona relacionamento Modalidades
+
+			// Adiciona relacionamento Modalidades
 			if (loadModalities) {
 				model.setModalities(registrationModalityDao.getByRegistrationCode(model.getRegistrationCode()));
 			}
@@ -162,10 +161,10 @@ private static final String TABLE_NAME = "matriculas";
 
 		return model;
 	}
-	
-	public RegistrationModel findByStudentId(Integer id, boolean loadModatilies) throws SQLException { 
+
+	public RegistrationModel findByStudentId(Integer id, boolean loadModatilies) throws SQLException {
 		RegistrationModel model = null;
-		
+
 		String query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
 				+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE r.codigo_aluno = ?";
 		PreparedStatement pst = connection.prepareStatement(query);
@@ -175,39 +174,39 @@ private static final String TABLE_NAME = "matriculas";
 
 		if (rst.next()) {
 			model = createModelFromResultSet(rst);
-			
-			//Adiciona relacionamento Aluno
+
+			// Adiciona relacionamento Aluno
 			if (Integer.valueOf(rst.getInt("codigo_aluno")) != null) {
 				StudentModel student = new StudentModel();
-				//Para o propósito de listagem, somente código e nome do aluno são suficientes
+				// Para o propósito de listagem, somente código e nome do aluno são suficientes
 				student.setCode(Integer.valueOf(rst.getInt("codigo_aluno")));
 				student.setName(rst.getString("aluno"));
-				
+
 				model.setStudent(student);
 			}
-			
-			//Adiciona relacionamento Modalidades
+
+			// Adiciona relacionamento Modalidades
 			if (loadModatilies) {
 				model.setModalities(registrationModalityDao.getByRegistrationCode(model.getRegistrationCode()));
 			}
 		}
-		
+
 		return model;
 	}
-	
+
 	@Override
 	public RegistrationModel insert(RegistrationModel model) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columnsToInsert, defaultValuesToInsert);
-		
+
 		PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-		
+
 		pst.clearParameters();
-		
+
 		setParam(pst, 1, model.getStudentCode());
 		setParam(pst, 2, model.getRegistrationDate());
 		setParam(pst, 3, model.getExpirationDay());
 		setParam(pst, 4, model.getClosingDate());
-		
+
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
@@ -215,11 +214,11 @@ private static final String TABLE_NAME = "matriculas";
 			ResultSet rs = pst.getGeneratedKeys();
 			if (rs.next()) {
 				int lastInsertedCode = rs.getInt(columnId);
-				
+
 				// Seta o código ao objeto matrícula
 				model.setRegistrationCode(lastInsertedCode);
-				
-				//Insere as modalidades
+
+				// Insere as modalidades
 				model.getModalities().forEach(modality -> {
 					modality.setRegistrationCode(model.getRegistrationCode());
 					try {
@@ -235,7 +234,7 @@ private static final String TABLE_NAME = "matriculas";
 
 		return null;
 	}
-	
+
 	@Override
 	public boolean update(RegistrationModel model) throws SQLException {
 		String query = getUpdateQuery(TABLE_NAME, columnId, columnsToUpdate);
@@ -252,24 +251,24 @@ private static final String TABLE_NAME = "matriculas";
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
-			
-			if(model.getModalities() != null) {
-				//Sincroniza as modalidades			
+
+			if (model.getModalities() != null) {
+				// Sincroniza as modalidades
 				return registrationModalityDao.sync(model.getRegistrationCode(), model.getModalities());
-			}			
+			}
 		}
 
 		return false;
 	}
-	
+
 	@Override
 	public boolean delete(RegistrationModel model) throws SQLException {
-		//Remove modalidades antes de remover a matrícula
+		// Remove modalidades antes de remover a matrícula
 		if (registrationModalityDao.deleteByRegistrationCode(model.getRegistrationCode())) {
-			//Remove a matrícula
+			// Remove a matrícula
 			return deleteById(model.getRegistrationCode());
 		}
-		
+
 		return false;
 	}
 
@@ -289,7 +288,7 @@ private static final String TABLE_NAME = "matriculas";
 
 		return false;
 	}
-	
+
 	/**
 	 * Cria um objeto Model apartir do resultado obtido no banco de dados
 	 * 

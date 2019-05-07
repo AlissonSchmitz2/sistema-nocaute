@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTableModel {
 	private static final long serialVersionUID = 1L;
-	
+
 	private List<T> modelsList;
 	private String[] columns;
 
@@ -18,9 +18,9 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 		this.modelsList = new ArrayList<T>();
 		this.columns = columns;
 	}
-	
+
 	protected abstract void setObjectValueAt(int columnIndex, T model, Object aValue);
-	
+
 	protected abstract Object getObjectValueAt(int columnIndex, T model);
 
 	public int getRowCount() {
@@ -44,14 +44,14 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 		T model = modelsList.get(rowIndex);
 
 		setObjectValueAt(columnIndex, model, aValue);
-		
+
 		fireTableCellUpdated(rowIndex, columnIndex);
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		T selectedModel = modelsList.get(rowIndex);
-		
+
 		return getObjectValueAt(columnIndex, selectedModel);
 	}
 
@@ -63,7 +63,7 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 	public T getModel(int rowIndex) {
 		return modelsList.get(rowIndex);
 	}
-	
+
 	public List<T> getModelsList() {
 		return modelsList;
 	}
@@ -75,7 +75,7 @@ public abstract class AbstractTableModel<T> extends javax.swing.table.AbstractTa
 
 		fireTableRowsInserted(lastIndex, lastIndex);
 	}
-	
+
 	public void addModel(T model, int index) {
 		modelsList.set(index, model);
 

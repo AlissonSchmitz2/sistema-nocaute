@@ -43,7 +43,7 @@ public class ListCitiesWindow extends AbstractGridWindow {
 		}
 
 		createComponents();
-		
+
 		txfSearch.requestFocusInWindow();
 
 		setButtonsActions();
@@ -69,17 +69,17 @@ public class ListCitiesWindow extends AbstractGridWindow {
 		txfSearch.setToolTipText("Informe o cidade");
 		txfSearch.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
-	    	  if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-	    		  loadGrid(txfSearch.getText());
-	    	  }
-	        }
+				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
+					loadGrid(txfSearch.getText());
+				}
+			}
 
-	        public void keyReleased(KeyEvent keyEvent) {
-	        }
+			public void keyReleased(KeyEvent keyEvent) {
+			}
 
-	        public void keyTyped(KeyEvent keyEvent) {
-	        }
-	    });
+			public void keyTyped(KeyEvent keyEvent) {
+			}
+		});
 		getContentPane().add(txfSearch);
 
 		btnSearch = new JButton("Buscar");
@@ -116,24 +116,24 @@ public class ListCitiesWindow extends AbstractGridWindow {
 		jTableModels.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent ke) {
 				if (ke.getID() == KeyEvent.KEY_PRESSED && ke.getKeyCode() == KeyEvent.VK_ENTER) {
-					//Atribui o model da linha selecionada
-	            	selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
-	            	
-	            	//Fecha a janela
-	            	try {
+					// Atribui o model da linha selecionada
+					selectedModel = tableModel.getModel(jTableModels.getSelectedRow());
+
+					// Fecha a janela
+					try {
 						setClosed(true);
 					} catch (PropertyVetoException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			public void keyReleased(KeyEvent keyEvent) {
 			}
-			
+
 			public void keyTyped(KeyEvent keyEvent) {
 			}
-	    });
+		});
 
 		grid = new JScrollPane(jTableModels);
 		setLayout(null);
@@ -146,10 +146,10 @@ public class ListCitiesWindow extends AbstractGridWindow {
 	private void loadGrid(String word) {
 		if (word.length() < 3) {
 			bubbleWarning("Você precisa inserir ao menos 3 caracteres para iniciar a busca");
-			
+
 			return;
 		}
-		
+
 		tableModel.clear();
 
 		try {

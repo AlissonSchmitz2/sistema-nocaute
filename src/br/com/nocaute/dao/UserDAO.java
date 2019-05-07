@@ -19,11 +19,18 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 	private String defaultOrderBy = "usuario ASC";
 
-	private String[] columsToInsert = new String[] { "id_usuario", "usuario", "perfil" };
+	private String[] columsToInsert = new String[] {
+			"id_usuario",
+			"usuario",
+			"perfil"
+	};
 
 	private String[] defaultValuesToInsert = new String[] { "DEFAULT" };
 
-	private String[] columsToUpdate = new String[] { "usuario", "perfil" };
+	private String[] columsToUpdate = new String[] {
+			"usuario",
+			"perfil"
+	};
 
 	Connection connection;
 
@@ -31,7 +38,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		this.connection = connection;
 
 		connection.setAutoCommit(false);
-		
+
 		this.connection.setAutoCommit(false);
 
 	}
@@ -77,21 +84,21 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 		return userList;
 	}
-	
+
 	public UserModel searchByUser(String word) throws SQLException {
 		UserModel model = null;
-		
+
 		String query = "select * from usuarios where usuario = ?";
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		setParam(pst, 1, word);
-		
+
 		ResultSet rst = pst.executeQuery();
-		
-		if(rst.next()) {
+
+		if (rst.next()) {
 			model = createModelFromResultSet(rst);
 		}
-		
+
 		return model;
 	}
 
@@ -133,7 +140,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 				// Antes de retornar, seta o código ao objeto usuario
 				model.setCode(lastInsertedCode);
-				
+
 				createUser(model);
 				return model;
 			}
@@ -141,22 +148,22 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 		return null;
 	}
-	
+
 	public boolean createUser(UserModel model) throws SQLException {
-		
-		String query  =   "create	role		" + model.getUser() +
+
+		String query = "create	role		" + model.getUser() +
 				"	with		login" +
-				"			encrypted password		'" + new String(model.getPassword())  +"'"+
+				"			encrypted password		'" + new String(model.getPassword()) + "'" +
 				"			in role				admin";
-	
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		pst.executeUpdate();
 		connection.commit();
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean update(UserModel model) throws SQLException {
 		String query = getUpdateQuery(TABLE_NAME, columnId, columsToUpdate);
@@ -172,24 +179,23 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		int result = pst.executeUpdate();
 		if (result > 0) {
 			connection.commit();
-			
+
 			updateUser(model);
 			return true;
-		}			
+		}
 		return false;
 	}
-	
+
 	public boolean updateUser(UserModel model) throws SQLException {
-		String query =  " alter	role		" + model.getUser() +
-						"	with		login"  + 
-						"			encrypted password		'"+model.getPassword()+"'"
-						;
-		
+		String query = " alter	role		" + model.getUser() +
+				"	with		login" +
+				"			encrypted password		'" + model.getPassword() + "'";
+
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		pst.executeUpdate();
 		connection.commit();
-	
+
 		return false;
 	}
 
@@ -214,14 +220,14 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 		return false;
 	}
-	
+
 	public boolean deleteUser(String user) throws SQLException {
 		String query = "drop role " + user;
 		PreparedStatement pst = connection.prepareStatement(query);
-		
+
 		pst.executeUpdate();
 		connection.commit();
-		
+
 		return true;
 	}
 

@@ -30,29 +30,29 @@ import br.com.nocaute.model.RegistrationModel;
 
 public class GeneratePaymentsWindow extends AbstractWindowFrame {
 	private static final long serialVersionUID = 7934307046018321070L;
-	
+
 	// Componentes.
 	private JLabel label;
 	private JButton btnGeneratePay;
 	private JMonthChooser jMonthChooser;
 	private JYearChooser jYearChooser;
-	
+
 	// Registration.
 	private RegistrationDAO registrationDAO;
 	private RegistrationModel registrationModel;
 	private List<RegistrationModel> registrationsList = new ArrayList<>();
-	
+
 	// RegistrationModality.
 	private RegistrationModalityDAO registrationModalityDAO;
-	
+
 	// InvoicesRegistration.
 	private InvoicesRegistrationDAO invoicesRegistrationDAO;
 	private InvoicesRegistrationModel invoicesRegistrationModel;
-	
+
 	// Plan.
 	private PlanDAO planDAO;
 	private PlanModel planModel;
-	
+
 	// Recupera a data atual.
 	Date currentDate = new Date();
 
@@ -71,7 +71,7 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 
 		createComponents();
 	}
-	
+
 	private void generatePayments() {
 		int selectedMonth = jMonthChooser.getMonth();
 		int selectedYear = jYearChooser.getYear();
@@ -99,7 +99,8 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 					calendar.set(selectedYear, selectedMonth, registrationModel.getExpirationDay());
 					Date dueDate = calendar.getTime();
 
-					// Recupera a lista de todas as faturas relacionadas a um determinado código de matrícula.
+					// Recupera a lista de todas as faturas relacionadas a um determinado código de
+					// matrícula.
 					List<InvoicesRegistrationModel> invoicesRegistrationsList = invoicesRegistrationDAO
 							.getByRegistrationCode(registrationCode);
 
@@ -109,7 +110,8 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 					// Auxiliar para verificar a existência da fatura.
 					boolean invoiceExists = false;
 
-					// Percorre as faturas verificando a necessidade de inserir uma nova fatura para o aluno.
+					// Percorre as faturas verificando a necessidade de inserir uma nova fatura para
+					// o aluno.
 					for (int k = 0; k < invoicesRegistrationsList.size(); k++) {
 						InvoicesRegistrationModel model = invoicesRegistrationsList.get(k);
 
@@ -131,7 +133,7 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 
 					// Quantidade de modalidades de uma fatura.
 					Integer quantityModality = 0;
-					
+
 					// Calculos para recuperar o valor total da fatura.
 					BigDecimal invoiceValue;
 					float amount = 0;
@@ -144,9 +146,10 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 							amount += invoiceValue.floatValue();
 						}
 					}
-					
-					// Caso o valor total seja igual a 0, significa que a matrícula do aluno foi cancelada, então não gera a fatura.
-					if(amount == 0) {
+
+					// Caso o valor total seja igual a 0, significa que a matrícula do aluno foi
+					// cancelada, então não gera a fatura.
+					if (amount == 0) {
 						continue;
 					}
 
@@ -195,5 +198,5 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 		});
 
 	}
-	
+
 }

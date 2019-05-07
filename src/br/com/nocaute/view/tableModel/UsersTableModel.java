@@ -2,10 +2,10 @@ package br.com.nocaute.view.tableModel;
 
 import br.com.nocaute.model.UserModel;
 
-public class UsersTableModel extends AbstractTableModel<UserModel>{
+public class UsersTableModel extends AbstractTableModel<UserModel> {
 
 	public UsersTableModel() {
-		super(new String[] {"ID","Usuário","Perfil"});
+		super(new String[] { "ID", "Usuário", "Perfil" });
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -21,13 +21,13 @@ public class UsersTableModel extends AbstractTableModel<UserModel>{
 			model.setProfile(aValue.toString());
 		default:
 			System.err.println("Índice da coluna inválido");
-	  }
+		}
 	}
 
 	@Override
 	protected Object getObjectValueAt(int columnIndex, UserModel model) {
 		String valueObject = null;
-		
+
 		switch (columnIndex) {
 		case 0:
 			valueObject = model.getCode().toString();
@@ -37,7 +37,7 @@ public class UsersTableModel extends AbstractTableModel<UserModel>{
 			break;
 		case 2:
 			valueObject = model.getProfile();
-		    break;
+			break;
 		default:
 			System.err.println("Índice da coluna inválido");
 		}
