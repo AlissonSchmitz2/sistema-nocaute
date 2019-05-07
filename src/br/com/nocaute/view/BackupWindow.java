@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -29,7 +30,6 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import br.com.nocaute.image.MasterImage;
-import br.com.nocaute.model.UserModel;
 
 public class BackupWindow extends AbstractWindowFrame {
 
@@ -49,7 +49,9 @@ public class BackupWindow extends AbstractWindowFrame {
 	// Auxiliares
 	private File pathPostgres = null;
 	private JFrame Window;
-	//private UserModel userLogged;
+
+	// Loader
+	private DialogLoadingFormWindow DialogLoading;
 
 	private Connection CONNECTION;
 
@@ -58,13 +60,12 @@ public class BackupWindow extends AbstractWindowFrame {
 	private ButtonGroup btnGroup;
 	private JRadioButton radioBtnBackup, radioBtnRestore;
 
-	public BackupWindow(JDesktopPane desktop, Connection CONNECTION, JFrame Window/*, UserModel userLogged*/) {
+	public BackupWindow(JDesktopPane desktop, Connection CONNECTION, JFrame Window) {
 
-		super("Backup e Restore", 650, 310, desktop);
+		super("Backup e Restore", 650, 325, desktop);
 		this.desktop = desktop;
 		this.CONNECTION = CONNECTION;
 		this.Window = Window;
-		//this.userLogged = userLogged;
 
 		setFrameIcon(MasterImage.backup_restore_16x16);
 		setIconifiable(false);
@@ -132,14 +133,20 @@ public class BackupWindow extends AbstractWindowFrame {
 		label.setFont(new Font("Arial", Font.PLAIN, 18));
 		getContentPane().add(label);
 
-		label = new JLabel("Obs: Para realizar o backup ou restore, todas as janelas do sistema devem estar fechadas.");
+		label = new JLabel("Observações: - Para realizar o backup ou restore, todas as janelas do sistema devem estar fechadas.");
 		label.setHorizontalAlignment(JLabel.CENTER);
 		label.setBounds(70, 50, 520, 25);
 		label.setForeground(Color.red);
 		getContentPane().add(label);
+		
+		label = new JLabel("- O Sistema será reiniciado após finalizar o restore.");
+		label.setHorizontalAlignment(JLabel.CENTER);
+		label.setBounds(70, 65, 520, 25);
+		label.setForeground(Color.red);
+		getContentPane().add(label);
 
 		panel = new JPanel();
-		panel.setBounds(new Rectangle(30, 90, 580, 60));
+		panel.setBounds(new Rectangle(30, 105, 580, 60));
 		panel.setBackground(Color.WHITE);
 		panel.setLayout(null);
 		panel.setBorder(BorderFactory.createTitledBorder("Opções"));
@@ -160,19 +167,18 @@ public class BackupWindow extends AbstractWindowFrame {
 		btnGroup.add(radioBtnRestore);
 
 		txfPath = new JTextField();
-		txfPath.setBounds(30, 180, 520, 25);
+		txfPath.setBounds(30, 195, 520, 25);
 		txfPath.setText("Caminho do Backup.");
 		txfPath.setEnabled(false);
 		getContentPane().add(txfPath);
 
 		btnFilechooser = new JButton("...");
-		btnFilechooser.setBounds(560, 180, 50, 25);
+		btnFilechooser.setBounds(560, 195, 50, 25);
 		getContentPane().add(btnFilechooser);
 
 		btnInit = new JButton("Iniciar");
-		btnInit.setBounds(270, 230, 100, 25);
+		btnInit.setBounds(270, 245, 100, 25);
 		getContentPane().add(btnInit);
-
 	}
 
 	private void fileChooserBackup() {
@@ -231,7 +237,15 @@ public class BackupWindow extends AbstractWindowFrame {
 
 		filter = null;
 	}
-
+/*
+	private void sleep(int time) {
+		try {
+			TimeUnit.SECONDS.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	*/
 	private void initBackupRestore() {
 
 		// Desabilita o botão ao iniciar
@@ -242,25 +256,30 @@ public class BackupWindow extends AbstractWindowFrame {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles"));
 		} else if (getPathPostgres(System.getenv("ProgramFiles(X86)")) != null) {
 			pathPostgres = getPathPostgres(System.getenv("ProgramFiles(X86)"));
-		} else if(pathPostgres == null) {
-			//Linux
-			pathPostgres = new File("\\usr");
 		} else {
 			bubbleError("Problema ao encontrar diretório do gerenciador de banco de dados!");
 			return;
 		}
-
+		
 		if (radioBtnBackup.isSelected()) {
+			//DialogLoading = new DialogLoadingFormWindow("Realizando backup, por favor aguarde.");
+			
+			//sleep(15);
+			
 			ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump.exe", "-h",
 					"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
 					txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
-			
+
 			startProcess(pb_backup);
+
+			//DialogLoading.setCloseLoading(true);
+			
+			//sleep(5);
+			
 			bubbleSuccess("Backup realizado com sucesso!");
 			btnInit.setEnabled(true);
-			
-		} else { //Restore
-			
+
+		} else { // Restore
 			// Desconecta a sessão do banco de dados
 			try {
 				CONNECTION.close();
@@ -268,41 +287,49 @@ public class BackupWindow extends AbstractWindowFrame {
 				bubbleError("Problema ao fechar conexões com o banco de dados!");
 				return;
 			}
-			
-			//Apaga
+
+			//DialogLoading = new DialogLoadingFormWindow("Realizando restore, por favor aguarde.");
+
 			ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb.exe", "-h",
 					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
-			if(startProcess(dropdb) == 0) {
+			if (!startProcess(dropdb)) {
+				DialogLoading.setCloseLoading(true);
 				return;
 			}
-			
-			//Cria
+
+			// Cria
 			ProcessBuilder createdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\createdb.exe", "-h",
 					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
 			startProcess(createdb);
-			
-			//Restaura
-			 ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath()
-					 + "\\bin\\pg_restore.exe", "-h", "localhost", "-p", "5432", "-U", "admin",
-					 "-d", "master", "-v", txfPath.getText());
-			 startProcess(pb_restore);
-			 
-			 //TODO:
-			 //LOADER
-			 
-			 bubbleSuccess("Restore realizado com sucesso!");
-			 btnInit.setEnabled(true);
 
-			 bubbleSuccess("O Sistema será reiniciado!");
-			 
-			 Window.dispose();
-			 new LoginWindow().setVisible(true);;
-			 
+			// Restaura
+			ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore.exe",
+					"-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
+			startProcess(pb_restore);
+			
+			//DialogLoading.setCloseLoading(true);
+
+			//sleep(5);
+			
+			bubbleSuccess("Restore realizado com sucesso!");
+			btnInit.setEnabled(true);
+
+			bubbleSuccess("O Sistema será reiniciado!");
+
+			Window.dispose();
+
+			//DialogLoading = new DialogLoadingFormWindow("Aguarde enquanto o sistema é reiniciado.");
+
+			//sleep(20);
+			//DialogLoading.setCloseLoading(true);
+			//sleep(10);
+			new LoginWindow().setVisible(true);
+
 		}
 
 	}
-	
-	private int startProcess(ProcessBuilder processBuilder) {
+
+	private boolean startProcess(ProcessBuilder processBuilder) {
 		try {
 			Process p = null;
 			String linha = "";
@@ -316,19 +343,21 @@ public class BackupWindow extends AbstractWindowFrame {
 			while ((linha = reader.readLine()) != null) {
 				System.out.println(linha);
 				if (linha.contains("remoção do banco de dados falhou")) {
+					DialogLoading.setCloseLoading(true);
 					bubbleError("É necessário fechar a conexão no gerenciador do banco de dados!");
 					btnInit.setEnabled(true);
-					return 0;
+					return false;
 				}
 			}
 			reader.close();
 		} catch (Exception e) {
+			DialogLoading.setCloseLoading(true);
 			bubbleError("Não foi possível efetuar o backup ou restore!");
 			btnInit.setEnabled(true);
-			return 0;
+			return false;
 		}
 
-		return 1;
+		return true;
 	}
 
 	private File getPathPostgres(String programFiles) {
