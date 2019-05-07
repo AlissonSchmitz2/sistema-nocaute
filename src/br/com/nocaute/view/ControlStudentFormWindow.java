@@ -161,7 +161,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					}
 					// TODO:Habilitar para atualizar o controle de alunos quando houver alguma
 					// modificação.
-					// setThread();
+					setThread();
 				}
 			}
 		});
