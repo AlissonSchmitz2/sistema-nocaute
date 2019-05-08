@@ -237,7 +237,7 @@ public class BackupWindow extends AbstractWindowFrame {
 
 		filter = null;
 	}
-/*
+
 	private void sleep(int time) {
 		try {
 			TimeUnit.SECONDS.sleep(time);
@@ -245,7 +245,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			e.printStackTrace();
 		}
 	}
-	*/
+	
 	private void initBackupRestore() {
 
 		// Desabilita o botão ao iniciar
@@ -265,23 +265,28 @@ public class BackupWindow extends AbstractWindowFrame {
 		}
 		
 		if (radioBtnBackup.isSelected()) {
-			//DialogLoading = new DialogLoadingFormWindow("Realizando backup, por favor aguarde.");
+			DialogLoading = new DialogLoadingFormWindow("Realizando backup, por favor aguarde.");
 			
-			//sleep(15);
-			
-			ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump", "-h",
-					"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
-					txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+										
+					ProcessBuilder pb_backup = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_dump", "-h",
+							"localhost", "-p", "5432", "-U", "admin", "-w", "-F", "c", "-b", "-c", "-v", "-f",
+							txfPath.getText() + "\\Backup" + getDateTime() + ".nocaute", "master");
 
-			startProcess(pb_backup);
-
-			//DialogLoading.setCloseLoading(true);
+					startProcess(pb_backup);
+					
+					//sleep(5);
+					
+					DialogLoading.dispose();
+					
+					bubbleSuccess("Backup realizado com sucesso!");
+					btnInit.setEnabled(true);
+				}
+			}).start();
 			
-			//sleep(5);
-			
-			bubbleSuccess("Backup realizado com sucesso!");
-			btnInit.setEnabled(true);
-
 		} else { // Restore
 			// Desconecta a sessão do banco de dados
 			try {
@@ -291,43 +296,51 @@ public class BackupWindow extends AbstractWindowFrame {
 				return;
 			}
 
-			//DialogLoading = new DialogLoadingFormWindow("Realizando restore, por favor aguarde.");
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+								
+					DialogLoading = new DialogLoadingFormWindow("Realizando restore, por favor aguarde.");
+					
+					ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb", "-h",
+							"localhost", "-p", "5432", "-U", "admin", "-e", "master");
+					if (!startProcess(dropdb)) {
+						DialogLoading.setCloseLoading(true);
+						return;
+					}
 
-			ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb", "-h",
-					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
-			if (!startProcess(dropdb)) {
-				DialogLoading.setCloseLoading(true);
-				return;
-			}
+					// Cria
+					ProcessBuilder createdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\createdb", "-h",
+							"localhost", "-p", "5432", "-U", "admin", "-e", "master");
+					startProcess(createdb);
 
-			// Cria
-			ProcessBuilder createdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\createdb", "-h",
-					"localhost", "-p", "5432", "-U", "admin", "-e", "master");
-			startProcess(createdb);
+					// Restaura
+					ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore",
+							"-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
+					startProcess(pb_restore);
+					
+					DialogLoading.dispose();
+					
+					bubbleSuccess("Restore realizado com sucesso!");
+					
+					btnInit.setEnabled(true);
 
-			// Restaura
-			ProcessBuilder pb_restore = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\pg_restore",
-					"-h", "localhost", "-p", "5432", "-U", "admin", "-d", "master", "-v", txfPath.getText());
-			startProcess(pb_restore);
+					bubbleSuccess("O Sistema será reiniciado!");
+
+					Window.dispose();
+
+					DialogLoading = new DialogLoadingFormWindow("Aguarde enquanto o sistema é reiniciado.");
+					
+					sleep(3);
+					
+					DialogLoading.dispose();
+
+					new LoginWindow().setVisible(true);
+
+				}
+			}).start();
 			
-			//DialogLoading.setCloseLoading(true);
-
-			//sleep(5);
-			
-			bubbleSuccess("Restore realizado com sucesso!");
-			btnInit.setEnabled(true);
-
-			bubbleSuccess("O Sistema será reiniciado!");
-
-			Window.dispose();
-
-			//DialogLoading = new DialogLoadingFormWindow("Aguarde enquanto o sistema é reiniciado.");
-
-			//sleep(20);
-			//DialogLoading.setCloseLoading(true);
-			//sleep(10);
-			new LoginWindow().setVisible(true);
-
 		}
 
 	}

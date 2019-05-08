@@ -30,44 +30,11 @@ public class DialogLoadingFormWindow extends JDialog {
 		gifLoader.setBounds(15, 10, 100, 100);
 		add(gifLoader);
 
-		label = new JLabel();
+		label = new JLabel(msg);
 		label.setBounds(160, 35, 250, 50);
 		add(label);
-
-		initThread();
-	}
-
-	public void initThread() {
-
-		label.setText(getMsg());
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					while (!Thread.currentThread().isInterrupted()) {
-
-						if (!isVisible()) {
-							setVisible(true);
-						}
-
-						try {
-							Thread.sleep(3000);
-						} catch (InterruptedException e) {
-							throw e;
-						}
-
-						if (isCloseLoading()) {
-							dispose();
-							break;
-						}
-
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}, "Loading.LoadingSistemaNocaute").start();
+		
+		setVisible(true);
 	}
 
 	public String getMsg() {
