@@ -108,6 +108,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private Connection CONNECTION;
 
 	private Date currentDate = new Date();
+	
+	private boolean isFirstThread = true;
 
 	public ControlStudentFormWindow(JDesktopPane desktop, Connection CONNECTION) {
 
@@ -156,12 +158,13 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						btnDataMatriculate.setEnabled(false);
 
 						setSituationColor(0);
-					} else {
-
+					} 
+					
+					if(isFirstThread) {
+						setThread();
+						isFirstThread = false;
 					}
-					// TODO:Habilitar para atualizar o controle de alunos quando houver alguma
-					// modificação.
-					setThread();
+					
 				}
 			}
 		});
@@ -328,6 +331,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					assiduityList = assiduityDao.search(String.valueOf(assiduityModel.getRegistrationCode()));
 
 					assiduityTableModel.addModelsList(assiduityList.stream()
+							.filter(a -> a.getInputDate().getYear() == masterMonthChooser.getDate().getYear())
 							.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
 							.collect(Collectors.toList()));
 
@@ -507,6 +511,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						}
 						assiduityTableModel.clear();
 						assiduityTableModel.addModelsList(assiduityList.stream()
+								.filter(a -> a.getInputDate().getYear() == masterMonthChooser.getDate().getYear())
 								.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
 								.collect(Collectors.toList()));
 					}
@@ -521,9 +526,11 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		List<InvoicesRegistrationModel> newInvoicesList = new ArrayList<InvoicesRegistrationModel>();
 		List<RegistrationModality> newModalityList = new ArrayList<RegistrationModality>();
 
+		RegistrationModel registration = registrationDao.findByStudentId(studentModel.getCode(), true);
+		
 		newInvoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
-		newModalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
-
+		newModalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registration.getModalities());
+	
 		// Verifica se foi adicionado ou removida algum plano
 		if (newInvoicesList.size() != invoicesList.size()) {
 			System.out.println("Mudou");
@@ -537,16 +544,40 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			System.out.println("Mudou");
 			return true;
 		}
-
+		/*
 		for (int i = 0; i < invoicesList.size(); i++) {
-			// InvoicesRegistrationModel model =
-			// invoicesDao.findById(invoicesList.get(i).getRegistrationCode());
-
-			// if(model.getValue() != invoicesList.get(i).getValue()) {
-			// System.out.println("Mudou");
-			// return true;
-			// }
+			//Verifica se houve alguma mudança
+			if(invoicesList.get(i).getValue() != newInvoicesList.get(i).getValue()) {
+				return true;
+			}
+			if(invoicesList.get(i).getPaymentDate() != newInvoicesList.get(i).getPaymentDate()) {
+				return true;
+			}
+			if(invoicesList.get(i).getDueDate() != newInvoicesList.get(i).getDueDate()) {
+				return true;
+			}
+			if(invoicesList.get(i).getChangeDescription() != newInvoicesList.get(i).getChangeDescription()) {
+				return true;
+			}
+			if(invoicesList.get(i).getCancellationDate() != newInvoicesList.get(i).getCancellationDate()) {
+				return true;
+			}	
 		}
+		
+		for(int i = 0;i<modalityList.size();i++) {
+			if(modalityList.get(i).getFinishDate() != newModalityList.get(i).getFinishDate()) {
+				return true;
+			}
+			if(modalityList.get(i).getModality() != newModalityList.get(i).getModality()) {
+				return true;
+			}
+			if(modalityList.get(i).getPlan() != newModalityList.get(i).getPlan()) {
+				return true;
+			}
+			if(modalityList.get(i).getStartDate() != newModalityList.get(i).getStartDate()) {
+				return true;
+			}
+		}*/
 
 		return false;
 		// mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
