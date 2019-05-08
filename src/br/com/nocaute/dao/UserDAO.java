@@ -85,6 +85,25 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		return userList;
 	}
 
+	public String searchPassword(String word)throws SQLException {
+		String query = "";
+		PreparedStatement pst = null;
+
+		query = "select rolname, rolpassword from pg_roles where rolname = ?";
+		pst = connection.prepareStatement(query);
+
+		setParam(pst, 1, word);
+		
+		ResultSet rst = pst.executeQuery();
+
+		if(rst.next()) {
+			return rst.getString("rolpassword");
+		}else {
+			return "";
+		}
+		
+		
+	}
 	public UserModel searchByUser(String word) throws SQLException {
 		UserModel model = null;
 
@@ -188,8 +207,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 	public boolean updateUser(UserModel model) throws SQLException {
 		String query = " alter	role		" + model.getUser() +
-				"	with		login" +
-				"			encrypted password		'" + model.getPassword() + "'";
+				"		with	encrypted password		'" + model.getPassword() + "'";
 
 		PreparedStatement pst = connection.prepareStatement(query);
 
