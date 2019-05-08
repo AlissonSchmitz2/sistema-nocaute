@@ -158,13 +158,12 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 						btnDataMatriculate.setEnabled(false);
 
 						setSituationColor(0);
-					} 
-					
-					if(isFirstThread) {
-						setThread();
-						isFirstThread = false;
+					}else {
+						if(isFirstThread) {
+							setThread();
+							isFirstThread = false;
+						}
 					}
-					
 				}
 			}
 		});
@@ -580,7 +579,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		}*/
 
 		return false;
-		// mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registrationModel.getModalities());
+
 	}
 
 	// Cria e atribui as ações aos menus exibidos com o clique direito.

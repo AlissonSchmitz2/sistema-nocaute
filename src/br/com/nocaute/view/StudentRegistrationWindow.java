@@ -777,7 +777,8 @@ public class StudentRegistrationWindow extends AbstractToolbar implements KeyEve
 			return false;
 		}
 
-		if (txfVencFatura.getText().isEmpty() || txfVencFatura.getText() == null) {
+		if (txfVencFatura.getText().isEmpty() || txfVencFatura.getText() == null ||
+				Integer.parseInt(txfVencFatura.getText().toString()) > 31) {
 			bubbleWarning("Dia do vencimento inválido!");
 			return false;
 		}
