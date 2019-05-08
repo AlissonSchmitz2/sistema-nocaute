@@ -5,11 +5,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
+	private static String DB_HOST = "localhost";
+	private static String DB_PORT = "5432";
+	
+	private static String DEFAULT_DB_NAME = "master";
+	
+	public static Connection getConnection(
+			final String username,
+			final String password) {
+		return getConnection(DB_HOST, DB_PORT, DEFAULT_DB_NAME, username, password);
+	}
+	
 	public static Connection getConnection(
 			final String dbName,
 			final String username,
 			final String password) {
-		return getConnection("localhost", "5432", dbName, username, password);
+		return getConnection(DB_HOST, DB_PORT, dbName, username, password);
 	}
 
 	public static Connection getConnection(
