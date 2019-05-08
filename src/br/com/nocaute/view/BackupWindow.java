@@ -306,7 +306,6 @@ public class BackupWindow extends AbstractWindowFrame {
 					ProcessBuilder dropdb = new ProcessBuilder(pathPostgres.getAbsolutePath() + "\\bin\\dropdb", "-h",
 							"localhost", "-p", "5432", "-U", "admin", "-e", "master");
 					if (!startProcess(dropdb)) {
-						DialogLoading.setCloseLoading(true);
 						return;
 					}
 
@@ -359,7 +358,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			while ((linha = reader.readLine()) != null) {
 				System.out.println(linha);
 				if (linha.contains("remoção do banco de dados falhou")) {
-					DialogLoading.setCloseLoading(true);
+					DialogLoading.dispose();
 					bubbleError("É necessário fechar a conexão no gerenciador do banco de dados!");
 					btnInit.setEnabled(true);
 					return false;
@@ -367,7 +366,7 @@ public class BackupWindow extends AbstractWindowFrame {
 			}
 			reader.close();
 		} catch (Exception e) {
-			DialogLoading.setCloseLoading(true);
+			DialogLoading.dispose();
 			bubbleError("Não foi possível efetuar o backup ou restore!");
 			btnInit.setEnabled(true);
 			return false;

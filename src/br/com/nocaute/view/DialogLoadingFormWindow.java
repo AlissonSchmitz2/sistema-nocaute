@@ -11,13 +11,9 @@ public class DialogLoadingFormWindow extends JDialog {
 	private static final long serialVersionUID = 7456850004230329058L;
 
 	private JLabel label, gifLoader;
-	private String msg;
-	private boolean closeLoading = false;
 
 	public DialogLoadingFormWindow(String msg) {
-
-		this.msg = msg;
-
+		
 		setTitle("Aguarde");
 		setLayout(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -35,21 +31,5 @@ public class DialogLoadingFormWindow extends JDialog {
 		add(label);
 		
 		setVisible(true);
-	}
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-	public boolean isCloseLoading() {
-		return closeLoading;
-	}
-
-	public void setCloseLoading(boolean closeLoading) {
-		this.closeLoading = closeLoading;
 	}
 }
