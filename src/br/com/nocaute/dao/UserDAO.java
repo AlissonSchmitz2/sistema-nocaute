@@ -180,7 +180,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		if (result > 0) {
 			connection.commit();
 
-			updateUser(model);
+			//updateUser(model);
 			return true;
 		}
 		return false;
@@ -196,7 +196,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		pst.executeUpdate();
 		connection.commit();
 
-		return false;
+		return true;
 	}
 
 	@Override
