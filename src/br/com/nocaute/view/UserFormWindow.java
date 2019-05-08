@@ -149,10 +149,15 @@ public class UserFormWindow extends AbstractToolbar {
 
 								txfUsuario.setText(model.getUser());
 								cbxPerfil.setSelectedItem(model.getProfile());
-
-								txfSenha.setEnabled(false);
-								txfConfirmarSenha.setEnabled(false);
-
+								
+								try {
+									txfSenha.setText(userDao.searchPassword(model.getUser()));
+									txfConfirmarSenha.setText(userDao.searchPassword(model.getUser()));
+								} catch (SQLException e1) {
+								
+									e1.printStackTrace();
+								}
+							
 								// Seta form para modo Edição
 								setFormMode(UPDATE_MODE);
 
@@ -170,8 +175,6 @@ public class UserFormWindow extends AbstractToolbar {
 								btnRemover.setEnabled(true);
 								txfUsuario.setEnabled(false);
 
-								txfConfirmarSenha.setEnabled(false);
-								txfSenha.setEnabled(false);
 							}
 
 							// Reseta janela
@@ -298,6 +301,11 @@ public class UserFormWindow extends AbstractToolbar {
 			bubbleWarning("Informe o perfil do usuario!");
 			return false;
 		}
+		
+		/*if(txfSenha.getPassword() != txfConfirmarSenha.getPassword()) {
+			bubbleWarning("Senhas não conferem!");
+			return false;
+		}*/
 
 		return true;
 	}
