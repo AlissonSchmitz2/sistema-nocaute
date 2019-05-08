@@ -168,6 +168,7 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 									}
 								}
 
+								boolean increaseRecovered = false;
 								// Percorre todas as faturas recuperadas aplicando o desconto e a descrição
 								// necessária as faturas.
 								for (int j = 0; j < invoicesRegistrationList.size(); j++) {
@@ -204,18 +205,21 @@ public class RegistrationPaymentsFormWindow extends AbstractGridWindow {
 										}
 
 										// Recupera a descrição do aumento.
-										for (int k = 0; k < modalitiesList.size(); k++) {
-											Date startDate = modalitiesList.get(k).getStartDate();
-											if ((startDate.compareTo(currentDate) > 0
-													|| startDate.compareTo(currentDate) == 0)
-													&& startDate.compareTo(lowerStartDate) > 0
-													&& modalitiesList.get(k).getFinishDate() == null) {
-												PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
-												auxValue = planModel.getMonthlyValue();
-
-												ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
-												String descricao = "+ R$" + auxValue + " -> Adição da modalidade " + modalityModel.getName();
-												changeDescription.add(descricao);
+										if(!increaseRecovered) {
+											for (int k = 0; k < modalitiesList.size(); k++) {
+												Date startDate = modalitiesList.get(k).getStartDate();
+												if ((startDate.compareTo(currentDate) > 0
+														|| startDate.compareTo(currentDate) == 0)
+														&& startDate.compareTo(lowerStartDate) > 0
+														&& modalitiesList.get(k).getFinishDate() == null) {
+													PlanModel planModel = planDAO.findById(modalitiesList.get(k).getPlanId());
+													auxValue = planModel.getMonthlyValue();
+	
+													ModalityModel modalityModel = modalityDAO.findById(modalitiesList.get(k).getModalityId());
+													String descricao = "+ R$" + auxValue + " -> Adição da modalidade " + modalityModel.getName();
+													changeDescription.add(descricao);
+													increaseRecovered = true;
+												}
 											}
 										}
 									}
