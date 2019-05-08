@@ -93,10 +93,17 @@ public class GeneratePaymentsWindow extends AbstractWindowFrame {
 				for (int i = 0; i < registrationsList.size(); i++) {
 					registrationModel = registrationsList.get(i);
 					Integer registrationCode = registrationModel.getRegistrationCode();
-
+					
 					// Recupera a data de vencimento da fatura.
 					Calendar calendar = Calendar.getInstance();
-					calendar.set(selectedYear, selectedMonth, registrationModel.getExpirationDay());
+					if (selectedMonth == 1 && registrationModel.getExpirationDay() > 28) {
+						calendar.set(selectedYear, selectedMonth, 28);
+					} else if ((selectedMonth == 3 || selectedMonth == 5 || selectedMonth == 8 || selectedMonth == 10)
+							&& registrationModel.getExpirationDay() > 30) {
+						calendar.set(selectedYear, selectedMonth, 30);
+					} else {
+						calendar.set(selectedYear, selectedMonth, registrationModel.getExpirationDay());
+					}
 					Date dueDate = calendar.getTime();
 
 					// Recupera a lista de todas as faturas relacionadas a um determinado código de

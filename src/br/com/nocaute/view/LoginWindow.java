@@ -86,7 +86,7 @@ public class LoginWindow extends JDialog {
 
 	private void authUser() {
 		// TODO:Mudar modo com que é feito autenticação do usuario
-		CONNECTION = ConnectionFactory.getConnection("masterr", txfName.getText(),
+		CONNECTION = ConnectionFactory.getConnection("master", txfName.getText(),
 				new String(txfPassword.getPassword()));
 
 		UserDAO dao = null;
