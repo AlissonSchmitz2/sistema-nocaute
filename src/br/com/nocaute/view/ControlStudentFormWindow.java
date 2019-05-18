@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -37,6 +38,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
+import javax.swing.text.MaskFormatter;
 
 import br.com.nocaute.dao.AssiduityDAO;
 import br.com.nocaute.dao.InvoicesRegistrationDAO;
@@ -108,7 +110,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 	private Connection CONNECTION;
 
 	private Date currentDate = new Date();
-	
+
 	private boolean isFirstThread = true;
 
 	public ControlStudentFormWindow(JDesktopPane desktop, Connection CONNECTION) {
@@ -147,21 +149,24 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			@Override
 			public void keyPressed(java.awt.event.KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
-						bubbleWarning("Nenhum aluno foi encontrado!");
-						txfStudent.setText("");
-						txfCodMatriculate.setText("");
+					if (txfCodMatriculate.getText() != "") {
+						
+						if (!searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()))) {
+							bubbleWarning("Nenhum aluno foi encontrado!");
+							txfStudent.setText("");
+							txfCodMatriculate.setText("");
 
-						clearTables();
+							clearTables();
 
-						btnDataStudent.setEnabled(false);
-						btnDataMatriculate.setEnabled(false);
+							btnDataStudent.setEnabled(false);
+							btnDataMatriculate.setEnabled(false);
 
-						setSituationColor(0);
-					}else {
-						if(isFirstThread) {
-							setThread();
-							isFirstThread = false;
+							setSituationColor(0);
+						} else {
+							if (isFirstThread) {
+								setThread();
+								isFirstThread = false;
+							}
 						}
 					}
 				}
@@ -202,6 +207,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 
 		txfStudent = new JTextField();
 		txfStudent.setBounds(310, 10, 448, 25);
+		
 		txfStudent.setEditable(false);
 		txfStudent.setToolTipText("Aluno");
 		getContentPane().add(txfStudent);
@@ -343,6 +349,8 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					return true;
 
 				} else {
+					setSituationColor(0);
+
 					Object[] options = { "Sim", "Não" };
 					int resultOptions = JOptionPane.showOptionDialog(null,
 							"Aluno/a " + studentModel.getName()
@@ -382,7 +390,7 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 					|| invoices.getCancellationDate().toString().isEmpty())) {
 				situation = 2;
 			} else {
-				situation = 1;
+				return 1;
 			}
 		}
 
@@ -509,10 +517,16 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 							searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
 						}
 						assiduityTableModel.clear();
-						assiduityTableModel.addModelsList(assiduityList.stream()
-								.filter(a -> a.getInputDate().getYear() == masterMonthChooser.getDate().getYear())
-								.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
-								.collect(Collectors.toList()));
+
+						if (txfCodMatriculate.getText() != "") {
+							System.out.println("Sem");
+						}
+						if (txfCodMatriculate.getText() != "") {
+							assiduityTableModel.addModelsList(assiduityList.stream()
+									.filter(a -> a.getInputDate().getYear() == masterMonthChooser.getDate().getYear())
+									.filter(a -> a.getInputDate().getMonth() == masterMonthChooser.getDate().getMonth())
+									.collect(Collectors.toList()));
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -525,11 +539,23 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 		List<InvoicesRegistrationModel> newInvoicesList = new ArrayList<InvoicesRegistrationModel>();
 		List<RegistrationModality> newModalityList = new ArrayList<RegistrationModality>();
 
+		if (!(studentModel instanceof StudentModel)) {
+			// searchDataStudent(Integer.parseInt(txfCodMatriculate.getText()));
+			return false;
+		}
+
 		RegistrationModel registration = registrationDao.findByStudentId(studentModel.getCode(), true);
-		
+
+		if (!(registrationModel instanceof RegistrationModel)) {
+			return false;
+		}
+		if (!(registration instanceof RegistrationModel)) {
+			return false;
+		}
+
 		newInvoicesList = invoicesDao.getByRegistrationCode(registrationModel.getRegistrationCode());
 		newModalityList = mapRegistrationModalitiesModelToRegistrationModalitiesPojo(registration.getModalities());
-	
+
 		// Verifica se foi adicionado ou removida algum plano
 		if (newInvoicesList.size() != invoicesList.size()) {
 			System.out.println("Mudou");
@@ -543,40 +569,6 @@ public class ControlStudentFormWindow extends AbstractGridWindow {
 			System.out.println("Mudou");
 			return true;
 		}
-		/*
-		for (int i = 0; i < invoicesList.size(); i++) {
-			//Verifica se houve alguma mudança
-			if(invoicesList.get(i).getValue() != newInvoicesList.get(i).getValue()) {
-				return true;
-			}
-			if(invoicesList.get(i).getPaymentDate() != newInvoicesList.get(i).getPaymentDate()) {
-				return true;
-			}
-			if(invoicesList.get(i).getDueDate() != newInvoicesList.get(i).getDueDate()) {
-				return true;
-			}
-			if(invoicesList.get(i).getChangeDescription() != newInvoicesList.get(i).getChangeDescription()) {
-				return true;
-			}
-			if(invoicesList.get(i).getCancellationDate() != newInvoicesList.get(i).getCancellationDate()) {
-				return true;
-			}	
-		}
-		
-		for(int i = 0;i<modalityList.size();i++) {
-			if(modalityList.get(i).getFinishDate() != newModalityList.get(i).getFinishDate()) {
-				return true;
-			}
-			if(modalityList.get(i).getModality() != newModalityList.get(i).getModality()) {
-				return true;
-			}
-			if(modalityList.get(i).getPlan() != newModalityList.get(i).getPlan()) {
-				return true;
-			}
-			if(modalityList.get(i).getStartDate() != newModalityList.get(i).getStartDate()) {
-				return true;
-			}
-		}*/
 
 		return false;
 
