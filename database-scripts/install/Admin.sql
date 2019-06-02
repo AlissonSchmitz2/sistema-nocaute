@@ -4,11 +4,6 @@
 ----------------------------------------------
 ----------------------------------------------
 
-CREATE	ROLE		admin
-	WITH		CREATEROLE
-			LOGIN
-			ENCRYPTED PASSWORD	'admin'
-	;
 
 --
 --
