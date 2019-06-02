@@ -1,4 +1,4 @@
-﻿/* # Adiciona coluna id_matricula_modalidade para tabela "matriculas_modalidades" */
+/* # Adiciona coluna id_matricula_modalidade para tabela "matriculas_modalidades" */
 ALTER TABLE matriculas_modalidades ADD COLUMN id_matricula_modalidade serial NOT NULL;
 
 /* # Seta id_matricula_modalidade como PK da tabela "matriculas_modalidades" */

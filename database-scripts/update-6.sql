@@ -1,0 +1,1 @@
+ALTER TABLE faturas_matriculas ADD COLUMN quantidade_modalidade integer NOT NULL DEFAULT 0;

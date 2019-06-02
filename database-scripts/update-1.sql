@@ -24,8 +24,7 @@ ALTER TABLE alunos ADD COLUMN id_cidade integer;
 
 /* # Adiciona FK alunos_enderecos_f2 na tabela "alunos" */
 ALTER TABLE alunos ADD CONSTRAINT alunos_enderecos_f2 FOREIGN KEY (id_cidade) 
-REFERENCES cidades(id_cidade) MATCH SIMPLE 
-ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
+REFERENCES cidades(id_cidade) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
 
 /* #################### ASSIDUIDADE #################### */
 
