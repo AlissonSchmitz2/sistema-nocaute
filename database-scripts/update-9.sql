@@ -1,0 +1,1 @@
+alter table faturas_matriculas add codigo_fatura_matricula serial;
