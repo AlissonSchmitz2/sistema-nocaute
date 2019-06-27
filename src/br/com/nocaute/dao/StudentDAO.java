@@ -90,7 +90,7 @@ public class StudentDAO extends AbstractCrudDAO<StudentModel> implements Searcha
 			int code = Integer.parseInt(word);
 
 			query = "SELECT m.*, c.cidade, c.estado, c.pais FROM " + TABLE_NAME
-					+ "  AS m LEFT JOIN cidades AS c ON m.id_cidade=c.id_cidade WHERE m.aluno ILIKE ? OR m.codigo_aluno=? ORDER BY m."
+					+ "  AS m LEFT JOIN cidades AS c ON m.id_cidade=c.id_cidade WHERE LOWER(m.aluno) LIKE LOWER(?) OR m.codigo_aluno=? ORDER BY m."
 					+ defaultOrderBy;
 			pst = connection.prepareStatement(query);
 
@@ -98,7 +98,7 @@ public class StudentDAO extends AbstractCrudDAO<StudentModel> implements Searcha
 
 		} catch (NumberFormatException e) {
 			query = "SELECT m.*, c.cidade, c.estado, c.pais FROM " + TABLE_NAME
-					+ " AS m LEFT JOIN cidades AS c ON m.id_cidade=c.id_cidade WHERE m.aluno ILIKE ? ORDER BY m."
+					+ " AS m LEFT JOIN cidades AS c ON m.id_cidade=c.id_cidade WHERE LOWER(m.aluno) LIKE LOWER(?) ORDER BY m."
 					+ defaultOrderBy;
 			pst = connection.prepareStatement(query);
 		}

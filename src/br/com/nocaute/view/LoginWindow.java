@@ -93,24 +93,30 @@ public class LoginWindow extends JDialog {
 		try {
 			dao = new UserDAO(CONNECTION);
 			model = dao.searchByUser(txfName.getText());
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Usuario ou senha incorreto!", "", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+		
+			if (model == null) {
+				UserModel someUser = dao.searchByUser("");
+				
+				//Se não existir nenhum usuário cadastrado, cria o primeiro usuário com perfil completo
+				if (someUser == null) {
+					model = new UserModel();
 
-		if (model == null) {
-			if (txfName.getText().equals("admin") && new String(txfPassword.getPassword()).equals("admin")) {
-				model = new UserModel();
-
-				model.setUser(txfName.getText());
-				model.setProfile("Completo");
-
-				startSystem(model);
-			} else {
+					model.setUser(txfName.getText());
+					model.setProfile("Completo");
+					
+					dao.insert(model, false);
+					
+					startSystem(model);
+				}
+				
 				return;
+			} else if (model instanceof UserModel) {
+				startSystem(model);
 			}
-		} else if (model instanceof UserModel) {
-			startSystem(model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Usuario e/ou senha incorreto(s)!", "", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 	}
 

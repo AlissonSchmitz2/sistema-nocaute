@@ -1,7 +1,7 @@
 /* #################### CIDADES #################### */
 
 /* # Remove FK alunos_enderecos_f2 na tabela "alunos" */
-ALTER TABLE "alunos" DROP CONSTRAINT alunos_enderecos_f2;
+ALTER TABLE alunos DROP CONSTRAINT alunos_enderecos_f2;
 
 /* # Adiciona coluna id_cidade para tabela "cidades" */
 ALTER TABLE cidades ADD COLUMN id_cidade serial NOT NULL;
@@ -23,7 +23,7 @@ ALTER TABLE alunos DROP COLUMN pais;
 ALTER TABLE alunos ADD COLUMN id_cidade integer;
 
 /* # Adiciona FK alunos_enderecos_f2 na tabela "alunos" */
-ALTER TABLE alunos ADD CONSTRAINT alunos_enderecos_f2 FOREIGN KEY (id_cidade) 
+ALTER TABLE alunos ADD CONSTRAINT alunos_enderecos_f2 FOREIGN KEY (id_cidade)
 REFERENCES cidades(id_cidade) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY IMMEDIATE;
 
 /* #################### ASSIDUIDADE #################### */

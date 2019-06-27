@@ -1,7 +1,7 @@
-insert into cidades values ('Criciúma', 'SC', 'Brasil');
-insert into enderecos values ('Rua Bela Vista', 'São Cristóvão', 'Criciúma', 'SC', 'Brasil', 88802560);
+insert into cidades values ('Criciï¿½ma', 'SC', 'Brasil');
+insert into enderecos values ('Rua Bela Vista', 'Sï¿½o Cristï¿½vï¿½o', 'Criciï¿½ma', 'SC', 'Brasil', 88802560);
 insert into alunos values('Rodrigo', '25/06/1986', 'M', '34373737', '99444444', 'rodrigo@rodrigo.com', 'Aluno VBI.');
-insert into alunos_enderecos values ('Rodrigo', 'Rua Bela Vista', '401', null, 'São Cristóvão', 'Criciúma', 'SC', 'Brasil', 88802560);
+insert into alunos_enderecos values ('Rodrigo', 'Rua Bela Vista', '401', null, 'Sï¿½o Cristï¿½vï¿½o', 'Criciï¿½ma', 'SC', 'Brasil', 88802560);
 insert into modalidades values ('Taekwondo');
 insert into graduacoes values ('Taekwondo', 'Iniciante');
 insert into planos values ('Taekwondo', '2 X Por Semana', 100);

@@ -54,7 +54,11 @@ public abstract class AbstractDAO<T> {
 			}
 			
 			if(values.length > i && values[i] != null) {
-				concatenedValues += values[i];
+				//if (values[i].equals("DEFAULT")) {
+				//	concatenedValues += "''";
+				//} else {
+					concatenedValues += values[i];
+				//}
 			} else {
 				concatenedValues += "?";
 			}

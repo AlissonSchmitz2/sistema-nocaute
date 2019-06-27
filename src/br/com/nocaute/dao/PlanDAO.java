@@ -66,7 +66,7 @@ public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<Pl
 	@Override
 	public List<PlanModel> search(String word) throws SQLException {
 		String query = "SELECT p.*, m.modalidade FROM " + TABLE_NAME
-				+ " AS p LEFT JOIN modalidades AS m ON p.id_modalidade=m.id_modalidade WHERE p.plano ILIKE ? OR m.modalidade ILIKE ? ORDER BY p."
+				+ " AS p LEFT JOIN modalidades AS m ON p.id_modalidade=m.id_modalidade WHERE LOWER(p.plano) LIKE LOWER(?) OR LOWER(m.modalidade) LIKE LOWER(?) ORDER BY p."
 				+ defaultOrderBy;
 		PreparedStatement pst = connection.prepareStatement(query);
 
@@ -140,6 +140,8 @@ public class PlanDAO extends AbstractCrudDAO<PlanModel> implements Searchable<Pl
 		setParam(pst, 1, model.getModalityId());
 		setParam(pst, 2, model.getName());
 		setParam(pst, 3, model.getMonthlyValue());
+		
+		System.out.println(pst);
 
 		int result = pst.executeUpdate();
 		if (result > 0) {

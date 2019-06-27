@@ -52,7 +52,7 @@ public class CityDAO extends AbstractDAO<CityModel> implements Selectable<CityMo
 	@Override
 	public List<CityModel> search(String word) throws SQLException {
 		String query = "SELECT * FROM " + TABLE_NAME
-				+ " WHERE cidade ILIKE ? OR estado ILIKE ?  OR pais ILIKE ? ORDER BY "
+				+ " WHERE LOWER(cidade) LIKE LOWER(?) OR LOWER(estado) LIKE LOWER(?)  OR LOWER(pais) LIKE LOWER(?) ORDER BY "
 				+ defaultOrderBy;
 		PreparedStatement pst = connection.prepareStatement(query);
 

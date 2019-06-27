@@ -78,14 +78,14 @@ public class RegistrationDAO extends AbstractCrudDAO<RegistrationModel> implemen
 			int code = Integer.parseInt(word);
 
 			query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
-					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE a.aluno ILIKE ? OR r.codigo_matricula=? ORDER BY a.aluno";
+					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE LOWER(a.aluno) LIKE LOWER(?) OR r.codigo_matricula=? ORDER BY a.aluno";
 			pst = connection.prepareStatement(query);
 
 			setParam(pst, 2, code);
 
 		} catch (NumberFormatException e) {
 			query = "SELECT r.*, a.aluno FROM " + TABLE_NAME
-					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE a.aluno ILIKE ? ORDER BY a.aluno";
+					+ " AS r LEFT JOIN alunos AS a ON r.codigo_aluno=a.codigo_aluno WHERE LOWER(a.aluno) LIKE LOWER(?) ORDER BY a.aluno";
 			pst = connection.prepareStatement(query);
 		}
 

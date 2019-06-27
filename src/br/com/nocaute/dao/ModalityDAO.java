@@ -67,7 +67,7 @@ public class ModalityDAO extends AbstractCrudDAO<ModalityModel> implements Searc
 			int code = Integer.parseInt(word);
 
 			query = "SELECT * FROM " + TABLE_NAME
-					+ " WHERE UPPER(modalidade) LIKE ? OR id_modalidade=? ORDER BY "
+					+ " WHERE LOWER(modalidade) LIKE LOWER(?) OR id_modalidade=? ORDER BY "
 					+ defaultOrderBy;
 			pst = connection.prepareStatement(query);
 
@@ -75,7 +75,7 @@ public class ModalityDAO extends AbstractCrudDAO<ModalityModel> implements Searc
 
 		} catch (NumberFormatException e) {
 			query = "SELECT * FROM " + TABLE_NAME
-					+ " WHERE UPPER(modalidade) LIKE ? ORDER BY "
+					+ " WHERE LOWER(modalidade) LIKE LOWER(?) ORDER BY "
 					+ defaultOrderBy;
 			pst = connection.prepareStatement(query);
 		}

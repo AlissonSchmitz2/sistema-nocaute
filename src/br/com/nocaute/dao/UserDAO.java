@@ -67,7 +67,7 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 		String query = "";
 		PreparedStatement pst = null;
 
-		query = "SELECT * FROM " + TABLE_NAME + " WHERE usuario ILIKE ? ORDER BY " + defaultOrderBy;
+		query = "SELECT * FROM " + TABLE_NAME + " WHERE LOWER(usuario) LIKE LOWER(?) ORDER BY " + defaultOrderBy;
 		pst = connection.prepareStatement(query);
 
 		setParam(pst, 1, "%" + word + "%");
@@ -140,6 +140,10 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 	@Override
 	public UserModel insert(UserModel model) throws SQLException {
+		return insert(model, true);
+	}
+	
+	public UserModel insert(UserModel model, boolean createUser) throws SQLException {
 		String query = getInsertQuery(TABLE_NAME, columsToInsert, defaultValuesToInsert);
 
 		PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -148,6 +152,8 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 
 		setParam(pst, 1, model.getUser());
 		setParam(pst, 2, model.getProfile());
+		
+		System.out.println(pst);
 
 		int result = pst.executeUpdate();
 		if (result > 0) {
@@ -160,7 +166,10 @@ public class UserDAO extends AbstractCrudDAO<UserModel> implements Searchable<Us
 				// Antes de retornar, seta o código ao objeto usuario
 				model.setCode(lastInsertedCode);
 
-				createUser(model);
+				if (createUser) {
+					createUser(model);
+				}
+				
 				return model;
 			}
 		}
